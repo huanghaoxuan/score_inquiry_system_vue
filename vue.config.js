@@ -4,7 +4,7 @@
   // 输出文件目录
   outputDir: "dist",
   devServer: {
-    port: 8089, // 端口号
+    port: 5200, // 端口号
     //host: 'localhost',
     https: false, // https:{type:Boolean}
     open: false, //配置自动启动浏览器

@@ -8,14 +8,10 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/login",
+      path: "/",
       name: "login",
       component: () => import("./components/login/Login.vue"),
       meta: { allowBack: false }
-    },
-    {
-      path: "*",
-      redirect: "/sidebar"
     }
   ]
 });

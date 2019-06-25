@@ -13,11 +13,11 @@
     proxy: {
       "/api": {
         //使用"/api"来代替"http://f.apiplus.c"
-        target: "http://localhost:8083", //源地址
+        target: "http://localhost:5201", //源地址
         changeOrigin: true, //改变源
         ws: true,
         pathRewrite: {
-          "^/api": "" //路径重写
+          "^/api": "/api" //路径重写
         }
       }
     } // 配置多个代理

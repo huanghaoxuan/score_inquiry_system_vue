@@ -8,10 +8,26 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/",
+      path: "/sidebar",
+      name: "sidebar",
+      component: () => import("./components/Sidebar.vue"),
+      children: [
+        {
+          path: "/management/student_management",
+          name: "student_management",
+          component: () => import("./views/management/student_management.vue")
+        }
+      ]
+    },
+    {
+      path: "/login",
       name: "login",
       component: () => import("./components/login/Login.vue"),
       meta: { allowBack: false }
+    },
+    {
+      path: "*",
+      redirect: "/sidebar"
     }
   ]
 });

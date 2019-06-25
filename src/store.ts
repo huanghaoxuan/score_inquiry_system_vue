@@ -6,11 +6,15 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    loginStatus: false
+    loginStatus: false,
+    token: ""
   },
   mutations: {
     isLogin(state, status) {
       state.loginStatus = status;
+    },
+    setToken(state, token) {
+      state.token = token;
     }
   },
   actions: {},

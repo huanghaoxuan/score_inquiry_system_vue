@@ -21,6 +21,15 @@
             查询
           </a-button>
         </a-form-item>
+        <a-upload
+          name="file"
+          :multiple="true"
+          action="/api/user/upload"
+          :headers="headers"
+          @change="handleChange"
+        >
+          <a-button> <a-icon type="upload" />上传</a-button>
+        </a-upload>
       </a-form>
       <br />
       <a-table
@@ -82,7 +91,10 @@ export default {
       data: [],
       columns,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 9, total: 9 }
+      pagination: { defaultPageSize: 9, total: 9 },
+      headers: {
+        Authorization: this.$store.state.Authorization
+      }
     };
   },
   methods: {
@@ -222,6 +234,16 @@ export default {
           this.showAllListData(1, values);
         }
       });
+    },
+    handleChange(info) {
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        this.$message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        this.$message.error(`${info.file.name} file upload failed.`);
+      }
     }
   }
 };

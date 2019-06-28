@@ -15,18 +15,18 @@
             >学生管理</a-menu-item
           >
           <a-menu-item
-            key="teacheringWork_classroomTeaching"
-            @click="() => jump('/classroomTeaching/status')"
+            key="1"
+            @click="() => jump('s')"
             >教师管理</a-menu-item
           >
           <a-menu-item
-            key="teacheringWork_classroomTeaching"
-            @click="() => jump('/classroomTeaching/status')"
+            key="2"
+            @click="() => jump('')"
             >教学班管理</a-menu-item
           >
           <a-menu-item
-            key="teacheringWork_classroomTeaching"
-            @click="() => jump('/classroomTeaching/status')"
+            key="3"
+            @click="() => jump('')"
             >课程管理</a-menu-item
           >
         </a-sub-menu>

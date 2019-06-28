@@ -101,7 +101,6 @@ export default {
           var md5 = crypto.createHash("md5");
           md5.update(this.password);
           var password2 = md5.digest("hex");
-          console.log(password2);
 
           this.axios
             .post(

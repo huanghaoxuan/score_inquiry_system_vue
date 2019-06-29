@@ -163,34 +163,22 @@ export default {
         status[1].style.top = 5 + "px";
         this.onoff = !this.onoff;
       } else {
-        if (this.studentID == null || this.studentID == "") {
+        if (this.studentId == null || this.studentId == "") {
           this.$notification.error({
             message: "账号未输入"
           });
         } else {
           this.axios
-            .post(
-              "/userAccess/insert",
-              this.qs.stringify({
-                studentID: this.studentID
-              }),
-              {
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded"
-                }
+            .get("/user/reset/" + this.studentId, {
+              params: {},
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
               }
-            )
+            })
             .then(
               function(res) {
                 //console.log(res.data);
                 //每条数据需要一个唯一的key值
-                if (res.data == 1) {
-                  this.$store.commit("isLogin", true);
-                } else {
-                  this.$notification.error({
-                    message: "该账号已经存在"
-                  });
-                }
               }.bind(this)
             )
             .catch(

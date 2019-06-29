@@ -1,57 +1,110 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
     <a-card title="学生管理">
-      <a-form
-        layout="inline"
-        :form="form"
-        @submit="handleSubmit"
-        v-if="$store.state.identity != 1"
+      <a-upload
+        name="file"
+        :multiple="true"
+        action="/api/studentInformation/upload"
+        :headers="headers"
+        @change="handleChangeUpload"
+        slot="extra"
       >
-        <a-form-item label="教师工号">
-          <a-input
-            v-decorator="['classTeacher']"
-            placeholder="请输入教师工号"
-          />
+        <a-button> <a-icon type="upload" />批量上传</a-button>
+      </a-upload>
+      <a-form layout="inline" :form="form" @submit="handleSubmit">
+        <a-form-item label="姓名">
+          <a-input v-decorator="['name']" placeholder="请输入姓名" />
         </a-form-item>
-        <a-form-item label="教师名字">
-          <a-input v-decorator="['name']" placeholder="请输入教师名字" />
+        <a-form-item label="学号">
+          <a-input v-decorator="['studentId']" placeholder="请输入学号" />
+        </a-form-item>
+        <a-form-item label="所在学院">
+          <a-select
+            v-decorator="['departmentNew']"
+            placeholder="请输入所在学院"
+            style="width: 200px"
+          >
+            <a-select-option value="">
+              学院不参与筛选
+            </a-select-option>
+            <a-select-option value="电子与计算机工程学院">
+              电子与计算机工程学院
+            </a-select-option>
+            <a-select-option value="建筑与艺术设计学院">
+              建筑与艺术设计学院
+            </a-select-option>
+            <a-select-option value="土木与交通工程学院">
+              土木与交通工程学院
+            </a-select-option>
+            <a-select-option value="机械与电气工程学院">
+              机械与电气工程学院
+            </a-select-option>
+            <a-select-option value="制药与化学工程学院">
+              制药与化学工程学院
+            </a-select-option>
+            <a-select-option value="经济管理学院">
+              经济管理学院
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="所在年级">
+          <a-input v-decorator="['gradeNew']" placeholder="请输入所在年级" />
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit">
             查询
           </a-button>
         </a-form-item>
-        <a-upload
-          name="file"
-          :multiple="true"
-          action="/api/user/upload"
-          :headers="headers"
-          @change="handleChange"
-        >
-          <a-button> <a-icon type="upload" />上传</a-button>
-        </a-upload>
       </a-form>
       <br />
       <a-table
         :pagination="pagination"
         :columns="columns"
         :dataSource="data"
-        :scroll="{ x: 2000, y: 610 }"
         @change="handleTableChange"
       >
-        <template slot="operation1" slot-scope="text, record">
-          <edit :editData="data[record.key]"></edit>
+        <template
+          v-for="col in [
+            'name',
+            'studentId',
+            'departmentNew',
+            'gradeNew',
+            'classNew'
+          ]"
+          :slot="col"
+          slot-scope="text, record"
+        >
+          <div :key="col">
+            <a-input
+              v-if="record.editable"
+              style="margin: -5px 0"
+              :value="text"
+              @change="e => handleChange(e.target.value, record.key, col)"
+            />
+            <template v-else>{{ text }}</template>
+          </div>
         </template>
-        <template slot="operation2" slot-scope="text, record">
-          <a-popconfirm
-            v-if="data.length"
-            title="点击确认以删除?"
-            cancelText="取消"
-            okText="确认"
-            @confirm="() => onDelete(record.key)"
-          >
-            <a-button type="danger" @click="() => {}">删除</a-button>
-          </a-popconfirm>
+        <template slot="operation" slot-scope="text, record">
+          <div class="editable-row-operations">
+            <span v-if="record.editable">
+              <a @click="() => save(record.key)" style="padding:10px">保存</a>
+              <a-popconfirm
+                title="Sure to cancel?"
+                @confirm="() => cancel(record.key)"
+              >
+                <a>取消</a>
+              </a-popconfirm>
+            </span>
+            <span v-else>
+              <a @click="() => edit(record.key)" style="padding:10px">修改</a>
+              <a-popconfirm
+                title="确定删除该条数据？?"
+                @confirm="() => onDelete(record.key)"
+              >
+                <a>删除</a>
+              </a-popconfirm>
+            </span>
+          </div>
         </template>
       </a-table>
     </a-card>
@@ -61,190 +114,253 @@
 <script>
 const columns = [
   {
-    title: "所带班级评为校级先进",
-    width: 200,
-    dataIndex: "schoolLevel",
-    key: "1"
+    title: "姓名",
+    width: "16%",
+    dataIndex: "name",
+    key: "1",
+    scopedSlots: { customRender: "name" }
+  },
+  {
+    title: "学号",
+    dataIndex: "studentId",
+    key: "2",
+    width: "16%",
+    scopedSlots: { customRender: "studentId" }
+  },
+  {
+    title: "所在学院",
+    dataIndex: "departmentNew",
+    key: "3",
+    width: "16%",
+    scopedSlots: { customRender: "departmentNew" }
+  },
+  {
+    title: "所在年级",
+    dataIndex: "gradeNew",
+    key: "4",
+    width: "16%",
+    scopedSlots: { customRender: "gradeNew" }
+  },
+  {
+    title: "所在班级",
+    dataIndex: "classNew",
+    key: "5",
+    width: "16%",
+    scopedSlots: { customRender: "classNew" }
   },
   {
     title: "操作",
-    dataIndex: "operation1",
-    key: "10",
-    width: 100,
-    fixed: "right",
-    scopedSlots: { customRender: "operation1" }
-  },
-  {
-    title: "",
-    dataIndex: "operation2",
-    key: "11",
-    width: 100,
-    fixed: "right",
-    scopedSlots: { customRender: "operation2" }
+    dataIndex: "operation",
+    key: "6",
+    width: "16%",
+    scopedSlots: { customRender: "operation" }
   }
 ];
-
+const data = [];
 export default {
   inject: ["reload"],
   data() {
+    this.cacheData = data.map(item => ({ ...item }));
     return {
-      data: [],
+      data,
       columns,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 9, total: 9 },
+      pagination: { defaultPageSize: 10, total: 10 },
       headers: {
-        Authorization: this.$store.state.Authorization
+        Authorization: this.$store.state.token
       }
     };
   },
   methods: {
-    onDelete(key) {
-      const data = [...this.data];
-      this.data = data.filter(item => item.key !== key);
-      //console.log(data[key].id);
-      this.axios
-        .get(
-          "/publicaffairsCounselor/deleteByPrimaryKey",
-          {
-            params: {
-              id: data[key].id
-            }
-          },
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-          }
-        )
-        .then(function(res) {}.bind(this))
-        .catch(
-          function(err) {
-            if (err.response) {
-              //console.log(err.response);
-              //控制台打印错误返回的内容
-            }
-            //bind(this)可以不用
-          }.bind(this)
-        );
-    },
     handleTableChange(pagination, filters, sorter) {
-      if (this.$store.state.identity == 1) {
-        this.showListData(pagination.current);
-      } else {
-        this.form.validateFields((err, values) => {
-          if (!err) {
-            this.showAllListData(pagination.current, values);
-          }
-        });
+      this.getdata(pagination.current, 9);
+    },
+    //上传
+    handleChangeUpload(info) {
+      if (info.file.status !== "uploading") {
+        //console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        this.$message.success(`${info.file.name} 上传成功`);
+        this.reload();
+      } else if (info.file.status === "error") {
+        this.$message.error(`${info.file.name} 上传失败，请重试！`);
       }
     },
-    showListData(pageNum) {
-      this.axios
-        .get(
-          "/publicaffairsCounselor/selectByClassTeacher",
-          {
-            params: {
-              classTeacher: this.$store.state.teacherid,
-              pageNum: pageNum,
-              pageSize: 9
-            }
-          },
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-          }
-        )
-        .then(
-          function(res) {
-            //console.log(res.data);
-            //每条数据需要一个唯一的key值
-            for (let index = 0; index < res.data.list.length; index++) {
-              res.data.list[index].key = index;
-              var year = res.data.list[index].year + 1;
-              var yearStr = res.data.list[index].year + " — " + year + " 学年";
-              res.data.list[index].showYear = yearStr;
-            }
-            this.data = res.data.list;
-            this.pagination.total = res.data.total;
-            //控制台打印请求成功时返回的数据
-            //bind(this)可以不用
-          }.bind(this)
-        )
-        .catch(
-          function(err) {
-            if (err.response) {
-              //console.log(err.response);
-              //控制台打印错误返回的内容
-            }
-            //bind(this)可以不用
-          }.bind(this)
-        );
-    },
-    showAllListData(pageNum, values) {
-      this.axios
-        .get(
-          "/publicaffairsCounselor/selectAll",
-          {
-            params: {
-              ...values,
-              pageNum: pageNum,
-              pageSize: 9
-            }
-          },
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-          }
-        )
-        .then(
-          function(res) {
-            //console.log(res.data);
-            //每条数据需要一个唯一的key值
-            if (res.data.list != null) {
-              for (let index = 0; index < res.data.list.length; index++) {
-                res.data.list[index].key = index;
-                var year = res.data.list[index].year + 1;
-                var yearStr =
-                  res.data.list[index].year + " — " + year + " 学年";
-                res.data.list[index].showYear = yearStr;
-              }
-            }
-            this.data = res.data.list;
-            this.pagination.total = res.data.total;
-            //控制台打印请求成功时返回的数据
-            //bind(this)可以不用
-          }.bind(this)
-        )
-        .catch(
-          function(err) {
-            if (err.response) {
-              //console.log(err.response);
-              //控制台打印错误返回的内容
-            }
-            //bind(this)可以不用
-          }.bind(this)
-        );
-    },
+    //查询时提交数据
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.showAllListData(1, values);
+          this.getdata(1, 9);
         }
       });
     },
-    handleChange(info) {
-      if (info.file.status !== "uploading") {
-        console.log(info.file, info.fileList);
+    handleChange(value, key, column) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      if (target) {
+        target[column] = value;
+        this.data = newData;
       }
-      if (info.file.status === "done") {
-        this.$message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        this.$message.error(`${info.file.name} file upload failed.`);
+      //axios
+    },
+    edit(key) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      if (target) {
+        target.editable = true;
+        this.data = newData;
       }
+    },
+    onDelete(key) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      console.log(target);
+      this.axios
+        .get("/studentInformation/delete/" + target.id, {
+          params: {},
+          headers: {
+            Authorization: this.$store.state.token,
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
+        .then(
+          function(res) {
+            //console.log(res.data);
+            //每条数据需要一个唯一的key值
+            if (res.data.status != 0) {
+              this.data = newData.filter(item => item.key !== key);
+            } else {
+              this.$notification.error({
+                message: "删除失败，请重新删除！"
+              });
+            }
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
+    },
+    save(key) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      console.log(target);
+      this.axios
+        .post(
+          "/studentInformation/update",
+          this.qs.stringify({
+            ...target
+          }),
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        )
+        .then(
+          function(res) {
+            if (target && res.data.status != 0) {
+              delete target.editable;
+              this.data = newData;
+              this.cacheData = newData.map(item => ({ ...item }));
+            } else {
+              this.$notification.error({
+                message: "修改失败，请重新修改！"
+              });
+            }
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response.status == 403) {
+              //console.log(err.response);
+              this.$notification.error({
+                message: "账号密码已过期，请重新登录！"
+              });
+              this.$router.push("/login");
+              //控制台打印错误返回的内容
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
+    },
+    cancel(key) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      if (target) {
+        Object.assign(
+          target,
+          this.cacheData.filter(item => key === item.key)[0]
+        );
+        delete target.editable;
+        this.data = newData;
+      }
+    },
+    getdata(pageNum, pageSize) {
+      const formData = this.form.getFieldsValue();
+      this.axios
+        .post(
+          "/studentInformation/selectByPage",
+          this.qs.stringify({
+            pageNum: pageNum,
+            pageSize: pageSize,
+            ...formData
+          }),
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        )
+        .then(
+          function(res) {
+            //console.log(res.data);
+            //每条数据需要一个唯一的key值
+            for (let index = 0; index < res.data.data.length; index++) {
+              res.data.data[index].key = index;
+            }
+            this.data = res.data.data;
+            this.pagination.total = res.data.count;
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
     }
+  },
+  mounted() {
+    this.getdata(1, 9);
   }
 };
 </script>

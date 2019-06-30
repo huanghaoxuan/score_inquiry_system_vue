@@ -20,7 +20,7 @@
         </a-form-item>
         <a-form-item label="所在学院">
           <a-select
-            v-decorator="['departmentNew']"
+            v-decorator="['department']"
             placeholder="请输入所在学院"
             style="width: 200px"
           >
@@ -48,7 +48,16 @@
           </a-select>
         </a-form-item>
         <a-form-item label="所在年级">
-          <a-input v-decorator="['gradeNew']" placeholder="请输入所在年级" />
+          <a-input v-decorator="['grade']" placeholder="请输入所在年级" />
+        </a-form-item>
+        <a-form-item label="课程名">
+          <a-input v-decorator="['courseName']" placeholder="请输入课程名" />
+        </a-form-item>
+        <a-form-item label="任课老师">
+          <a-input
+            v-decorator="['courseTeacherName']"
+            placeholder="请输入任课老师"
+          />
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit">

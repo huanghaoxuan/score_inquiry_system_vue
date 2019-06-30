@@ -1,16 +1,7 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
-    <a-card title="学籍管理">
-      <a-upload
-        name="file"
-        :multiple="true"
-        action="/api/studentInformation/upload"
-        :headers="headers"
-        @change="handleChangeUpload"
-        slot="extra"
-      >
-        <a-button> <a-icon type="upload" />批量上传</a-button>
-      </a-upload>
+    <a-card title="学生学籍管理">
+      <floder slot="extra"></floder>
       <a-form layout="inline" :form="form" @submit="handleSubmit">
         <a-form-item label="姓名">
           <a-input v-decorator="['name']" placeholder="请输入姓名" />
@@ -107,6 +98,7 @@
 </template>
 
 <script>
+import floder from "./floder.vue";
 const columns = [
   {
     title: "姓名",
@@ -154,33 +146,19 @@ const columns = [
 const data = [];
 export default {
   inject: ["reload"],
+  components: { floder },
   data() {
     this.cacheData = data.map(item => ({ ...item }));
     return {
       data,
       columns,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 10, total: 10 },
-      headers: {
-        Authorization: this.$store.state.token
-      }
+      pagination: { defaultPageSize: 10, total: 10 }
     };
   },
   methods: {
     handleTableChange(pagination, filters, sorter) {
       this.getdata(pagination.current, 9);
-    },
-    //上传
-    handleChangeUpload(info) {
-      if (info.file.status !== "uploading") {
-        //console.log(info.file, info.fileList);
-      }
-      if (info.file.status === "done") {
-        this.$message.success(`${info.file.name} 上传成功`);
-        this.reload();
-      } else if (info.file.status === "error") {
-        this.$message.error(`${info.file.name} 上传失败，请重试！`);
-      }
     },
     //查询时提交数据
     handleSubmit(e) {

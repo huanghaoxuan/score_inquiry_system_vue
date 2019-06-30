@@ -12,7 +12,7 @@
           <a-menu-item
             key="student_management"
             @click="() => jump('/management/student_management')"
-            >学生管理</a-menu-item
+            >学籍管理</a-menu-item
           >
           <a-menu-item key="1" @click="() => jump('s')">教师管理</a-menu-item>
           <a-menu-item key="2" @click="() => jump('')">教学班管理</a-menu-item>

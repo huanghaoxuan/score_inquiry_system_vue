@@ -231,6 +231,9 @@ export default {
             //每条数据需要一个唯一的key值
             if (res.data.status != 0) {
               this.data = newData.filter(item => item.key !== key);
+              this.$notification.warning({
+                message: "删除成功！"
+              });
             } else {
               this.$notification.error({
                 message: "删除失败，请重新删除！"
@@ -279,6 +282,9 @@ export default {
               delete target.editable;
               this.data = newData;
               this.cacheData = newData.map(item => ({ ...item }));
+              this.$notification.success({
+                message: "修改成功！"
+              });
             } else {
               this.$notification.error({
                 message: "修改失败，请重新修改！"

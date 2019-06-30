@@ -1,10 +1,10 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
-    <a-card title="学籍管理">
+    <a-card title="教学班管理">
       <a-upload
         name="file"
         :multiple="true"
-        action="/api/studentInformation/upload"
+        action="/api/teachingClass/upload"
         :headers="headers"
         @change="handleChangeUpload"
         slot="extra"
@@ -67,9 +67,12 @@
           v-for="col in [
             'name',
             'studentId',
-            'departmentNew',
-            'gradeNew',
-            'classNew'
+            'grade',
+            'department',
+            'professional',
+            'class',
+            'courseName',
+            'courseTeacherName'
           ]"
           :slot="col"
           slot-scope="text, record"
@@ -110,7 +113,7 @@
 const columns = [
   {
     title: "姓名",
-    width: "16%",
+    width: "11%",
     dataIndex: "name",
     key: "1",
     scopedSlots: { customRender: "name" }
@@ -119,35 +122,56 @@ const columns = [
     title: "学号",
     dataIndex: "studentId",
     key: "2",
-    width: "16%",
+    width: "11%",
     scopedSlots: { customRender: "studentId" }
   },
   {
-    title: "所在学院",
-    dataIndex: "departmentNew",
+    title: "所在年级",
+    dataIndex: "grade",
     key: "3",
-    width: "16%",
-    scopedSlots: { customRender: "departmentNew" }
+    width: "11%",
+    scopedSlots: { customRender: "grade" }
   },
   {
-    title: "所在年级",
-    dataIndex: "gradeNew",
+    title: "所在学院",
+    dataIndex: "department",
     key: "4",
-    width: "16%",
-    scopedSlots: { customRender: "gradeNew" }
+    width: "11%",
+    scopedSlots: { customRender: "department" }
+  },
+  {
+    title: "所在专业",
+    dataIndex: "professional",
+    key: "5",
+    width: "11%",
+    scopedSlots: { customRender: "professional" }
   },
   {
     title: "所在班级",
-    dataIndex: "classNew",
-    key: "5",
-    width: "16%",
-    scopedSlots: { customRender: "classNew" }
+    dataIndex: "class",
+    key: "6",
+    width: "11%",
+    scopedSlots: { customRender: "class" }
+  },
+  {
+    title: "课程名称",
+    dataIndex: "courseName",
+    key: "7",
+    width: "11%",
+    scopedSlots: { customRender: "courseName" }
+  },
+  {
+    title: "任课老师名字",
+    dataIndex: "courseTeacherName",
+    key: "8",
+    width: "11%",
+    scopedSlots: { customRender: "courseTeacherName" }
   },
   {
     title: "操作",
     dataIndex: "operation",
-    key: "6",
-    width: "16%",
+    key: "9",
+    width: "11%",
     scopedSlots: { customRender: "operation" }
   }
 ];
@@ -213,7 +237,7 @@ export default {
       const target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
-        .get("/studentInformation/delete/" + target.id, {
+        .get("/teachingClass/delete/" + target.id, {
           params: {},
           headers: {
             Authorization: this.$store.state.token,
@@ -260,7 +284,7 @@ export default {
       //console.log(target);
       this.axios
         .post(
-          "/studentInformation/update",
+          "/teachingClass/update",
           this.qs.stringify({
             ...target
           }),
@@ -321,7 +345,7 @@ export default {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/studentInformation/selectByPage",
+          "/teachingClass/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,

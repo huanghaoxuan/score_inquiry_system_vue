@@ -24,13 +24,13 @@
             placeholder="请输入姓名"
           />
         </a-form-item>
-        <a-form-item label="学号">
+        <a-form-item label="工号">
           <a-input
             v-decorator="[
-              'studentId',
-              { rules: [{ required: true, message: '学号不能为空' }] }
+              'teacherId',
+              { rules: [{ required: true, message: '工号不能为空' }] }
             ]"
-            placeholder="请输入学号"
+            placeholder="请输入工号"
           />
         </a-form-item>
         <a-form-item label="所在学院">

@@ -1,70 +1,6 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
-    <a-card title="教学班管理">
-      <a-upload
-        name="file"
-        :multiple="true"
-        action="/api/teachingClass/upload"
-        :headers="headers"
-        @change="handleChangeUpload"
-        slot="extra"
-      >
-        <a-button> <a-icon type="upload" />批量上传</a-button>
-      </a-upload>
-      <a-form layout="inline" :form="form" @submit="handleSubmit">
-        <a-form-item label="姓名">
-          <a-input v-decorator="['name']" placeholder="请输入姓名" />
-        </a-form-item>
-        <a-form-item label="学号">
-          <a-input v-decorator="['studentId']" placeholder="请输入学号" />
-        </a-form-item>
-        <a-form-item label="所在学院">
-          <a-select
-            v-decorator="['department']"
-            placeholder="请输入所在学院"
-            style="width: 200px"
-          >
-            <a-select-option value="">
-              学院不参与筛选
-            </a-select-option>
-            <a-select-option value="电子与计算机工程学院">
-              电子与计算机工程学院
-            </a-select-option>
-            <a-select-option value="建筑与艺术设计学院">
-              建筑与艺术设计学院
-            </a-select-option>
-            <a-select-option value="土木与交通工程学院">
-              土木与交通工程学院
-            </a-select-option>
-            <a-select-option value="机械与电气工程学院">
-              机械与电气工程学院
-            </a-select-option>
-            <a-select-option value="制药与化学工程学院">
-              制药与化学工程学院
-            </a-select-option>
-            <a-select-option value="经济管理学院">
-              经济管理学院
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="所在年级">
-          <a-input v-decorator="['grade']" placeholder="请输入所在年级" />
-        </a-form-item>
-        <a-form-item label="课程名">
-          <a-input v-decorator="['courseName']" placeholder="请输入课程名" />
-        </a-form-item>
-        <a-form-item label="任课老师">
-          <a-input
-            v-decorator="['courseTeacherName']"
-            placeholder="请输入任课老师"
-          />
-        </a-form-item>
-        <a-form-item>
-          <a-button type="primary" html-type="submit">
-            查询
-          </a-button>
-        </a-form-item>
-      </a-form>
+    <a-card title="课程管理">
       <br />
       <a-table
         :pagination="pagination"
@@ -193,27 +129,12 @@ export default {
       data,
       columns,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 10, total: 10 },
-      headers: {
-        Authorization: this.$store.state.token
-      }
+      pagination: { defaultPageSize: 10, total: 10 }
     };
   },
   methods: {
     handleTableChange(pagination, filters, sorter) {
       this.getdata(pagination.current, 9);
-    },
-    //上传
-    handleChangeUpload(info) {
-      if (info.file.status !== "uploading") {
-        //console.log(info.file, info.fileList);
-      }
-      if (info.file.status === "done") {
-        this.$message.success(`${info.file.name} 上传成功`);
-        this.reload();
-      } else if (info.file.status === "error") {
-        this.$message.error(`${info.file.name} 上传失败，请重试！`);
-      }
     },
     //查询时提交数据
     handleSubmit(e) {

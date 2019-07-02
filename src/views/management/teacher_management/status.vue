@@ -99,11 +99,10 @@ const columns = [
     scopedSlots: { customRender: "name" }
   },
   {
-    title: "学号",
+    title: "工号",
     dataIndex: "teacherId",
     key: "2",
-    width: "25%",
-    scopedSlots: { customRender: "teacherId" }
+    width: "25%"
   },
   {
     title: "所在学院",

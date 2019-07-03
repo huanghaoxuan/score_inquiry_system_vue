@@ -1,42 +1,10 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
-    <a-card title="学生学籍管理">
+    <a-card title="课程管理">
       <floder slot="extra"></floder>
       <a-form layout="inline" :form="form" @submit="handleSubmit">
-        <a-form-item label="姓名">
-          <a-input v-decorator="['name']" placeholder="请输入姓名" />
-        </a-form-item>
-        <a-form-item label="工号">
-          <a-input v-decorator="['teacherId']" placeholder="请输入工号" />
-        </a-form-item>
-        <a-form-item label="所在学院">
-          <a-select
-            v-decorator="['department']"
-            placeholder="请输入所在学院"
-            style="width: 200px"
-          >
-            <a-select-option value="">
-              学院不参与筛选
-            </a-select-option>
-            <a-select-option value="电子与计算机工程学院">
-              电子与计算机工程学院
-            </a-select-option>
-            <a-select-option value="建筑与艺术设计学院">
-              建筑与艺术设计学院
-            </a-select-option>
-            <a-select-option value="土木与交通工程学院">
-              土木与交通工程学院
-            </a-select-option>
-            <a-select-option value="机械与电气工程学院">
-              机械与电气工程学院
-            </a-select-option>
-            <a-select-option value="制药与化学工程学院">
-              制药与化学工程学院
-            </a-select-option>
-            <a-select-option value="经济管理学院">
-              经济管理学院
-            </a-select-option>
-          </a-select>
+        <a-form-item label="课程名">
+          <a-input v-decorator="['name']" placeholder="请输入课程名" />
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit">
@@ -51,11 +19,7 @@
         :dataSource="data"
         @change="handleTableChange"
       >
-        <template
-          v-for="col in ['name', 'teacherId', 'department']"
-          :slot="col"
-          slot-scope="text, record"
-        >
+        <template v-for="col in ['name']" :slot="col" slot-scope="text, record">
           <div :key="col">
             <a-input
               v-if="record.editable"
@@ -92,30 +56,17 @@
 import floder from "./floder.vue";
 const columns = [
   {
-    title: "姓名",
-    width: "25%",
+    title: "课程名",
+    width: "33%",
     dataIndex: "name",
     key: "1",
     scopedSlots: { customRender: "name" }
   },
   {
-    title: "工号",
-    dataIndex: "teacherId",
-    key: "2",
-    width: "25%"
-  },
-  {
-    title: "所在学院",
-    dataIndex: "department",
-    key: "3",
-    width: "25%",
-    scopedSlots: { customRender: "department" }
-  },
-  {
     title: "操作",
     dataIndex: "operation",
-    key: "4",
-    width: "25%",
+    key: "2",
+    width: "33%",
     scopedSlots: { customRender: "operation" }
   }
 ];

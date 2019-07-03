@@ -29,7 +29,6 @@
             @click="() => jump('/management/classes_management')"
             >教学班管理</a-menu-item
           >
-          <a-menu-item key="2" @click="() => jump('')">课程管理</a-menu-item>
         </a-sub-menu>
       </a-menu>
     </a-layout-sider>

@@ -140,7 +140,7 @@
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-input v-decorator="['classOld']" placeholder="请输入现所在班级" />
+          <a-input v-decorator="['classNew']" placeholder="请输入现所在班级" />
         </a-form-item>
       </a-form>
     </a-modal>

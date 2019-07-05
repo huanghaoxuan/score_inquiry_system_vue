@@ -34,19 +34,24 @@
             <template v-else>{{ text }}</template>
           </div>
         </template>
-        <template slot="operation" slot-scope="text, record">
+        <template slot="operation">
+          <div class="editable-row-operations">
+            <classes_management></classes_management>
+          </div>
+        </template>
+        <template slot="operation2" slot-scope="text, record">
           <div class="editable-row-operations">
             <span v-if="record.editable">
-              <a @click="() => save(record.key)" style="padding:10px">保存</a>
-              <a @click="() => cancel(record.key)">取消</a>
+              <a @click="() => save(record.key)">保存</a>
+              <a @click="() => cancel(record.key)" style="padding:10px">取消</a>
             </span>
             <span v-else>
-              <a @click="() => edit(record.key)" style="padding:10px">修改</a>
+              <a @click="() => edit(record.key)">修改</a>
               <a-popconfirm
                 title="确定删除该条数据？?"
                 @confirm="() => onDelete(record.key)"
               >
-                <a>删除</a>
+                <a style="padding:10px">删除</a>
               </a-popconfirm>
             </span>
           </div>
@@ -58,40 +63,48 @@
 
 <script>
 import floder from "./floder.vue";
+import classes_management from "./../classes_management.vue";
 const columns = [
   {
     title: "课程名",
-    width: "25%",
+    width: "20%",
     dataIndex: "name",
     key: "1",
     scopedSlots: { customRender: "name" }
   },
   {
     title: "学年（若显示为2019，即为2019-2020学年）",
-    width: "25%",
+    width: "20%",
     dataIndex: "year",
     key: "2",
     scopedSlots: { customRender: "year" }
   },
   {
     title: "学期",
-    width: "25%",
+    width: "20%",
     dataIndex: "semester",
     key: "3",
     scopedSlots: { customRender: "semester" }
   },
   {
-    title: "操作",
+    title: "教学班管理",
+    width: "20%",
     dataIndex: "operation",
     key: "4",
-    width: "25%",
     scopedSlots: { customRender: "operation" }
+  },
+  {
+    title: "操作",
+    dataIndex: "operation2",
+    key: "5",
+    width: "20%",
+    scopedSlots: { customRender: "operation2" }
   }
 ];
 const data = [];
 export default {
   inject: ["reload"],
-  components: { floder },
+  components: { floder, classes_management },
   data() {
     this.cacheData = data.map(item => ({ ...item }));
     return {

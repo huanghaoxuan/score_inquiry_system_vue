@@ -1,56 +1,78 @@
 <template>
-  <div style="background:#ECECEC; padding:30px">
-    <a-card title="课程管理">
-      <br />
-      <a-table
-        :pagination="pagination"
-        :columns="columns"
-        :dataSource="data"
-        @change="handleTableChange"
-      >
-        <template
-          v-for="col in [
-            'name',
-            'studentId',
-            'grade',
-            'department',
-            'professional',
-            'class',
-            'courseName',
-            'courseTeacherName'
-          ]"
-          :slot="col"
-          slot-scope="text, record"
+  <div>
+    <a @click="showModal">查看教学班</a>
+    <a-modal
+      title="正在管理教学班"
+      :visible="visible"
+      @ok="handleOk"
+      okText="确认"
+      cancelText="取消"
+      :maskClosable="false"
+      :confirmLoading="confirmLoading"
+      width="70%"
+      @cancel="handleCancel"
+    >
+      <a-card title="课程管理">
+        <a-upload
+          name="file"
+          :multiple="true"
+          action="/api/teachingClass/upload"
+          :headers="headers"
+          @change="handleChangeUpload"
+          slot="extra"
         >
-          <div :key="col">
-            <a-input
-              v-if="record.editable"
-              style="margin: -5px 0"
-              :value="text"
-              @change="e => handleChange(e.target.value, record.key, col)"
-            />
-            <template v-else>{{ text }}</template>
-          </div>
-        </template>
-        <template slot="operation" slot-scope="text, record">
-          <div class="editable-row-operations">
-            <span v-if="record.editable">
-              <a @click="() => save(record.key)" style="padding:10px">保存</a>
-              <a @click="() => cancel(record.key)">取消</a>
-            </span>
-            <span v-else>
-              <a @click="() => edit(record.key)" style="padding:10px">修改</a>
-              <a-popconfirm
-                title="确定删除该条数据？?"
-                @confirm="() => onDelete(record.key)"
-              >
-                <a>删除</a>
-              </a-popconfirm>
-            </span>
-          </div>
-        </template>
-      </a-table>
-    </a-card>
+          <a-button> <a-icon type="upload" />批量上传</a-button>
+        </a-upload>
+        <a-table
+          :pagination="pagination"
+          :columns="columns"
+          :dataSource="data"
+          @change="handleTableChange"
+        >
+          <template
+            v-for="col in [
+              'name',
+              'studentId',
+              'grade',
+              'department',
+              'professional',
+              'class',
+              'courseName',
+              'courseTeacherName'
+            ]"
+            :slot="col"
+            slot-scope="text, record"
+          >
+            <div :key="col">
+              <a-input
+                v-if="record.editable"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChange(e.target.value, record.key, col)"
+              />
+              <template v-else>{{ text }}</template>
+            </div>
+          </template>
+          <template slot="operation" slot-scope="text, record">
+            <div class="editable-row-operations">
+              <span v-if="record.editable">
+                <a @click="() => save(record.key)" style="padding:10px">保存</a>
+                <a @click="() => cancel(record.key)">取消</a>
+              </span>
+              <span v-else>
+                <a @click="() => edit(record.key)" style="padding:10px">修改</a>
+                <a-popconfirm
+                  title="确定删除该条数据？?"
+                  @confirm="() => onDelete(record.key)"
+                >
+                  <a>删除</a>
+                </a-popconfirm>
+              </span>
+            </div>
+          </template>
+        </a-table>
+      </a-card>
+    </a-modal>
   </div>
 </template>
 
@@ -128,13 +150,40 @@ export default {
     return {
       data,
       columns,
+      visible: false,
+      confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 10, total: 10 }
+      pagination: { defaultPageSize: 5, total: 5 },
+      headers: {
+        Authorization: this.$store.state.token
+      }
     };
   },
   methods: {
+    //上传
+    handleChangeUpload(info) {
+      if (info.file.status !== "uploading") {
+        //console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        this.$message.success(`${info.file.name} 上传成功`);
+        this.reload();
+      } else if (info.file.status === "error") {
+        this.$message.error(`${info.file.name} 上传失败，请重试！`);
+      }
+    },
+    showModal() {
+      this.visible = true;
+    },
+    handleOk(e) {
+      this.confirmLoading = true;
+      //this.handleSubmit(e);
+    },
+    handleCancel(e) {
+      this.visible = false;
+    },
     handleTableChange(pagination, filters, sorter) {
-      this.getdata(pagination.current, 9);
+      this.getdata(pagination.current, 5);
     },
     //查询时提交数据
     handleSubmit(e) {
@@ -319,7 +368,7 @@ export default {
     }
   },
   mounted() {
-    this.getdata(1, 9);
+    this.getdata(1, 5);
   }
 };
 </script>

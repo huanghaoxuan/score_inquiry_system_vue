@@ -69,14 +69,15 @@
         <template slot="operation" slot-scope="text, record">
           <div class="editable-row-operations">
             <span v-if="record.editable">
-              <a @click="() => save(record.key)" style="padding:10px">保存</a>
-              <a @click="() => cancel(record.key)">取消</a>
+              <a @click="() => save(record.key)">保存</a>
+              <a @click="() => cancel(record.key)" style="padding:10px">取消</a>
             </span>
             <span v-else>
-              <a @click="() => edit(record.key)" style="padding:10px">修改</a>
+              <a @click="() => edit(record.key)">修改</a>
               <a-popconfirm
                 title="确定删除该条数据？?"
                 @confirm="() => onDelete(record.key)"
+                style="padding:10px"
               >
                 <a>删除</a>
               </a-popconfirm>

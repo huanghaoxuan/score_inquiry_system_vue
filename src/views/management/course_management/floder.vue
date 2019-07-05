@@ -107,7 +107,7 @@ export default {
           {
             this.axios
               .post(
-                "/teacherInformation/insert",
+                "/course/insert",
                 this.qs.stringify({
                   classTeacher: this.$store.state.teacherid,
                   ...values,

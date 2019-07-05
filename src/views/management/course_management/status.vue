@@ -19,7 +19,11 @@
         :dataSource="data"
         @change="handleTableChange"
       >
-        <template v-for="col in ['name']" :slot="col" slot-scope="text, record">
+        <template
+          v-for="col in ['name', 'year', 'semester']"
+          :slot="col"
+          slot-scope="text, record"
+        >
           <div :key="col">
             <a-input
               v-if="record.editable"
@@ -132,7 +136,7 @@ export default {
       const target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
-        .get("/teacherInformation/delete/" + target.id, {
+        .get("/course/delete/" + target.id, {
           params: {},
           headers: {
             Authorization: this.$store.state.token,
@@ -179,7 +183,7 @@ export default {
       //console.log(target);
       this.axios
         .post(
-          "/teacherInformation/update",
+          "/course/update",
           this.qs.stringify({
             ...target
           }),
@@ -240,7 +244,7 @@ export default {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/teacherInformation/selectByPage",
+          "/course/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,

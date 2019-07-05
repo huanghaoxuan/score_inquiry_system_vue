@@ -1,10 +1,8 @@
 <template>
   <div>
-    <a-button style="margin: 0 20px 0 0" @click="showModal"
-      >添加单个信息</a-button
-    >
+    <a-button style="margin: 0 20px 0 0" @click="showModal">添加课程</a-button>
     <a-modal
-      title="正在新添加学生学籍信息"
+      title="正在新添加课程"
       :visible="visible"
       @ok="handleOk"
       okText="确认添加"
@@ -15,46 +13,63 @@
       @cancel="handleCancel"
     >
       <a-form :form="form" @submit="handleSubmit">
-        <a-form-item label="姓名">
+        <a-form-item
+          label="课程名"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input
             v-decorator="[
               'name',
-              { rules: [{ required: true, message: '姓名不能为空' }] }
+              { rules: [{ required: true, message: '课程名不能为空' }] }
             ]"
-            placeholder="请输入姓名"
+            placeholder="请输入课程名"
           />
         </a-form-item>
-        <a-form-item label="工号">
+        <a-form-item
+          label="学年"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input
             v-decorator="[
-              'teacherId',
-              { rules: [{ required: true, message: '工号不能为空' }] }
+              'year',
+              {
+                rules: [
+                  {
+                    pattern: /(^[\-0-9][0-9]*([0-9]+)?)$/,
+                    required: true,
+                    message:
+                      '学年输入有误（请输入数字）（若为  2018 — 2019 学年 请输入 2018）'
+                  }
+                ]
+              }
             ]"
-            placeholder="请输入工号"
+            placeholder="若为2018—2019学年请输入2018"
+            addonAfter="年"
           />
         </a-form-item>
-        <a-form-item label="所在学院">
-          <a-select v-decorator="['department']" placeholder="请输入现所在学院">
+
+        <a-form-item
+          label="学期"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <a-select
+            v-decorator="[
+              'semester',
+              { rules: [{ required: true, message: '学期不能为空' }] }
+            ]"
+            placeholder="请选择学期"
+          >
+            <a-select-option value="第一学期">
+              第一学期
+            </a-select-option>
+            <a-select-option value="第二学期">
+              第二学期
+            </a-select-option>
             <a-select-option value="">
               暂无
-            </a-select-option>
-            <a-select-option value="电子与计算机工程学院">
-              电子与计算机工程学院
-            </a-select-option>
-            <a-select-option value="建筑与艺术设计学院">
-              建筑与艺术设计学院
-            </a-select-option>
-            <a-select-option value="土木与交通工程学院">
-              土木与交通工程学院
-            </a-select-option>
-            <a-select-option value="机械与电气工程学院">
-              机械与电气工程学院
-            </a-select-option>
-            <a-select-option value="制药与化学工程学院">
-              制药与化学工程学院
-            </a-select-option>
-            <a-select-option value="经济管理学院">
-              经济管理学院
             </a-select-option>
           </a-select>
         </a-form-item>

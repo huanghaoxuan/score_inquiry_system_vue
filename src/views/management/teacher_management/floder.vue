@@ -1,10 +1,10 @@
 <template>
   <div>
     <a-button style="margin: 0 20px 0 0" @click="showModal"
-      >添加单个信息</a-button
+      >添加教师信息</a-button
     >
     <a-modal
-      title="正在新添加学生学籍信息"
+      title="正在新添加教师信息"
       :visible="visible"
       @ok="handleOk"
       okText="确认添加"
@@ -15,7 +15,11 @@
       @cancel="handleCancel"
     >
       <a-form :form="form" @submit="handleSubmit">
-        <a-form-item label="姓名">
+        <a-form-item
+          label="姓名"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input
             v-decorator="[
               'name',
@@ -24,7 +28,11 @@
             placeholder="请输入姓名"
           />
         </a-form-item>
-        <a-form-item label="工号">
+        <a-form-item
+          label="工号"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input
             v-decorator="[
               'teacherId',
@@ -33,7 +41,11 @@
             placeholder="请输入工号"
           />
         </a-form-item>
-        <a-form-item label="所在学院">
+        <a-form-item
+          label="所在学院"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-select v-decorator="['department']" placeholder="请输入现所在学院">
             <a-select-option value="">
               暂无

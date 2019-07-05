@@ -1,6 +1,6 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
-    <a-card title="学生学籍管理">
+    <a-card title="教师信息管理">
       <floder slot="extra"></floder>
       <a-form layout="inline" :form="form" @submit="handleSubmit">
         <a-form-item label="姓名">

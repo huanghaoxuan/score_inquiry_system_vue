@@ -24,7 +24,11 @@
       @cancel="handleCancel"
     >
       <a-form :form="form" @submit="handleSubmit">
-        <a-form-item label="姓名">
+        <a-form-item
+          label="姓名"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input
             v-decorator="[
               'name',
@@ -33,7 +37,11 @@
             placeholder="请输入姓名"
           />
         </a-form-item>
-        <a-form-item label="学号">
+        <a-form-item
+          label="学号"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input
             v-decorator="[
               'studentId',
@@ -42,7 +50,11 @@
             placeholder="请输入学号"
           />
         </a-form-item>
-        <a-form-item label="原所在学院">
+        <a-form-item
+          label="原所在学院"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-select
             v-decorator="['departmentOld']"
             placeholder="请输入原所在学院"
@@ -70,13 +82,25 @@
             </a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="原所在年级">
+        <a-form-item
+          label="原所在年级"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input v-decorator="['gradeOld']" placeholder="请输入原所在年级" />
         </a-form-item>
-        <a-form-item label="原所在班级">
+        <a-form-item
+          label="原所在班级"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input v-decorator="['classOld']" placeholder="请输入原所在班级" />
         </a-form-item>
-        <a-form-item label="现所在学院">
+        <a-form-item
+          label="现所在学院"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-select
             v-decorator="['departmentNew']"
             placeholder="请输入现所在学院"
@@ -104,10 +128,18 @@
             </a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="现所在年级">
+        <a-form-item
+          label="现所在年级"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input v-decorator="['gradeNew']" placeholder="请输入现所在年级" />
         </a-form-item>
-        <a-form-item label="现所在班级">
+        <a-form-item
+          label="现所在班级"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
           <a-input v-decorator="['classOld']" placeholder="请输入现所在班级" />
         </a-form-item>
       </a-form>

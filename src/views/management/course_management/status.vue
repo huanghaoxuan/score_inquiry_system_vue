@@ -57,16 +57,30 @@ import floder from "./floder.vue";
 const columns = [
   {
     title: "课程名",
-    width: "33%",
+    width: "25%",
     dataIndex: "name",
     key: "1",
     scopedSlots: { customRender: "name" }
   },
   {
+    title: "学年（若显示为2019，即为2019-2020学年）",
+    width: "25%",
+    dataIndex: "year",
+    key: "2",
+    scopedSlots: { customRender: "year" }
+  },
+  {
+    title: "学期",
+    width: "25%",
+    dataIndex: "semester",
+    key: "3",
+    scopedSlots: { customRender: "semester" }
+  },
+  {
     title: "操作",
     dataIndex: "operation",
-    key: "2",
-    width: "33%",
+    key: "4",
+    width: "25%",
     scopedSlots: { customRender: "operation" }
   }
 ];

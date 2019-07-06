@@ -29,11 +29,6 @@ export default new Router({
           name: "course_management",
           component: () =>
             import("./views/management/course_management/status.vue")
-        },
-        {
-          path: "/management/classes_management",
-          name: "classes_management",
-          component: () => import("./views/management/classes_management.vue")
         }
       ]
     },

@@ -13,12 +13,27 @@
       @cancel="handleCancel"
     >
       <a-card title="课程管理">
+        <a-tooltip placement="left" slot="extra">
+          <template slot="title">
+            <span>
+              1、该按钮用于教学班信息批量上传<br />
+              2、仅接受xls、xlsx为后缀的表格文件<br />
+              3、当上传的表格中的课程名与当前所在的课程名不相同时，将不进行该行数据的导入
+            </span>
+          </template>
+          <a-icon type="question-circle" style="fontSize:17px;padding:10px" />
+        </a-tooltip>
         <a-upload
           name="file"
           :multiple="true"
           action="/api/teachingClass/upload"
+          :data="{
+            courseId: this.courseData.id,
+            courseName: this.courseData.name
+          }"
           :headers="headers"
           @change="handleChangeUpload"
+          accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           slot="extra"
         >
           <a-button> <a-icon type="upload" />批量上传</a-button>
@@ -31,13 +46,8 @@
         >
           <template
             v-for="col in [
-              'name',
-              'studentId',
-              'grade',
-              'department',
-              'professional',
-              'class',
               'courseName',
+              'teachingClassId',
               'courseTeacherName'
             ]"
             :slot="col"
@@ -53,7 +63,12 @@
               <template v-else>{{ text }}</template>
             </div>
           </template>
-          <template slot="operation" slot-scope="text, record">
+          <template slot="operation1" slot-scope="text, record">
+            <div class="editable-row-operations">
+              <student :courseData="data[record.key]"></student>
+            </div>
+          </template>
+          <template slot="operation2" slot-scope="text, record">
             <div class="editable-row-operations">
               <span v-if="record.editable">
                 <a @click="() => save(record.key)" style="padding:10px">保存</a>
@@ -77,74 +92,50 @@
 </template>
 
 <script>
+import student from "./student.vue";
 const columns = [
-  {
-    title: "姓名",
-    width: "11%",
-    dataIndex: "name",
-    key: "1",
-    scopedSlots: { customRender: "name" }
-  },
-  {
-    title: "学号",
-    dataIndex: "studentId",
-    key: "2",
-    width: "11%",
-    scopedSlots: { customRender: "studentId" }
-  },
-  {
-    title: "所在年级",
-    dataIndex: "grade",
-    key: "3",
-    width: "11%",
-    scopedSlots: { customRender: "grade" }
-  },
-  {
-    title: "所在学院",
-    dataIndex: "department",
-    key: "4",
-    width: "11%",
-    scopedSlots: { customRender: "department" }
-  },
-  {
-    title: "所在专业",
-    dataIndex: "professional",
-    key: "5",
-    width: "11%",
-    scopedSlots: { customRender: "professional" }
-  },
-  {
-    title: "所在班级",
-    dataIndex: "class",
-    key: "6",
-    width: "11%",
-    scopedSlots: { customRender: "class" }
-  },
   {
     title: "课程名称",
     dataIndex: "courseName",
-    key: "7",
-    width: "11%",
-    scopedSlots: { customRender: "courseName" }
+    key: "1",
+    width: "20%"
+  },
+  {
+    title: "教学班号",
+    dataIndex: "teachingClassId",
+    key: "2",
+    width: "20%",
+    scopedSlots: { customRender: "teachingClassId" }
   },
   {
     title: "任课老师名字",
     dataIndex: "courseTeacherName",
-    key: "8",
-    width: "11%",
+    key: "3",
+    width: "20%",
     scopedSlots: { customRender: "courseTeacherName" }
   },
   {
+    title: "学生管理",
+    dataIndex: "operation1",
+    key: "4",
+    width: "20%",
+    scopedSlots: { customRender: "operation1" }
+  },
+  {
     title: "操作",
-    dataIndex: "operation",
-    key: "9",
-    width: "11%",
-    scopedSlots: { customRender: "operation" }
+    dataIndex: "operation2",
+    key: "5",
+    width: "20%",
+    scopedSlots: { customRender: "operation2" }
   }
 ];
 const data = [];
 export default {
   inject: ["reload"],
+  components: { student },
+  props: {
+    courseData: {}
+  },
   data() {
     this.cacheData = data.map(item => ({ ...item }));
     return {
@@ -167,7 +158,7 @@ export default {
       }
       if (info.file.status === "done") {
         this.$message.success(`${info.file.name} 上传成功`);
-        this.reload();
+        this.getdata(1, 5);
       } else if (info.file.status === "error") {
         this.$message.error(`${info.file.name} 上传失败，请重试！`);
       }
@@ -176,7 +167,8 @@ export default {
       this.visible = true;
     },
     handleOk(e) {
-      this.confirmLoading = true;
+      this.visible = false;
+      //this.confirmLoading = true;
       //this.handleSubmit(e);
     },
     handleCancel(e) {
@@ -216,7 +208,7 @@ export default {
       const target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
-        .get("/teachingClass/delete/" + target.id, {
+        .get("/teachingClassInformation/delete/" + target.id, {
           params: {},
           headers: {
             Authorization: this.$store.state.token,
@@ -263,7 +255,7 @@ export default {
       //console.log(target);
       this.axios
         .post(
-          "/teachingClass/update",
+          "/teachingClassInformation/update",
           this.qs.stringify({
             ...target
           }),
@@ -324,10 +316,11 @@ export default {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/teachingClass/selectByPage",
+          "/teachingClassInformation/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
+            courseId: this.courseData.id,
             ...formData
           }),
           {

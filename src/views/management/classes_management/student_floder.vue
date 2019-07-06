@@ -46,13 +46,7 @@
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-select
-            v-decorator="[
-              'department',
-              { rules: [{ required: true, message: '所在学院不能为空' }] }
-            ]"
-            placeholder="请输入所在学院"
-          >
+          <a-select v-decorator="['department']" placeholder="请输入所在学院">
             <a-select-option value="">
               学院不参与筛选
             </a-select-option>
@@ -82,10 +76,7 @@
           :wrapper-col="{ span: 10 }"
         >
           <a-input
-            v-decorator="[
-              'professional',
-              { rules: [{ required: true, message: '所在专业不能为空' }] }
-            ]"
+            v-decorator="['professional']"
             placeholder="请输入所在专业"
           />
         </a-form-item>
@@ -94,13 +85,7 @@
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-input
-            v-decorator="[
-              'class',
-              { rules: [{ required: true, message: '所在班级不能为空' }] }
-            ]"
-            placeholder="请输入所在班级"
-          />
+          <a-input v-decorator="['class']" placeholder="请输入所在班级" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -131,7 +116,7 @@ export default {
       }
       if (info.file.status === "done") {
         this.$message.success(`${info.file.name} 上传成功`);
-        this.reload();
+        this.$emit("getdata", 1, 5);
       } else if (info.file.status === "error") {
         this.$message.error(`${info.file.name} 上传失败，请重试！`);
       }
@@ -171,7 +156,7 @@ export default {
                   //console.log(res.data);
                   //每条数据需要一个唯一的key值
                   this.visible = false;
-                  this.reload();
+                  this.$emit("getdata", 1, 5);
                 }.bind(this)
               )
               .catch(

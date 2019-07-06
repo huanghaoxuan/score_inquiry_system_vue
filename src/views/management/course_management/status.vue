@@ -1,7 +1,7 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
     <a-card title="课程管理">
-      <floder slot="extra"></floder>
+      <floder slot="extra" @getdata="getdata"></floder>
       <a-form layout="inline" :form="form" @submit="handleSubmit">
         <a-form-item label="课程名">
           <a-input v-decorator="['name']" placeholder="请输入课程名" />

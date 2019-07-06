@@ -13,7 +13,11 @@
       @cancel="handleCancel"
     >
       <a-card title="课程管理">
-        <floder slot="extra" :courseData="this.courseData"></floder>
+        <floder
+          slot="extra"
+          :courseData="this.courseData"
+          @getdata="getdata"
+        ></floder>
         <a-table
           :pagination="pagination"
           :columns="columns"

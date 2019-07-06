@@ -120,7 +120,7 @@ export default {
                   //console.log(res.data);
                   //每条数据需要一个唯一的key值
                   this.visible = false;
-                  this.reload();
+                  this.$emit("getdata", 1, 9);
                 }.bind(this)
               )
               .catch(

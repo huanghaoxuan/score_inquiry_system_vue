@@ -94,7 +94,7 @@ export default {
       }
       if (info.file.status === "done") {
         this.$message.success(`${info.file.name} 上传成功`);
-        this.reload();
+        this.$emit("getdata", 1, 5);
       } else if (info.file.status === "error") {
         this.$message.error(`${info.file.name} 上传失败，请重试！`);
       }
@@ -135,7 +135,7 @@ export default {
                   //console.log(res.data);
                   //每条数据需要一个唯一的key值
                   this.visible = false;
-                  this.reload();
+                  this.$emit("getdata", 1, 5);
                 }.bind(this)
               )
               .catch(

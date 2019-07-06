@@ -16,6 +16,7 @@
         <floder
           slot="extra"
           :teachingClassInformationData="this.teachingClassInformationData"
+          @getdata="getdata"
         ></floder>
         <a-form layout="inline" :form="form" @submit="handleSubmit">
           <a-form-item label="名字">

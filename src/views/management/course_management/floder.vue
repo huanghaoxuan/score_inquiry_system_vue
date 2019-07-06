@@ -109,9 +109,7 @@ export default {
               .post(
                 "/course/insert",
                 this.qs.stringify({
-                  classTeacher: this.$store.state.teacherid,
-                  ...values,
-                  status: "未审核"
+                  ...values
                 }),
                 {
                   headers: {

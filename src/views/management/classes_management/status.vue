@@ -13,31 +13,7 @@
       @cancel="handleCancel"
     >
       <a-card title="课程管理">
-        <a-tooltip placement="left" slot="extra">
-          <template slot="title">
-            <span>
-              1、该按钮用于教学班信息批量上传<br />
-              2、仅接受xls、xlsx为后缀的表格文件<br />
-              3、当上传的表格中的课程名与当前所在的课程名不相同时，将不进行该行数据的导入
-            </span>
-          </template>
-          <a-icon type="question-circle" style="fontSize:17px;padding:10px" />
-        </a-tooltip>
-        <a-upload
-          name="file"
-          :multiple="true"
-          action="/api/teachingClass/upload"
-          :data="{
-            courseId: this.courseData.id,
-            courseName: this.courseData.name
-          }"
-          :headers="headers"
-          @change="handleChangeUpload"
-          accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          slot="extra"
-        >
-          <a-button> <a-icon type="upload" />批量上传</a-button>
-        </a-upload>
+        <floder slot="extra" :courseData="this.courseData"></floder>
         <a-table
           :pagination="pagination"
           :columns="columns"
@@ -93,6 +69,7 @@
 
 <script>
 import student from "./student.vue";
+import floder from "./floder.vue";
 const columns = [
   {
     title: "课程名称",
@@ -132,7 +109,7 @@ const columns = [
 const data = [];
 export default {
   inject: ["reload"],
-  components: { student },
+  components: { student, floder },
   props: {
     courseData: {}
   },
@@ -144,25 +121,10 @@ export default {
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 5, total: 5 },
-      headers: {
-        Authorization: this.$store.state.token
-      }
+      pagination: { defaultPageSize: 5, total: 5 }
     };
   },
   methods: {
-    //上传
-    handleChangeUpload(info) {
-      if (info.file.status !== "uploading") {
-        //console.log(info.file, info.fileList);
-      }
-      if (info.file.status === "done") {
-        this.$message.success(`${info.file.name} 上传成功`);
-        this.getdata(1, 5);
-      } else if (info.file.status === "error") {
-        this.$message.error(`${info.file.name} 上传失败，请重试！`);
-      }
-    },
     showModal() {
       this.visible = true;
     },
@@ -277,7 +239,7 @@ export default {
               });
             } else if (res.data.status == 0) {
               this.$notification.warning({
-                message: "数据未进行修改，请检查数据正确性！"
+                message: "数据未进行修改或修改有误，请检查数据正确性！"
               });
             } else {
               this.$notification.error({

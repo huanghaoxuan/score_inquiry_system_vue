@@ -1,10 +1,34 @@
 <template>
   <div>
     <a-button style="margin: 0 20px 0 0" @click="showModal"
-      >添加教师信息</a-button
+      >添加单个信息</a-button
     >
+    <a-tooltip placement="left">
+      <template slot="title">
+        <span>
+          1、该按钮用于教学班信息批量上传<br />
+          2、仅接受xls、xlsx为后缀的表格文件<br />
+          3、当上传的表格中的课程名与当前所在的课程名不相同时，将不进行该行数据的导入
+        </span>
+      </template>
+      <a-icon type="question-circle" style="fontSize:17px;padding:10px" />
+    </a-tooltip>
+    <a-upload
+      name="file"
+      :multiple="true"
+      action="/api/teachingClass/upload"
+      :data="{
+        courseId: this.courseData.id,
+        courseName: this.courseData.name
+      }"
+      accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      :headers="headers"
+      @change="handleChangeUpload"
+    >
+      <a-button> <a-icon type="upload" />批量上传</a-button>
+    </a-upload>
     <a-modal
-      title="正在新添加教师信息"
+      title="正在新添加学生学籍信息"
       :visible="visible"
       @ok="handleOk"
       okText="确认添加"
@@ -16,59 +40,30 @@
     >
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item
-          label="姓名"
+          label="教学班号"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
           <a-input
             v-decorator="[
-              'name',
-              { rules: [{ required: true, message: '姓名不能为空' }] }
+              'teachingClassId',
+              { rules: [{ required: true, message: '教学班号不能为空' }] }
             ]"
-            placeholder="请输入姓名"
+            placeholder="请输入教学班号"
           />
         </a-form-item>
         <a-form-item
-          label="工号"
+          label="任课老师名字"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
           <a-input
             v-decorator="[
-              'teacherId',
-              { rules: [{ required: true, message: '工号不能为空' }] }
+              'courseTeacherName',
+              { rules: [{ required: true, message: '任课老师名字不能为空' }] }
             ]"
-            placeholder="请输入工号"
+            placeholder="请输入任课老师名字"
           />
-        </a-form-item>
-        <a-form-item
-          label="所在学院"
-          :label-col="{ span: 9 }"
-          :wrapper-col="{ span: 10 }"
-        >
-          <a-select v-decorator="['department']" placeholder="请输入现所在学院">
-            <a-select-option value="">
-              暂无
-            </a-select-option>
-            <a-select-option value="电子与计算机工程学院">
-              电子与计算机工程学院
-            </a-select-option>
-            <a-select-option value="建筑与艺术设计学院">
-              建筑与艺术设计学院
-            </a-select-option>
-            <a-select-option value="土木与交通工程学院">
-              土木与交通工程学院
-            </a-select-option>
-            <a-select-option value="机械与电气工程学院">
-              机械与电气工程学院
-            </a-select-option>
-            <a-select-option value="制药与化学工程学院">
-              制药与化学工程学院
-            </a-select-option>
-            <a-select-option value="经济管理学院">
-              经济管理学院
-            </a-select-option>
-          </a-select>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -78,14 +73,32 @@
 <script>
 export default {
   inject: ["reload"],
+  props: {
+    courseData: {}
+  },
   data() {
     return {
       visible: false,
       confirmLoading: false,
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      headers: {
+        Authorization: this.$store.state.token
+      }
     };
   },
   methods: {
+    //上传
+    handleChangeUpload(info) {
+      if (info.file.status !== "uploading") {
+        //console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        this.$message.success(`${info.file.name} 上传成功`);
+        this.reload();
+      } else if (info.file.status === "error") {
+        this.$message.error(`${info.file.name} 上传失败，请重试！`);
+      }
+    },
     showModal() {
       this.visible = true;
     },
@@ -104,8 +117,10 @@ export default {
           {
             this.axios
               .post(
-                "/teacherInformation/insert",
+                "/teachingClassInformation/insert",
                 this.qs.stringify({
+                  courseId: this.courseData.id,
+                  courseName: this.courseData.name,
                   ...values
                 }),
                 {

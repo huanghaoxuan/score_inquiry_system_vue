@@ -13,6 +13,51 @@
       @cancel="handleCancel"
     >
       <a-card title="学生管理">
+        <a-form layout="inline" :form="form" @submit="handleSubmit">
+          <a-form-item label="名字">
+            <a-input v-decorator="['name']" placeholder="请输入名字" />
+          </a-form-item>
+          <a-form-item label="学号">
+            <a-input v-decorator="['studentId']" placeholder="请输入学号" />
+          </a-form-item>
+          <a-form-item label="所在学院">
+            <a-select
+              v-decorator="['department']"
+              placeholder="请输入所在学院"
+              style="width: 200px"
+            >
+              <a-select-option value="">
+                学院不参与筛选
+              </a-select-option>
+              <a-select-option value="电子与计算机工程学院">
+                电子与计算机工程学院
+              </a-select-option>
+              <a-select-option value="建筑与艺术设计学院">
+                建筑与艺术设计学院
+              </a-select-option>
+              <a-select-option value="土木与交通工程学院">
+                土木与交通工程学院
+              </a-select-option>
+              <a-select-option value="机械与电气工程学院">
+                机械与电气工程学院
+              </a-select-option>
+              <a-select-option value="制药与化学工程学院">
+                制药与化学工程学院
+              </a-select-option>
+              <a-select-option value="经济管理学院">
+                经济管理学院
+              </a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="专业">
+            <a-input v-decorator="['professional']" placeholder="请输入专业" />
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" html-type="submit">
+              查询
+            </a-button>
+          </a-form-item>
+        </a-form>
         <a-table
           :pagination="pagination"
           :columns="columns"
@@ -255,7 +300,7 @@ export default {
               });
             } else if (res.data.status == 0) {
               this.$notification.warning({
-                message: "数据未进行修改，请检查数据正确性！"
+                message: "数据未进行修改或修改有误，请检查数据正确性！"
               });
             } else {
               this.$notification.error({

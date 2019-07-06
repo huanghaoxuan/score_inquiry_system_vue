@@ -7,6 +7,7 @@
       name="file"
       :multiple="true"
       action="/api/studentInformation/upload"
+      accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       :headers="headers"
       @change="handleChangeUpload"
     >
@@ -193,9 +194,7 @@ export default {
               .post(
                 "/studentInformation/insert",
                 this.qs.stringify({
-                  classTeacher: this.$store.state.teacherid,
-                  ...values,
-                  status: "未审核"
+                  ...values
                 }),
                 {
                   headers: {

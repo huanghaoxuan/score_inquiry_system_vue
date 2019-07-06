@@ -260,7 +260,7 @@ export default {
               });
             } else if (res.data.status == 0) {
               this.$notification.warning({
-                message: "数据未进行修改，请检查数据正确性！"
+                message: "数据未进行修改或修改有误，请检查数据正确性！"
               });
             } else {
               this.$notification.error({

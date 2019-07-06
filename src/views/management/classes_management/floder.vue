@@ -28,7 +28,7 @@
       <a-button> <a-icon type="upload" />批量上传</a-button>
     </a-upload>
     <a-modal
-      title="正在新添加学生学籍信息"
+      title="正在新添加教学班信息"
       :visible="visible"
       @ok="handleOk"
       okText="确认添加"

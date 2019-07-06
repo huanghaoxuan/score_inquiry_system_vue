@@ -13,6 +13,10 @@
       @cancel="handleCancel"
     >
       <a-card title="学生管理">
+        <floder
+          slot="extra"
+          :teachingClassInformationData="this.teachingClassInformationData"
+        ></floder>
         <a-form layout="inline" :form="form" @submit="handleSubmit">
           <a-form-item label="名字">
             <a-input v-decorator="['name']" placeholder="请输入名字" />
@@ -109,27 +113,28 @@
 </template>
 
 <script>
+import floder from "./student_floder.vue";
 const columns = [
   {
     title: "名字",
     dataIndex: "name",
     key: "1",
     width: "16%",
-    scopedSlots: { customRender: "teachingClassId" }
+    scopedSlots: { customRender: "name" }
   },
   {
     title: "学号",
     dataIndex: "studentId",
     key: "2",
     width: "16%",
-    scopedSlots: { customRender: "teachingClassId" }
+    scopedSlots: { customRender: "studentId" }
   },
   {
     title: "学院",
     dataIndex: "department",
     key: "3",
     width: "16%",
-    scopedSlots: { customRender: "courseTeacherName" }
+    scopedSlots: { customRender: "department" }
   },
   {
     title: "专业",
@@ -156,8 +161,9 @@ const columns = [
 const data = [];
 export default {
   inject: ["reload"],
+  components: { floder },
   props: {
-    courseData: {}
+    teachingClassInformationData: {}
   },
   data() {
     this.cacheData = data.map(item => ({ ...item }));
@@ -343,7 +349,7 @@ export default {
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
-            teachingClassId: this.courseData.teachingClassId,
+            teachingClassId: this.teachingClassInformationData.teachingClassId,
             ...formData
           }),
           {

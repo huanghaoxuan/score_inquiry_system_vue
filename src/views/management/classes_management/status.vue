@@ -41,7 +41,9 @@
           </template>
           <template slot="operation1" slot-scope="text, record">
             <div class="editable-row-operations">
-              <student :courseData="data[record.key]"></student>
+              <student
+                :teachingClassInformationData="data[record.key]"
+              ></student>
             </div>
           </template>
           <template slot="operation2" slot-scope="text, record">

@@ -3,29 +3,8 @@
     <a-button style="margin: 0 20px 0 0" @click="showModal"
       >添加单个信息</a-button
     >
-    <a-tooltip placement="left">
-      <template slot="title">
-        <span>
-          1、该按钮用于学生学籍信息批量上传<br />
-          2、仅接受xls、xlsx为后缀的表格文件<br />
-          3、学生学号唯一，当有多个重复时，以第一个为准，若需修改，请手动修改<br />
-          4、该学号将作为学生登录凭证
-        </span>
-      </template>
-      <a-icon type="question-circle" style="fontSize:17px;padding:10px" />
-    </a-tooltip>
-    <a-upload
-      name="file"
-      :multiple="true"
-      action="/api/studentInformation/upload"
-      accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      :headers="headers"
-      @change="handleChangeUpload"
-    >
-      <a-button> <a-icon type="upload" />批量上传</a-button>
-    </a-upload>
     <a-modal
-      title="正在新添加学生学籍信息"
+      title="正在新添加教学班内学生信息"
       :visible="visible"
       @ok="handleOk"
       okText="确认添加"
@@ -63,16 +42,19 @@
           />
         </a-form-item>
         <a-form-item
-          label="原所在学院"
+          label="所在学院"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
           <a-select
-            v-decorator="['departmentOld']"
-            placeholder="请输入原所在学院"
+            v-decorator="[
+              'department',
+              { rules: [{ required: true, message: '所在学院不能为空' }] }
+            ]"
+            placeholder="请输入所在学院"
           >
             <a-select-option value="">
-              暂无
+              学院不参与筛选
             </a-select-option>
             <a-select-option value="电子与计算机工程学院">
               电子与计算机工程学院
@@ -95,64 +77,30 @@
           </a-select>
         </a-form-item>
         <a-form-item
-          label="原所在年级"
+          label="所在专业"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-input v-decorator="['gradeOld']" placeholder="请输入原所在年级" />
+          <a-input
+            v-decorator="[
+              'professional',
+              { rules: [{ required: true, message: '所在专业不能为空' }] }
+            ]"
+            placeholder="请输入所在专业"
+          />
         </a-form-item>
         <a-form-item
-          label="原所在班级"
+          label="所在班级"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-input v-decorator="['classOld']" placeholder="请输入原所在班级" />
-        </a-form-item>
-        <a-form-item
-          label="现所在学院"
-          :label-col="{ span: 9 }"
-          :wrapper-col="{ span: 10 }"
-        >
-          <a-select
-            v-decorator="['departmentNew']"
-            placeholder="请输入现所在学院"
-          >
-            <a-select-option value="">
-              暂无
-            </a-select-option>
-            <a-select-option value="电子与计算机工程学院">
-              电子与计算机工程学院
-            </a-select-option>
-            <a-select-option value="建筑与艺术设计学院">
-              建筑与艺术设计学院
-            </a-select-option>
-            <a-select-option value="土木与交通工程学院">
-              土木与交通工程学院
-            </a-select-option>
-            <a-select-option value="机械与电气工程学院">
-              机械与电气工程学院
-            </a-select-option>
-            <a-select-option value="制药与化学工程学院">
-              制药与化学工程学院
-            </a-select-option>
-            <a-select-option value="经济管理学院">
-              经济管理学院
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-          label="现所在年级"
-          :label-col="{ span: 9 }"
-          :wrapper-col="{ span: 10 }"
-        >
-          <a-input v-decorator="['gradeNew']" placeholder="请输入现所在年级" />
-        </a-form-item>
-        <a-form-item
-          label="现所在班级"
-          :label-col="{ span: 9 }"
-          :wrapper-col="{ span: 10 }"
-        >
-          <a-input v-decorator="['classNew']" placeholder="请输入现所在班级" />
+          <a-input
+            v-decorator="[
+              'class',
+              { rules: [{ required: true, message: '所在班级不能为空' }] }
+            ]"
+            placeholder="请输入所在班级"
+          />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -162,6 +110,9 @@
 <script>
 export default {
   inject: ["reload"],
+  props: {
+    teachingClassInformationData: {}
+  },
   data() {
     return {
       visible: false,
@@ -198,13 +149,14 @@ export default {
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
+        console.log(this.teachingClassInformationData);
         if (!err) {
-          //console.log(values);
           {
             this.axios
               .post(
-                "/studentInformation/insert",
+                "/teachingClass/insert",
                 this.qs.stringify({
+                  ...this.teachingClassInformationData,
                   ...values
                 }),
                 {

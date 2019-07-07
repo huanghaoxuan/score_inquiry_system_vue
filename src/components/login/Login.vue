@@ -117,7 +117,7 @@ export default {
             )
             .then(
               function(res) {
-                console.log(res);
+                //console.log(res);
                 if (res.data.status == 0) {
                   this.$notification.error({
                     message: "账号密码错误，请重新登录！"
@@ -196,7 +196,8 @@ export default {
   },
   mounted() {
     this.$store.commit("isLogin", false);
-    //console.log(this.$store.state.loginStatus);
+    this.$store.commit("setToken", "");
+    //console.log(this.$store.state.token);
   }
 };
 </script>

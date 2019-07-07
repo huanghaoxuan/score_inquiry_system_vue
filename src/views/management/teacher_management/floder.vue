@@ -35,7 +35,7 @@
         >
           <a-input
             v-decorator="[
-              'teacherId',
+              'studentId',
               { rules: [{ required: true, message: '工号不能为空' }] }
             ]"
             placeholder="请输入工号"

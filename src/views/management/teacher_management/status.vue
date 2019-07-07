@@ -7,7 +7,7 @@
           <a-input v-decorator="['name']" placeholder="请输入姓名" />
         </a-form-item>
         <a-form-item label="工号">
-          <a-input v-decorator="['teacherId']" placeholder="请输入工号" />
+          <a-input v-decorator="['studentId']" placeholder="请输入工号" />
         </a-form-item>
         <a-form-item label="所在学院">
           <a-select
@@ -52,7 +52,7 @@
         @change="handleTableChange"
       >
         <template
-          v-for="col in ['name', 'teacherId', 'department']"
+          v-for="col in ['name', 'studentId', 'department']"
           :slot="col"
           slot-scope="text, record"
         >
@@ -101,7 +101,7 @@ const columns = [
   },
   {
     title: "工号",
-    dataIndex: "teacherId",
+    dataIndex: "studentId",
     key: "2",
     width: "25%"
   },

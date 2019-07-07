@@ -7,6 +7,9 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     loginStatus: false,
+    name: "",
+    studentId: "",
+    permissions: 0,
     token: ""
   },
   mutations: {
@@ -15,6 +18,11 @@ export default new Vuex.Store({
     },
     setToken(state, token) {
       state.token = token;
+    },
+    setNameStudentId(state, data) {
+      state.name = data.name;
+      state.studentId = data.studentId;
+      state.permissions = data.permissions;
     }
   },
   actions: {},

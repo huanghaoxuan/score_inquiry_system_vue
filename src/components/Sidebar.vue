@@ -25,6 +25,19 @@
             >课程管理</a-menu-item
           >
         </a-sub-menu>
+        <a-sub-menu key="scores_input">
+          <span slot="title"> <a-icon type="user" /><span>成绩录入</span></span>
+          <a-menu-item
+            key="scores_input_stage"
+            @click="() => jump('/scores_input/stage')"
+            >阶段性成绩录入</a-menu-item
+          >
+          <a-menu-item
+            key="scores_input_final"
+            @click="() => jump('/scores_input/final')"
+            >期末成绩录入</a-menu-item
+          >
+        </a-sub-menu>
       </a-menu>
     </a-layout-sider>
     <a-layout>

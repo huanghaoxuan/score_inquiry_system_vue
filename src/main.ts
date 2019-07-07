@@ -27,7 +27,6 @@ router.beforeEach((to, from, next) => {
   if (store.state.loginStatus || to.path == "/login") {
     next();
   } else {
-
     next("/login");
 
     let allowBack = true; //    给个默认值true

@@ -1,153 +1,144 @@
 <template>
-  <div style="background:#ECECEC; padding:30px">
-    <a-card title="教师信息管理">
-      <floder slot="extra" @getdata="getdata"></floder>
-      <a-form layout="inline" :form="form" @submit="handleSubmit">
-        <a-form-item label="姓名">
-          <a-input v-decorator="['name']" placeholder="请输入姓名" />
-        </a-form-item>
-        <a-form-item label="工号">
-          <a-input v-decorator="['studentId']" placeholder="请输入工号" />
-        </a-form-item>
-        <a-form-item label="所在学院">
-          <a-select
-            v-decorator="['department']"
-            placeholder="请输入所在学院"
-            style="width: 200px"
-          >
-            <a-select-option value="">
-              学院不参与筛选
-            </a-select-option>
-            <a-select-option value="电子与计算机工程学院">
-              电子与计算机工程学院
-            </a-select-option>
-            <a-select-option value="建筑与艺术设计学院">
-              建筑与艺术设计学院
-            </a-select-option>
-            <a-select-option value="土木与交通工程学院">
-              土木与交通工程学院
-            </a-select-option>
-            <a-select-option value="机械与电气工程学院">
-              机械与电气工程学院
-            </a-select-option>
-            <a-select-option value="制药与化学工程学院">
-              制药与化学工程学院
-            </a-select-option>
-            <a-select-option value="经济管理学院">
-              经济管理学院
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item>
-          <a-button type="primary" html-type="submit">
-            查询
-          </a-button>
-        </a-form-item>
-      </a-form>
-      <br />
-      <a-table
-        :pagination="pagination"
-        :columns="columns"
-        :dataSource="data"
-        @change="handleTableChange"
-      >
-        <template
-          v-for="col in ['name', 'studentId', 'department']"
-          :slot="col"
-          slot-scope="text, record"
+  <div>
+    <a @click="showModal">阶段性成绩管理</a>
+    <a-modal
+      title="阶段性成绩管理"
+      :visible="visible"
+      @ok="handleOk"
+      okText="确认"
+      cancelText="取消"
+      :maskClosable="false"
+      :confirmLoading="confirmLoading"
+      width="70%"
+      @cancel="handleCancel"
+    >
+      <a-card title="阶段性成绩管理">
+        <a-table
+          :pagination="pagination"
+          :columns="columns"
+          :dataSource="data"
+          @change="handleTableChange"
         >
-          <div :key="col">
-            <a-input
-              v-if="record.editable"
-              style="margin: -5px 0"
-              :value="text"
-              @change="e => handleChange(e.target.value, record.key, col)"
-            />
-            <template v-else>{{ text }}</template>
-          </div>
-        </template>
-        <template slot="operation" slot-scope="text, record">
-          <div class="editable-row-operations">
-            <span v-if="record.editable">
-              <a @click="() => save(record.key)">
-                保存
-              </a>
-              <a @click="() => cancel(record.key)" style="padding:10px">取消</a>
-            </span>
-            <span v-else>
-              <a @click="() => edit(record.key)">修改</a>
-              <a-popconfirm
-                title="确定删除该条数据？?"
-                @confirm="() => onDelete(record.key)"
-                style="padding:10px"
-              >
-                <a>删除</a>
-              </a-popconfirm>
-            </span>
-          </div>
-        </template>
-      </a-table>
-    </a-card>
+          <template
+            v-for="col in ['name', 'teachingClassId', 'scoresId', 'scoresNote']"
+            :slot="col"
+            slot-scope="text, record"
+          >
+            <div :key="col">
+              <a-input
+                v-if="record.editable"
+                style="margin: -5px 0"
+                :value="text"
+                @change="e => handleChange(e.target.value, record.key, col)"
+              />
+              <template v-else>{{ text }}</template>
+            </div>
+          </template>
+          <template slot="operation1" slot-scope="text, record">
+            <div class="editable-row-operations">
+              <student
+                :teachingClassInformationData="data[record.key]"
+              ></student>
+            </div>
+          </template>
+          <template slot="operation" slot-scope="text, record">
+            <div class="editable-row-operations">
+              <span v-if="record.editable">
+                <a @click="() => save(record.key)">
+                  保存
+                </a>
+                <a @click="() => cancel(record.key)" style="padding:10px"
+                  >取消</a
+                >
+              </span>
+              <span v-else>
+                <a @click="() => edit(record.key)">修改</a>
+                <a-popconfirm
+                  title="确定删除该条数据？?"
+                  @confirm="() => onDelete(record.key)"
+                  style="padding:10px"
+                >
+                  <a>删除</a>
+                </a-popconfirm>
+              </span>
+            </div>
+          </template>
+        </a-table>
+      </a-card>
+    </a-modal>
   </div>
 </template>
 
 <script>
-import floder from "./floder.vue";
+import student from "./student.vue";
 const columns = [
   {
-    title: "姓名",
-    width: "25%",
+    title: "课程名",
     dataIndex: "name",
     key: "1",
-    scopedSlots: { customRender: "name" }
+    width: "15%"
   },
   {
-    title: "工号",
-    dataIndex: "studentId",
+    title: "教学班号",
+    dataIndex: "teachingClassId",
     key: "2",
-    width: "25%"
+    width: "15%"
   },
   {
-    title: "所在学院",
-    dataIndex: "department",
+    title: "阶段性测验序号",
+    dataIndex: "scoresId",
     key: "3",
-    width: "25%",
-    scopedSlots: { customRender: "department" }
+    width: "15%",
+    scopedSlots: { customRender: "scoresId" }
+  },
+  {
+    title: "阶段性测验描述",
+    dataIndex: "scoresNote",
+    key: "4",
+    width: "15%",
+    scopedSlots: { customRender: "scoresNote" }
+  },
+  {
+    title: "查看学生",
+    dataIndex: "operation1",
+    key: "5",
+    width: "15%",
+    scopedSlots: { customRender: "operation1" }
+  },
+  {
+    title: "录入成绩",
+    dataIndex: "input",
+    key: "6",
+    width: "15%",
+    scopedSlots: { customRender: "input" }
   },
   {
     title: "操作",
     dataIndex: "operation",
-    key: "4",
-    width: "25%",
+    key: "7",
+    width: "15%",
     scopedSlots: { customRender: "operation" }
   }
 ];
 const data = [];
 export default {
   inject: ["reload"],
-  components: { floder },
+  components: { student },
+  props: {
+    teachingClassInformationData: {}
+  },
   data() {
     this.cacheData = data.map(item => ({ ...item }));
     return {
       data,
       columns,
+      visible: false,
+      confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 10, total: 10 }
+      pagination: { defaultPageSize: 5, total: 5 }
     };
   },
   methods: {
-    handleTableChange(pagination, filters, sorter) {
-      this.getdata(pagination.current, 9);
-    },
-    //查询时提交数据
-    handleSubmit(e) {
-      e.preventDefault();
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          this.getdata(1, 9);
-        }
-      });
-    },
     handleChange(value, key, column) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
@@ -274,14 +265,38 @@ export default {
         this.data = newData;
       }
     },
+    showModal() {
+      this.visible = true;
+    },
+    handleOk(e) {
+      this.visible = false;
+      //this.confirmLoading = true;
+      //this.handleSubmit(e);
+    },
+    handleCancel(e) {
+      this.visible = false;
+    },
+    handleTableChange(pagination, filters, sorter) {
+      this.getdata(pagination.current, 5);
+    },
+    //查询时提交数据
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.getdata(1, 9);
+        }
+      });
+    },
     getdata(pageNum, pageSize) {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/teacherInformation/selectByPage",
+          "/teachingClass/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
+            teachingClassId: this.teachingClassInformationData.teachingClassId,
             ...formData
           }),
           {
@@ -322,7 +337,7 @@ export default {
     }
   },
   mounted() {
-    this.getdata(1, 9);
+    this.getdata(1, 5);
   }
 };
 </script>

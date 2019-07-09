@@ -12,6 +12,11 @@
             <student :teachingClassInformationData="data[record.key]"></student>
           </div>
         </template>
+        <template slot="operation2" slot-scope="text, record">
+          <div class="editable-row-operations">
+            <scores :teachingClassInformationData="data[record.key]"></scores>
+          </div>
+        </template>
       </a-table>
     </a-card>
   </div>
@@ -19,6 +24,7 @@
 
 <script>
 import student from "./student.vue";
+import scores from "./scores.vue";
 const columns = [
   {
     title: "课程名称",
@@ -46,7 +52,7 @@ const columns = [
     scopedSlots: { customRender: "operation1" }
   },
   {
-    title: "操作",
+    title: "管理",
     dataIndex: "operation2",
     key: "5",
     width: "20%",
@@ -56,7 +62,7 @@ const columns = [
 const data = [];
 export default {
   inject: ["reload"],
-  components: { student },
+  components: { student, scores },
   props: {
     courseData: {}
   },

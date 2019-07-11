@@ -13,6 +13,11 @@
       @cancel="handleCancel"
     >
       <a-card title="阶段性成绩管理">
+        <floder
+          slot="extra"
+          @getdata="getdata"
+          :teachingClassInformationData="this.teachingClassInformationData"
+        ></floder>
         <a-table
           :pagination="pagination"
           :columns="columns"
@@ -71,6 +76,7 @@
 
 <script>
 import student from "./student.vue";
+import floder from "./scores_floder.vue";
 const columns = [
   {
     title: "课程名",
@@ -120,12 +126,12 @@ const columns = [
     scopedSlots: { customRender: "operation" }
   }
 ];
-const data = [];
+var data = [];
 export default {
   inject: ["reload"],
-  components: { student },
+  components: { student, floder },
   props: {
-    teachingClassInformationData: {}
+    teachingClassInformationData: null
   },
   data() {
     this.cacheData = data.map(item => ({ ...item }));
@@ -161,7 +167,7 @@ export default {
       const target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
-        .get("/teacherInformation/delete/" + target.id, {
+        .get("/sourceStageInformation/delete/" + target.id, {
           params: {},
           headers: {
             Authorization: this.$store.state.token,
@@ -208,7 +214,7 @@ export default {
       //console.log(target);
       this.axios
         .post(
-          "/teacherInformation/update",
+          "/sourceStageInformation/update",
           this.qs.stringify({
             ...target
           }),
@@ -284,7 +290,7 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.getdata(1, 9);
+          this.getdata(1, 5);
         }
       });
     },
@@ -292,7 +298,7 @@ export default {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/teachingClass/selectByPage",
+          "/sourceStageInformation/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,

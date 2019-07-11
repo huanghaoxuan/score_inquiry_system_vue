@@ -4,7 +4,7 @@
       >添加单个信息</a-button
     >
     <a-modal
-      title="正在新添加教学班内学生信息"
+      title="正在新添加阶段性测验信息"
       :visible="visible"
       @ok="handleOk"
       okText="确认添加"
@@ -16,76 +16,32 @@
     >
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item
-          label="姓名"
+          label="阶段性测验排序号"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
           <a-input
             v-decorator="[
-              'name',
-              { rules: [{ required: true, message: '姓名不能为空' }] }
+              'scoresId',
+              {
+                rules: [{ required: true, message: '阶段性测验排序号不能为空' }]
+              }
             ]"
-            placeholder="请输入姓名"
+            placeholder="请输入阶段性测验排序号"
           />
         </a-form-item>
         <a-form-item
-          label="学号"
+          label="阶段性测验描述"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
           <a-input
             v-decorator="[
-              'studentId',
-              { rules: [{ required: true, message: '学号不能为空' }] }
+              'scoresNote',
+              { rules: [{ required: true, message: '阶段性测验描述不能为空' }] }
             ]"
-            placeholder="请输入学号"
+            placeholder="请输入阶段性测验描述"
           />
-        </a-form-item>
-        <a-form-item
-          label="所在学院"
-          :label-col="{ span: 9 }"
-          :wrapper-col="{ span: 10 }"
-        >
-          <a-select v-decorator="['department']" placeholder="请输入所在学院">
-            <a-select-option value="">
-              学院不参与筛选
-            </a-select-option>
-            <a-select-option value="电子与计算机工程学院">
-              电子与计算机工程学院
-            </a-select-option>
-            <a-select-option value="建筑与艺术设计学院">
-              建筑与艺术设计学院
-            </a-select-option>
-            <a-select-option value="土木与交通工程学院">
-              土木与交通工程学院
-            </a-select-option>
-            <a-select-option value="机械与电气工程学院">
-              机械与电气工程学院
-            </a-select-option>
-            <a-select-option value="制药与化学工程学院">
-              制药与化学工程学院
-            </a-select-option>
-            <a-select-option value="经济管理学院">
-              经济管理学院
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-          label="所在专业"
-          :label-col="{ span: 9 }"
-          :wrapper-col="{ span: 10 }"
-        >
-          <a-input
-            v-decorator="['professional']"
-            placeholder="请输入所在专业"
-          />
-        </a-form-item>
-        <a-form-item
-          label="所在班级"
-          :label-col="{ span: 9 }"
-          :wrapper-col="{ span: 10 }"
-        >
-          <a-input v-decorator="['class']" placeholder="请输入所在班级" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -96,7 +52,7 @@
 export default {
   inject: ["reload"],
   props: {
-    teachingClassInformationData: {}
+    teachingClassInformationData: null
   },
   data() {
     return {
@@ -119,14 +75,14 @@ export default {
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
-        console.log(this.teachingClassInformationData);
         if (!err) {
           {
             this.axios
               .post(
-                "/teachingClass/insert",
+                "/sourceStageInformation/insert",
                 this.qs.stringify({
                   ...this.teachingClassInformationData,
+                  name: this.teachingClassInformationData.courseName,
                   ...values
                 }),
                 {

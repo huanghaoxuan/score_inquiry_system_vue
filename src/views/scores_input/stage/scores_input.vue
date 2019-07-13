@@ -1,80 +1,20 @@
 <template>
   <div>
-    <a @click="showModal">阶段性成绩管理</a>
-    <a-modal
-      title="阶段性成绩管理"
-      :visible="visible"
-      @ok="handleOk"
-      okText="确认"
-      cancelText="取消"
-      :maskClosable="false"
-      :confirmLoading="confirmLoading"
-      width="70%"
-      @cancel="handleCancel"
-    >
+    <a @click="showModal">录入阶段性测验成绩</a>
+    <a-modal title="正在录入阶段性测验成绩"
+             :visible="visible"
+             @ok="handleOk"
+             okText="确认"
+             cancelText="取消"
+             :maskClosable="false"
+             :confirmLoading="confirmLoading"
+             width="70%"
+             @cancel="handleCancel">
       <a-card title="阶段性成绩管理">
-        <floder
-          slot="extra"
-          @getdata="getdata"
-          :teachingClassInformationData="this.teachingClassInformationData"
-        ></floder>
-        <a-table
-          :pagination="pagination"
-          :columns="columns"
-          :dataSource="data"
-          @change="handleTableChange"
-        >
-          <template
-            v-for="col in ['name', 'teachingClassId', 'scoresId', 'scoresNote']"
-            :slot="col"
-            slot-scope="text, record"
-          >
-            <div :key="col">
-              <a-input
-                v-if="record.editable"
-                style="margin: -5px 0"
-                :value="text"
-                @change="e => handleChange(e.target.value, record.key, col)"
-              />
-              <template v-else>{{ text }}</template>
-            </div>
-          </template>
-          <template slot="operation1" slot-scope="text, record">
-            <div class="editable-row-operations">
-              <student
-                :teachingClassInformationData="data[record.key]"
-              ></student>
-            </div>
-          </template>
-          <template slot="operation2" slot-scope="text, record">
-            <div class="editable-row-operations">
-              <scores_input
-                :teachingClassInformationData="data[record.key]"
-              ></scores_input>
-            </div>
-          </template>
-          <template slot="operation" slot-scope="text, record">
-            <div class="editable-row-operations">
-              <span v-if="record.editable">
-                <a @click="() => save(record.key)">
-                  保存
-                </a>
-                <a @click="() => cancel(record.key)" style="padding:10px"
-                  >取消</a
-                >
-              </span>
-              <span v-else>
-                <a @click="() => edit(record.key)">修改</a>
-                <a-popconfirm
-                  title="确定删除该条数据？?"
-                  @confirm="() => onDelete(record.key)"
-                  style="padding:10px"
-                >
-                  <a>删除</a>
-                </a-popconfirm>
-              </span>
-            </div>
-          </template>
+        <a-table :pagination="pagination"
+                 :columns="columns"
+                 :dataSource="data"
+                 @change="handleTableChange">
         </a-table>
       </a-card>
     </a-modal>
@@ -82,66 +22,35 @@
 </template>
 
 <script>
-import student from "./student.vue";
-import floder from "./scores_floder.vue";
-import scores_input from "./scores_input.vue";
 const columns = [
   {
-    title: "课程名",
+    title: "姓名",
     dataIndex: "name",
     key: "1",
-    width: "15%"
+    width: "33%"
   },
   {
-    title: "教学班号",
-    dataIndex: "teachingClassId",
-    key: "2",
-    width: "15%"
-  },
-  {
-    title: "阶段性测验序号",
-    dataIndex: "scoresId",
-    key: "3",
-    width: "15%",
-    scopedSlots: { customRender: "scoresId" }
-  },
-  {
-    title: "阶段性测验描述",
+    title: "成绩相关说明",
     dataIndex: "scoresNote",
-    key: "4",
-    width: "15%",
+    key: "2",
+    width: "33%",
     scopedSlots: { customRender: "scoresNote" }
   },
   {
-    title: "查看学生",
-    dataIndex: "operation1",
-    key: "5",
-    width: "15%",
-    scopedSlots: { customRender: "operation1" }
-  },
-  {
-    title: "录入成绩",
-    dataIndex: "operation2",
-    key: "6",
-    width: "15%",
-    scopedSlots: { customRender: "operation2" }
-  },
-  {
-    title: "操作",
-    dataIndex: "operation",
-    key: "7",
-    width: "15%",
-    scopedSlots: { customRender: "operation" }
+    title: "成绩",
+    dataIndex: "scores",
+    key: "3",
+    width: "33%",
+    scopedSlots: { customRender: "scores" }
   }
 ];
 var data = [];
 export default {
   inject: ["reload"],
-  components: { student, floder, scores_input },
   props: {
     teachingClassInformationData: null
   },
-  data() {
+  data () {
     this.cacheData = data.map(item => ({ ...item }));
     return {
       data,
@@ -153,7 +62,7 @@ export default {
     };
   },
   methods: {
-    handleChange(value, key, column) {
+    handleChange (value, key, column) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
       if (target) {
@@ -162,7 +71,7 @@ export default {
       }
       //axios
     },
-    edit(key) {
+    edit (key) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
       if (target) {
@@ -170,7 +79,7 @@ export default {
         this.data = newData;
       }
     },
-    onDelete(key) {
+    onDelete (key) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
       //console.log(target);
@@ -183,7 +92,7 @@ export default {
           }
         })
         .then(
-          function(res) {
+          function (res) {
             //console.log(res.data);
             //每条数据需要一个唯一的key值
             if (res.data.status != 0) {
@@ -199,7 +108,7 @@ export default {
           }.bind(this)
         )
         .catch(
-          function(err) {
+          function (err) {
             if (err.response) {
               //console.log(err.response);
               //控制台打印错误返回的内容
@@ -216,7 +125,7 @@ export default {
           }.bind(this)
         );
     },
-    save(key) {
+    save (key) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
       //console.log(target);
@@ -234,7 +143,7 @@ export default {
           }
         )
         .then(
-          function(res) {
+          function (res) {
             if (res.data.status != 0) {
               delete target.editable;
               this.data = newData;
@@ -254,7 +163,7 @@ export default {
           }.bind(this)
         )
         .catch(
-          function(err) {
+          function (err) {
             if (err.response.status == 403) {
               //console.log(err.response);
               this.$notification.error({
@@ -267,7 +176,7 @@ export default {
           }.bind(this)
         );
     },
-    cancel(key) {
+    cancel (key) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
       if (target) {
@@ -279,23 +188,23 @@ export default {
         this.data = newData;
       }
     },
-    showModal() {
+    showModal () {
       this.getdata(1, 5);
       this.visible = true;
     },
-    handleOk(e) {
+    handleOk (e) {
       this.visible = false;
       //this.confirmLoading = true;
       //this.handleSubmit(e);
     },
-    handleCancel(e) {
+    handleCancel (e) {
       this.visible = false;
     },
-    handleTableChange(pagination, filters, sorter) {
+    handleTableChange (pagination, filters, sorter) {
       this.getdata(pagination.current, 5);
     },
     //查询时提交数据
-    handleSubmit(e) {
+    handleSubmit (e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
@@ -303,7 +212,7 @@ export default {
         }
       });
     },
-    getdata(pageNum, pageSize) {
+    getdata (pageNum, pageSize) {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
@@ -322,7 +231,7 @@ export default {
           }
         )
         .then(
-          function(res) {
+          function (res) {
             //console.log(res.data);
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
@@ -333,7 +242,7 @@ export default {
           }.bind(this)
         )
         .catch(
-          function(err) {
+          function (err) {
             if (err.response) {
               //console.log(err.response);
               //控制台打印错误返回的内容

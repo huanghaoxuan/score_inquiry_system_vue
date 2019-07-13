@@ -194,6 +194,7 @@ export default {
       }
     },
     showModal() {
+      this.getdata(1, 5);
       this.visible = true;
     },
     handleOk(e) {
@@ -389,9 +390,9 @@ export default {
           }.bind(this)
         );
     }
-  },
-  mounted() {
-    this.getdata(1, 5);
   }
+  // mounted() {
+  //   this.getdata(1, 5);
+  // }
 };
 </script>

@@ -83,6 +83,7 @@ export default {
                 this.qs.stringify({
                   ...this.teachingClassInformationData,
                   name: this.teachingClassInformationData.courseName,
+                  createdAt: null,
                   ...values
                 }),
                 {

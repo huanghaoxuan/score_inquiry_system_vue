@@ -1,20 +1,39 @@
 <template>
   <div>
     <a @click="showModal">录入阶段性测验成绩</a>
-    <a-modal title="正在录入阶段性测验成绩"
-             :visible="visible"
-             @ok="handleOk"
-             okText="确认"
-             cancelText="取消"
-             :maskClosable="false"
-             :confirmLoading="confirmLoading"
-             width="70%"
-             @cancel="handleCancel">
+    <a-modal
+      title="正在录入阶段性测验成绩"
+      :visible="visible"
+      @ok="handleOk"
+      okText="确认"
+      cancelText="取消"
+      :maskClosable="false"
+      :confirmLoading="confirmLoading"
+      width="50%"
+      @cancel="handleCancel"
+    >
       <a-card title="阶段性成绩管理">
-        <a-table :pagination="pagination"
-                 :columns="columns"
-                 :dataSource="data"
-                 @change="handleTableChange">
+        <a-button style="margin: 0 20px 0 0" @click="handleOk" slot="extra"
+          >确认添加</a-button
+        >
+        <a-table
+          :pagination="pagination"
+          :columns="columns"
+          :dataSource="data"
+          @change="handleTableChange"
+        >
+          <template slot="scoresNote" slot-scope="text, record">
+            <a-input
+              style="margin: -5px 0"
+              v-model="data[`${record.key}`].scoresNote"
+            />
+          </template>
+          <template slot="scores" slot-scope="text, record">
+            <a-input
+              style="margin: -5px 0"
+              v-model="data[`${record.key}`].scores"
+            />
+          </template>
         </a-table>
       </a-card>
     </a-modal>
@@ -48,9 +67,9 @@ var data = [];
 export default {
   inject: ["reload"],
   props: {
-    teachingClassInformationData: null
+    sourceStageData: null
   },
-  data () {
+  data() {
     this.cacheData = data.map(item => ({ ...item }));
     return {
       data,
@@ -62,7 +81,7 @@ export default {
     };
   },
   methods: {
-    handleChange (value, key, column) {
+    handleChange(value, key, column) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
       if (target) {
@@ -71,99 +90,38 @@ export default {
       }
       //axios
     },
-    edit (key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
-      if (target) {
-        target.editable = true;
-        this.data = newData;
-      }
-    },
-    onDelete (key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
-      //console.log(target);
-      this.axios
-        .get("/sourceStageInformation/delete/" + target.id, {
-          params: {},
-          headers: {
-            Authorization: this.$store.state.token,
-            "Content-Type": "application/x-www-form-urlencoded"
-          }
-        })
-        .then(
-          function (res) {
-            //console.log(res.data);
-            //每条数据需要一个唯一的key值
-            if (res.data.status != 0) {
-              this.data = newData.filter(item => item.key !== key);
-              this.$notification.warning({
-                message: "删除成功！"
-              });
-            } else {
-              this.$notification.error({
-                message: "删除失败，请重新删除！"
-              });
-            }
-          }.bind(this)
-        )
-        .catch(
-          function (err) {
-            if (err.response) {
-              //console.log(err.response);
-              //控制台打印错误返回的内容
-              if (err.response.status == 403) {
-                //console.log(err.response);
-                this.$notification.error({
-                  message: "账号密码已过期，请重新登录！"
-                });
-                this.$router.push("/login");
-                //控制台打印错误返回的内容
-              }
-            }
-            //bind(this)可以不用
-          }.bind(this)
-        );
-    },
-    save (key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
-      //console.log(target);
+    handleOk(key) {
+      this.confirmLoading = true;
       this.axios
         .post(
-          "/sourceStageInformation/update",
-          this.qs.stringify({
-            ...target
+          "/sourceStage/inserts",
+          JSON.stringify({
+            data: this.data
           }),
           {
             headers: {
               Authorization: this.$store.state.token,
-              "Content-Type": "application/x-www-form-urlencoded"
+              "Content-Type": "application/json"
             }
           }
         )
         .then(
-          function (res) {
+          function(res) {
             if (res.data.status != 0) {
-              delete target.editable;
-              this.data = newData;
-              this.cacheData = newData.map(item => ({ ...item }));
               this.$notification.success({
-                message: "修改成功！"
+                message: "保存成功！"
               });
-            } else if (res.data.status == 0) {
-              this.$notification.warning({
-                message: "数据未进行修改或修改有误，请检查数据正确性！"
-              });
+              this.visible = false;
+              this.confirmLoading = false;
             } else {
               this.$notification.error({
-                message: "修改失败，请重新修改！"
+                message: "保存失败，请重新保存！"
               });
             }
           }.bind(this)
         )
         .catch(
-          function (err) {
+          function(err) {
             if (err.response.status == 403) {
               //console.log(err.response);
               this.$notification.error({
@@ -176,7 +134,7 @@ export default {
           }.bind(this)
         );
     },
-    cancel (key) {
+    cancel(key) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
       if (target) {
@@ -188,23 +146,19 @@ export default {
         this.data = newData;
       }
     },
-    showModal () {
+    showModal() {
+      // console.log(this.courseData);
       this.getdata(1, 5);
       this.visible = true;
     },
-    handleOk (e) {
-      this.visible = false;
-      //this.confirmLoading = true;
-      //this.handleSubmit(e);
-    },
-    handleCancel (e) {
+    handleCancel(e) {
       this.visible = false;
     },
-    handleTableChange (pagination, filters, sorter) {
+    handleTableChange(pagination, filters, sorter) {
       this.getdata(pagination.current, 5);
     },
     //查询时提交数据
-    handleSubmit (e) {
+    handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
@@ -212,15 +166,15 @@ export default {
         }
       });
     },
-    getdata (pageNum, pageSize) {
+    getdata(pageNum, pageSize) {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/sourceStageInformation/selectByPage",
+          "/teachingClass/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
-            teachingClassId: this.teachingClassInformationData.teachingClassId,
+            teachingClassId: this.sourceStageData.teachingClassId,
             ...formData
           }),
           {
@@ -231,18 +185,26 @@ export default {
           }
         )
         .then(
-          function (res) {
+          function(res) {
             //console.log(res.data);
             //每条数据需要一个唯一的key值
-            for (let index = 0; index < res.data.data.length; index++) {
-              res.data.data[index].key = index;
-            }
             this.data = res.data.data;
+            for (let index = 0; index < res.data.data.length; index++) {
+              // debugger;
+              this.data[index].name = res.data.data[index].name;
+              this.data[index].studentId = res.data.data[index].studentId;
+              this.data[index].teachingClassId =
+                res.data.data[index].teachingClassId;
+              this.data[index].sourceStageId = this.sourceStageData.id;
+              this.data[index].key = index;
+            }
+            console.log(this.data);
+            // this.data = res.data.data;
             this.pagination.total = res.data.count;
           }.bind(this)
         )
         .catch(
-          function (err) {
+          function(err) {
             if (err.response) {
               //console.log(err.response);
               //控制台打印错误返回的内容

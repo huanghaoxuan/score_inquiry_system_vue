@@ -2,7 +2,6 @@
   <div>
     <a @click="showModal">阶段性成绩管理</a>
     <a-modal
-      title="阶段性成绩管理"
       :visible="visible"
       @ok="handleOk"
       okText="确认"

@@ -2,7 +2,6 @@
   <div>
     <a @click="showModal">查看学生</a>
     <a-modal
-      title="正在管理学生"
       :visible="visible"
       @ok="handleOk"
       okText="确认"

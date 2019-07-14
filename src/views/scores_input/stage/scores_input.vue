@@ -2,7 +2,6 @@
   <div>
     <a @click="showModal">录入阶段性测验成绩</a>
     <a-modal
-      title="正在录入阶段性测验成绩"
       :visible="visible"
       @ok="handleOk"
       okText="确认"
@@ -11,6 +10,7 @@
       :confirmLoading="confirmLoading"
       width="50%"
       @cancel="handleCancel"
+      :scroll="{ y: 24 }"
     >
       <a-card title="阶段性成绩管理">
         <a-button style="margin: 0 20px 0 0" @click="handleOk" slot="extra"
@@ -77,7 +77,7 @@ export default {
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 5, total: 5 }
+      pagination: { defaultPageSize: 15, total: 15 }
     };
   },
   methods: {
@@ -92,9 +92,14 @@ export default {
     },
     handleOk(key) {
       this.confirmLoading = true;
+      this.update();
+      this.visible = false;
+      this.confirmLoading = false;
+    },
+    update() {
       this.axios
         .post(
-          "/sourceStage/inserts",
+          "/sourceStage/updates",
           JSON.stringify({
             data: this.data
           }),
@@ -107,17 +112,9 @@ export default {
         )
         .then(
           function(res) {
-            if (res.data.status != 0) {
-              this.$notification.success({
-                message: "保存成功！"
-              });
-              this.visible = false;
-              this.confirmLoading = false;
-            } else {
-              this.$notification.error({
-                message: "保存失败，请重新保存！"
-              });
-            }
+            this.$notification.success({
+              message: "自动保存成功！"
+            });
           }.bind(this)
         )
         .catch(
@@ -134,28 +131,17 @@ export default {
           }.bind(this)
         );
     },
-    cancel(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
-      if (target) {
-        Object.assign(
-          target,
-          this.cacheData.filter(item => key === item.key)[0]
-        );
-        delete target.editable;
-        this.data = newData;
-      }
-    },
     showModal() {
       // console.log(this.courseData);
-      this.getdata(1, 5);
+      this.getdata(1, 15);
       this.visible = true;
     },
     handleCancel(e) {
       this.visible = false;
     },
     handleTableChange(pagination, filters, sorter) {
-      this.getdata(pagination.current, 5);
+      this.update();
+      this.getdata(pagination.current, 15);
     },
     //查询时提交数据
     handleSubmit(e) {
@@ -170,11 +156,11 @@ export default {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/teachingClass/selectByPage",
+          "/sourceStage/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
-            teachingClassId: this.sourceStageData.teachingClassId,
+            sourceStageId: this.sourceStageData.id,
             ...formData
           }),
           {
@@ -188,19 +174,13 @@ export default {
           function(res) {
             //console.log(res.data);
             //每条数据需要一个唯一的key值
-            this.data = res.data.data;
             for (let index = 0; index < res.data.data.length; index++) {
-              // debugger;
-              this.data[index].name = res.data.data[index].name;
-              this.data[index].studentId = res.data.data[index].studentId;
-              this.data[index].teachingClassId =
-                res.data.data[index].teachingClassId;
-              this.data[index].sourceStageId = this.sourceStageData.id;
-              this.data[index].key = index;
+              res.data.data[index].key = index;
             }
             console.log(this.data);
-            // this.data = res.data.data;
+            this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )
         .catch(

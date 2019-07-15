@@ -8,9 +8,8 @@
       cancelText="取消"
       :maskClosable="false"
       :confirmLoading="confirmLoading"
-      width="50%"
+      width="70%"
       @cancel="handleCancel"
-      :scroll="{ y: 24 }"
     >
       <a-card title="阶段性成绩管理">
         <a-button style="margin: 0 20px 0 0" @click="handleOk" slot="extra"
@@ -46,20 +45,26 @@ const columns = [
     title: "姓名",
     dataIndex: "name",
     key: "1",
-    width: "33%"
+    width: "22%"
+  },
+  {
+    title: "学号",
+    dataIndex: "studentId",
+    key: "2",
+    width: "22%"
   },
   {
     title: "成绩相关说明",
     dataIndex: "scoresNote",
-    key: "2",
+    key: "3",
     width: "33%",
     scopedSlots: { customRender: "scoresNote" }
   },
   {
     title: "成绩",
     dataIndex: "scores",
-    key: "3",
-    width: "33%",
+    key: "4",
+    width: "23%",
     scopedSlots: { customRender: "scores" }
   }
 ];

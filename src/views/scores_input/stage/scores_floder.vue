@@ -36,10 +36,7 @@
           :wrapper-col="{ span: 10 }"
         >
           <a-input
-            v-decorator="[
-              'scoresNote',
-              { rules: [{ required: true, message: '阶段性测验描述不能为空' }] }
-            ]"
+            v-decorator="['scoresNote']"
             placeholder="请输入阶段性测验描述"
           />
         </a-form-item>
@@ -68,6 +65,7 @@ export default {
     handleOk(e) {
       this.confirmLoading = true;
       this.handleSubmit(e);
+      this.visible = false;
     },
     handleCancel(e) {
       this.visible = false;
@@ -97,7 +95,6 @@ export default {
                 function(res) {
                   //console.log(res.data);
                   //每条数据需要一个唯一的key值
-                  this.visible = false;
                   this.$emit("getdata", 1, 5);
                 }.bind(this)
               )

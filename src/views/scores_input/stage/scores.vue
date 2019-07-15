@@ -40,9 +40,9 @@
           </template>
           <template slot="operation1" slot-scope="text, record">
             <div class="editable-row-operations">
-              <student
-                :teachingClassInformationData="data[record.key]"
-              ></student>
+              <scores_student
+                :sourceStageData="data[record.key]"
+              ></scores_student>
             </div>
           </template>
           <template slot="operation2" slot-scope="text, record">
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import student from "./student.vue";
+import scores_student from "./scores_student";
 import floder from "./scores_floder.vue";
 import scores_input from "./scores_input.vue";
 const columns = [
@@ -134,7 +134,7 @@ const columns = [
 var data = [];
 export default {
   inject: ["reload"],
-  components: { student, floder, scores_input },
+  components: { scores_student, floder, scores_input },
   props: {
     teachingClassInformationData: null
   },

@@ -212,7 +212,7 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.getdata(1, 9);
+          this.getdata(1, 5);
         }
       });
     },

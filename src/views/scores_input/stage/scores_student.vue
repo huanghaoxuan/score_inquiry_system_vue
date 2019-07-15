@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a @click="showModal">查看学生</a>
+    <a @click="showModal">查看学生成绩</a>
     <a-modal
       :visible="visible"
       @ok="handleOk"
@@ -11,45 +11,13 @@
       width="70%"
       @cancel="handleCancel"
     >
-      <a-card title="学生管理">
+      <a-card title="学生成绩查看">
         <a-form layout="inline" :form="form" @submit="handleSubmit">
           <a-form-item label="名字">
             <a-input v-decorator="['name']" placeholder="请输入名字" />
           </a-form-item>
           <a-form-item label="学号">
             <a-input v-decorator="['studentId']" placeholder="请输入学号" />
-          </a-form-item>
-          <a-form-item label="所在学院">
-            <a-select
-              v-decorator="['department']"
-              placeholder="请输入所在学院"
-              style="width: 200px"
-            >
-              <a-select-option value="">
-                学院不参与筛选
-              </a-select-option>
-              <a-select-option value="电子与计算机工程学院">
-                电子与计算机工程学院
-              </a-select-option>
-              <a-select-option value="建筑与艺术设计学院">
-                建筑与艺术设计学院
-              </a-select-option>
-              <a-select-option value="土木与交通工程学院">
-                土木与交通工程学院
-              </a-select-option>
-              <a-select-option value="机械与电气工程学院">
-                机械与电气工程学院
-              </a-select-option>
-              <a-select-option value="制药与化学工程学院">
-                制药与化学工程学院
-              </a-select-option>
-              <a-select-option value="经济管理学院">
-                经济管理学院
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="专业">
-            <a-input v-decorator="['professional']" placeholder="请输入专业" />
           </a-form-item>
           <a-form-item>
             <a-button type="primary" html-type="submit">
@@ -74,43 +42,36 @@ const columns = [
     title: "名字",
     dataIndex: "name",
     key: "1",
-    width: "20%",
+    width: "25%",
     scopedSlots: { customRender: "name" }
   },
   {
     title: "学号",
     dataIndex: "studentId",
     key: "2",
-    width: "20%",
+    width: "25%",
     scopedSlots: { customRender: "studentId" }
   },
   {
-    title: "学院",
-    dataIndex: "department",
+    title: "成绩注释",
+    dataIndex: "scoresNote",
     key: "3",
-    width: "20%",
-    scopedSlots: { customRender: "department" }
+    width: "25%",
+    scopedSlots: { customRender: "scoresNote" }
   },
   {
-    title: "专业",
-    dataIndex: "professional",
+    title: "成绩",
+    dataIndex: "scores",
     key: "4",
-    width: "20%",
-    scopedSlots: { customRender: "professional" }
-  },
-  {
-    title: "班级",
-    dataIndex: "class",
-    key: "5",
-    width: "20%",
-    scopedSlots: { customRender: "class" }
+    width: "25%",
+    scopedSlots: { customRender: "scores" }
   }
 ];
 const data = [];
 export default {
   inject: ["reload"],
   props: {
-    teachingClassInformationData: {}
+    sourceStageData: {}
   },
   data() {
     return {
@@ -119,12 +80,12 @@ export default {
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 5, total: 5 }
+      pagination: { defaultPageSize: 15, total: 15 }
     };
   },
   methods: {
     showModal() {
-      this.getdata(1, 5);
+      this.getdata(1, 15);
       this.visible = true;
     },
     handleOk(e) {
@@ -136,14 +97,14 @@ export default {
       this.visible = false;
     },
     handleTableChange(pagination, filters, sorter) {
-      this.getdata(pagination.current, 5);
+      this.getdata(pagination.current, 15);
     },
     //查询时提交数据
     handleSubmit(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.getdata(1, 5);
+          this.getdata(1, 15);
         }
       });
     },
@@ -151,11 +112,11 @@ export default {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/teachingClass/selectByPage",
+          "/sourceStage/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
-            teachingClassId: this.teachingClassInformationData.teachingClassId,
+            sourceStageId: this.sourceStageData.id,
             ...formData
           }),
           {
@@ -196,7 +157,7 @@ export default {
     }
   }
   // mounted() {
-  //   this.getdata(1, 5);
+  //   this.getdata(1, 15);
   // }
 };
 </script>

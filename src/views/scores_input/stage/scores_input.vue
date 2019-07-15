@@ -148,7 +148,7 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.getdata(1, 5);
+          this.getdata(1, 15);
         }
       });
     },
@@ -203,7 +203,7 @@ export default {
     }
   }
   // mounted() {
-  //   this.getdata(1, 5);
+  //   this.getdata(1, 15);
   // }
 };
 </script>

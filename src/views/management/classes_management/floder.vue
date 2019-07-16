@@ -135,8 +135,17 @@ export default {
                 function(res) {
                   //console.log(res.data);
                   //每条数据需要一个唯一的key值
-                  this.visible = false;
-                  this.$emit("getdata", 1, 5);
+                  if (res.data.status == 0) {
+                    this.$notification.error({
+                      message: "该教学班号已存在，请重新填写！"
+                    });
+                  } else {
+                    this.visible = false;
+                    this.$emit("getdata", 1, 5);
+                    this.$notification.success({
+                      message: "添加成功！"
+                    });
+                  }
                 }.bind(this)
               )
               .catch(

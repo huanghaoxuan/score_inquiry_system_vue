@@ -87,8 +87,7 @@ const columns = [
     title: "教学班号",
     dataIndex: "teachingClassId",
     key: "2",
-    width: "20%",
-    scopedSlots: { customRender: "teachingClassId" }
+    width: "20%"
   },
   {
     title: "任课老师名字",

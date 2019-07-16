@@ -126,8 +126,7 @@ const columns = [
     title: "学号",
     dataIndex: "studentId",
     key: "2",
-    width: "16%",
-    scopedSlots: { customRender: "studentId" }
+    width: "16%"
   },
   {
     title: "学院",

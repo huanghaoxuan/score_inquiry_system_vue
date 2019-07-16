@@ -71,8 +71,7 @@ const columns = [
     title: "课程名",
     width: "20%",
     dataIndex: "name",
-    key: "1",
-    scopedSlots: { customRender: "name" }
+    key: "1"
   },
   {
     title: "学年（若显示为2019，即为2019-2020学年）",

@@ -234,6 +234,7 @@ export default {
               this.$notification.success({
                 message: "同步成功！"
               });
+              this.getdata(1, 15);
             } else {
               this.$notification.error({
                 message: "无需要同步学生！"

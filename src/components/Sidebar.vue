@@ -7,7 +7,7 @@
     <a-layout-sider :trigger="null" collapsible v-model="collapsed">
       <div class="logo" />
       <a-menu theme="dark" :defaultSelectedKeys="['']" mode="inline">
-        <a-sub-menu key="management">
+        <a-sub-menu key="management" v-if="permissions != 1">
           <span slot="title"> <a-icon type="user" /><span>管理</span></span>
           <a-menu-item
             key="student_management"
@@ -25,7 +25,7 @@
             >课程管理</a-menu-item
           >
         </a-sub-menu>
-        <a-sub-menu key="scores_input">
+        <a-sub-menu key="scores_input" v-if="permissions != 1">
           <span slot="title"> <a-icon type="user" /><span>成绩录入</span></span>
           <a-menu-item
             key="scores_input_stage"
@@ -38,6 +38,12 @@
             >期末成绩录入</a-menu-item
           >
         </a-sub-menu>
+        <a-menu-item
+          key="show_scores"
+          @click="() => jump('/show_scores')"
+          v-if="permissions == 1"
+          >成绩查询</a-menu-item
+        >
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -89,6 +95,7 @@ export default {
   },
   data() {
     return {
+      permissions: this.$store.state.permissions,
       alive: true,
       dataIdentity: this.$store.state.dataIdentity,
       avatarValue: "您",

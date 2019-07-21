@@ -22,7 +22,7 @@
         >
           <a-input
             v-decorator="[
-              'scoresId',
+              'stageId',
               {
                 rules: [{ required: true, message: '阶段性测验排序号不能为空' }]
               }
@@ -36,7 +36,7 @@
           :wrapper-col="{ span: 10 }"
         >
           <a-input
-            v-decorator="['scoresNote']"
+            v-decorator="['stageNote']"
             placeholder="请输入阶段性测验描述"
           />
         </a-form-item>

@@ -24,7 +24,7 @@
           @change="handleTableChange"
         >
           <template
-            v-for="col in ['name', 'teachingClassId', 'scoresId', 'scoresNote']"
+            v-for="col in ['name', 'teachingClassId', 'stageId', 'stageNote']"
             :slot="col"
             slot-scope="text, record"
           >
@@ -97,17 +97,17 @@ const columns = [
   },
   {
     title: "阶段性测验序号",
-    dataIndex: "scoresId",
+    dataIndex: "stageId",
     key: "3",
     width: "15%",
-    scopedSlots: { customRender: "scoresId" }
+    scopedSlots: { customRender: "stageId" }
   },
   {
     title: "阶段性测验描述",
-    dataIndex: "scoresNote",
+    dataIndex: "stageNote",
     key: "4",
     width: "15%",
-    scopedSlots: { customRender: "scoresNote" }
+    scopedSlots: { customRender: "stageNote" }
   },
   {
     title: "查看学生",

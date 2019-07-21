@@ -39,6 +39,11 @@ export default new Router({
           path: "/scores_input/final",
           name: "scores_input_final",
           component: () => import("./views/scores_input/final/status.vue")
+        },
+        {
+          path: "/show_scores",
+          name: "show_scores",
+          component: () => import("./views/show_sources/final.vue")
         }
       ]
     },

@@ -20,24 +20,30 @@
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-input
+          <a-input-number
             v-decorator="[
               'stageId',
               {
                 rules: [{ required: true, message: '阶段性测验排序号不能为空' }]
               }
             ]"
+            style="width:100%"
             placeholder="请输入阶段性测验排序号"
           />
         </a-form-item>
         <a-form-item
-          label="阶段性测验描述"
+          label="阶段性测验标题"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
           <a-input
-            v-decorator="['stageNote']"
-            placeholder="请输入阶段性测验描述"
+            v-decorator="[
+              'stageNote',
+              {
+                rules: [{ required: true, message: '阶段性测验标题不能为空' }]
+              }
+            ]"
+            placeholder="请输入阶段性测验标题"
           />
         </a-form-item>
       </a-form>

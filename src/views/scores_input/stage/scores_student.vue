@@ -37,46 +37,17 @@
 </template>
 
 <script>
-const columns = [
-  {
-    title: "名字",
-    dataIndex: "name",
-    key: "1",
-    width: "25%",
-    scopedSlots: { customRender: "name" }
-  },
-  {
-    title: "学号",
-    dataIndex: "studentId",
-    key: "2",
-    width: "25%",
-    scopedSlots: { customRender: "studentId" }
-  },
-  {
-    title: "成绩注释",
-    dataIndex: "scoresNote",
-    key: "3",
-    width: "25%",
-    scopedSlots: { customRender: "scoresNote" }
-  },
-  {
-    title: "成绩",
-    dataIndex: "scores",
-    key: "4",
-    width: "25%",
-    scopedSlots: { customRender: "scores" }
-  }
-];
 const data = [];
 export default {
   inject: ["reload"],
   props: {
+    allData: null,
     sourceStageData: {}
   },
   data() {
     return {
       data,
-      columns,
+      columns: [],
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
@@ -87,6 +58,36 @@ export default {
     showModal() {
       this.getdata(1, 15);
       this.visible = true;
+      // debugger;
+      this.getTableHeader();
+    },
+    //生成表头
+    getTableHeader() {
+      const columns = [
+        {
+          title: "名字",
+          dataIndex: "name",
+          key: "1",
+          scopedSlots: { customRender: "name" }
+        },
+        {
+          title: "学号",
+          dataIndex: "studentId",
+          key: "2",
+          scopedSlots: { customRender: "studentId" }
+        }
+      ];
+      for (let index = 0; index < this.allData.length; index++) {
+        var nextColumns = {
+          title: this.allData[index].stageNote,
+          dataIndex: this.allData[index].id,
+          key: index + 3 + "",
+          scopedSlots: { customRender: this.allData[index].id }
+        };
+        columns.push(nextColumns);
+      }
+      this.columns = columns;
+      console.log(this.columns);
     },
     handleOk(e) {
       this.visible = false;
@@ -116,7 +117,7 @@ export default {
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
-            sourceStageId: this.sourceStageData.id,
+            teachingClassId: this.sourceStageData.teachingClassId,
             ...formData
           }),
           {

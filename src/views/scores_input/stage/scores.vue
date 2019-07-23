@@ -41,13 +41,17 @@
           <template slot="operation1" slot-scope="text, record">
             <div class="editable-row-operations">
               <scores_student
+                :allData="data"
                 :sourceStageData="data[record.key]"
               ></scores_student>
             </div>
           </template>
           <template slot="operation2" slot-scope="text, record">
             <div class="editable-row-operations">
-              <scores_input :sourceStageData="data[record.key]"></scores_input>
+              <scores_input
+                :allData="data"
+                :sourceStageData="data[record.key]"
+              ></scores_input>
             </div>
           </template>
           <template slot="operation" slot-scope="text, record">

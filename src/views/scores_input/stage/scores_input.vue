@@ -21,13 +21,7 @@
           :dataSource="data"
           @change="handleTableChange"
         >
-          <template slot="scoresNote" slot-scope="text, record">
-            <a-input
-              style="margin: -5px 0"
-              v-model="data[`${record.key}`].scoresNote"
-            />
-          </template>
-          <template slot="scores" slot-scope="text, record">
+          <template :slot="sourceStageData.id" slot-scope="text, record">
             <a-input
               style="margin: -5px 0"
               v-model="data[`${record.key}`].scores"
@@ -40,38 +34,12 @@
 </template>
 
 <script>
-const columns = [
-  {
-    title: "姓名",
-    dataIndex: "name",
-    key: "1",
-    width: "22%"
-  },
-  {
-    title: "学号",
-    dataIndex: "studentId",
-    key: "2",
-    width: "22%"
-  },
-  {
-    title: "成绩相关说明",
-    dataIndex: "scoresNote",
-    key: "3",
-    width: "33%",
-    scopedSlots: { customRender: "scoresNote" }
-  },
-  {
-    title: "成绩",
-    dataIndex: "scores",
-    key: "4",
-    width: "23%",
-    scopedSlots: { customRender: "scores" }
-  }
-];
+const columns = [];
 var data = [];
 export default {
   inject: ["reload"],
   props: {
+    allData: null,
     sourceStageData: null
   },
   data() {
@@ -138,8 +106,37 @@ export default {
     },
     showModal() {
       // console.log(this.courseData);
+      this.getTableHeader();
       this.getdata(1, 15);
       this.visible = true;
+    },
+    //生成表头
+    getTableHeader() {
+      const columns = [
+        {
+          title: "名字",
+          dataIndex: "name",
+          key: "1",
+          scopedSlots: { customRender: "name" }
+        },
+        {
+          title: "学号",
+          dataIndex: "studentId",
+          key: "2",
+          scopedSlots: { customRender: "studentId" }
+        }
+      ];
+      for (let index = 0; index < this.allData.length; index++) {
+        var nextColumns = {
+          title: this.allData[index].stageNote,
+          dataIndex: this.allData[index].id,
+          key: index + 3 + "",
+          scopedSlots: { customRender: this.allData[index].id }
+        };
+        columns.push(nextColumns);
+      }
+      this.columns = columns;
+      console.log(this.columns);
     },
     handleCancel(e) {
       this.visible = false;
@@ -165,8 +162,9 @@ export default {
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
-            sourceStageId: this.sourceStageData.id,
-            ...formData
+            ...formData,
+            id: this.sourceStageData.id,
+            teachingClassId: this.sourceStageData.teachingClassId
           }),
           {
             headers: {

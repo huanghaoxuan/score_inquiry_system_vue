@@ -330,7 +330,7 @@ export default {
               res.data.data[index].key = index;
             }
             this.data = res.data.data;
-            this.pagination.total = res.data.count;
+            this.pagination.total = res.data.data.length;
           }.bind(this)
         )
         .catch(

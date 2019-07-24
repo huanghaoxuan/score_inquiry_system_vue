@@ -98,7 +98,7 @@ export default {
       this.visible = false;
     },
     handleTableChange(pagination, filters, sorter) {
-      this.getdata(pagination.current, 15);
+      // this.getdata(pagination.current, 15);
     },
     //查询时提交数据
     handleSubmit(e) {
@@ -135,7 +135,8 @@ export default {
               res.data.data[index].key = index;
             }
             this.data = res.data.data;
-            this.pagination.total = res.data.count;
+            this.pagination.total = res.data.data.length;
+            this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )
         .catch(

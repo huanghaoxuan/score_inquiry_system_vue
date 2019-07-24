@@ -143,7 +143,7 @@ export default {
     },
     handleTableChange(pagination, filters, sorter) {
       this.update();
-      this.getdata(pagination.current, 15);
+      // this.getdata(pagination.current, 15);
     },
     //查询时提交数据
     handleSubmit(e) {
@@ -182,7 +182,7 @@ export default {
             }
             console.log(this.data);
             this.data = res.data.data;
-            this.pagination.total = res.data.count;
+            this.pagination.total = res.data.data.length;
             this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )

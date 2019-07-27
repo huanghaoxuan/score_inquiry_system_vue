@@ -12,9 +12,6 @@
       @cancel="handleCancel"
     >
       <a-card title="学生成绩查看">
-        <a-button style="margin: 0 20px 0 0" @click="updateStudent" slot="extra"
-          >同步学生信息</a-button
-        >
         <a-form layout="inline" :form="form" @submit="handleSubmit">
           <a-form-item label="名字">
             <a-input v-decorator="['name']" placeholder="请输入名字" />
@@ -40,36 +37,7 @@
 </template>
 
 <script>
-const columns = [
-  {
-    title: "名字",
-    dataIndex: "name",
-    key: "1",
-    width: "25%",
-    scopedSlots: { customRender: "name" }
-  },
-  {
-    title: "学号",
-    dataIndex: "studentId",
-    key: "2",
-    width: "25%",
-    scopedSlots: { customRender: "studentId" }
-  },
-  {
-    title: "成绩注释",
-    dataIndex: "scoresNote",
-    key: "3",
-    width: "25%",
-    scopedSlots: { customRender: "scoresNote" }
-  },
-  {
-    title: "成绩",
-    dataIndex: "scores",
-    key: "4",
-    width: "25%",
-    scopedSlots: { customRender: "scores" }
-  }
-];
+const columns = [];
 const data = [];
 export default {
   inject: ["reload"],
@@ -82,12 +50,60 @@ export default {
       columns,
       visible: false,
       confirmLoading: false,
+      allData: [],
       form: this.$form.createForm(this),
       pagination: { defaultPageSize: 15, total: 15 }
     };
   },
   methods: {
+    getAllStageInfo() {
+      this.axios
+        .post(
+          "/sourceStageInformation/selectByPage",
+          this.qs.stringify({
+            pageNum: 1,
+            pageSize: 100,
+            teachingClassId: this.teachingClassInformationData.teachingClassId
+          }),
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        )
+        .then(
+          function(res) {
+            //console.log(res.data);
+            //每条数据需要一个唯一的key值
+            for (let index = 0; index < res.data.data.length; index++) {
+              res.data.data[index].key = index;
+            }
+            this.allData = res.data.data;
+            this.getTableHeader();
+            // this.pagination.total = res.data.data.length;
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
+    },
     showModal() {
+      this.getAllStageInfo();
       this.getdata(1, 15);
       this.visible = true;
     },
@@ -100,7 +116,7 @@ export default {
       this.visible = false;
     },
     handleTableChange(pagination, filters, sorter) {
-      this.getdata(pagination.current, 15);
+      // this.getdata(pagination.current, 15);
     },
     //查询时提交数据
     handleSubmit(e) {
@@ -115,7 +131,7 @@ export default {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/sourceFinal/selectByPage",
+          "/teachingClass/selectFinal",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
@@ -137,7 +153,7 @@ export default {
               res.data.data[index].key = index;
             }
             this.data = res.data.data;
-            this.pagination.total = res.data.count;
+            this.pagination.total = res.data.data.length;
           }.bind(this)
         )
         .catch(
@@ -158,53 +174,46 @@ export default {
           }.bind(this)
         );
     },
-    updateStudent() {
-      this.axios
-        .get(
-          "/sourceFinal/updateStudent/" +
-            this.teachingClassInformationData.teachingClassId,
-          {
-            params: {},
-            headers: {
-              Authorization: this.$store.state.token,
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-          }
-        )
-        .then(
-          function(res) {
-            //console.log(res.data);
-            //每条数据需要一个唯一的key值
-            if (res.data.status != 0) {
-              this.data = newData.filter(item => item.key !== key);
-              this.$notification.success({
-                message: "同步成功！"
-              });
-              this.getdata(1, 15);
-            } else {
-              this.$notification.error({
-                message: "无需要同步学生！"
-              });
-            }
-          }.bind(this)
-        )
-        .catch(
-          function(err) {
-            if (err.response) {
-              //console.log(err.response);
-              //控制台打印错误返回的内容
-              if (err.response.status == 403) {
-                //console.log(err.response);
-                this.$notification.error({
-                  message: "账号密码已过期，请重新登录！"
-                });
-                this.$router.push("/login");
-                //控制台打印错误返回的内容
-              }
-            }
-            //bind(this)可以不用
-          }.bind(this)
-        );
+    getTableHeader() {
+      const columns = [
+        {
+          title: "名字",
+          dataIndex: "name",
+          key: "1",
+          scopedSlots: { customRender: "name" }
+        },
+        {
+          title: "学号",
+          dataIndex: "studentId",
+          key: "2",
+          scopedSlots: { customRender: "studentId" }
+        }
+      ];
+      for (let index = 0; index < this.allData.length; index++) {
+        var nextColumns = {
+          title: this.allData[index].stageNote,
+          dataIndex: this.allData[index].id,
+          key: index + 3 + "",
+          scopedSlots: { customRender: this.allData[index].id }
+        };
+        columns.push(nextColumns);
+      }
+      let col = {
+        title: "期末成绩",
+        dataIndex: "final",
+        key: 3 + this.allData.length,
+        scopedSlots: { customRender: "final" }
+      };
+      columns.push(col);
+      col = {
+        title: "最终成绩",
+        dataIndex: "result",
+        key: 4 + this.allData.length,
+        scopedSlots: { customRender: "result" }
+      };
+      columns.push(col);
+      this.columns = columns;
+      console.log(this.columns);
     }
   }
   // mounted() {

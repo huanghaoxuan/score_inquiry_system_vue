@@ -107,7 +107,7 @@ const columns = [
     scopedSlots: { customRender: "stageId" }
   },
   {
-    title: "阶段性测验描述",
+    title: "阶段性测验名称",
     dataIndex: "stageNote",
     key: "4",
     width: "15%",

@@ -13,30 +13,36 @@
     >
       <a-card title="期末成绩管理">
         <div slot="extra">
-          <a-button style="margin: 0 20px 0 0" @click="updateStudent"
-            >同步学生信息</a-button
-          >
           <a-button style="margin: 0 20px 0 0" @click="handleOk"
             >确认添加</a-button
           >
         </div>
-
         <a-table
           :pagination="pagination"
           :columns="columns"
           :dataSource="data"
           @change="handleTableChange"
         >
-          <template slot="scoresNote" slot-scope="text, record">
-            <a-input
-              style="margin: -5px 0"
-              v-model="data[`${record.key}`].scoresNote"
-            />
+          <template
+            v-for="col in stageColumns"
+            :slot="col.dataIndex"
+            slot-scope="text, record"
+          >
+            <div :key="col.dataIndex">
+              <editable-cell
+                :text="text"
+                :dataIndex="col.dataIndex"
+                :studentId="data[record.key].studentId"
+                :teachingClassId="teachingClassInformationData.teachingClassId"
+                @change="onCellChange(record.key, col.dataIndex, $event)"
+              />
+            </div>
           </template>
-          <template slot="scores" slot-scope="text, record">
+
+          <template slot="final" slot-scope="text, record">
             <a-input
               style="margin: -5px 0"
-              v-model="data[`${record.key}`].scores"
+              v-model="data[`${record.key}`].final"
             />
           </template>
         </a-table>
@@ -46,36 +52,13 @@
 </template>
 
 <script>
-const columns = [
-  {
-    title: "姓名",
-    dataIndex: "name",
-    key: "1",
-    width: "22%"
-  },
-  {
-    title: "学号",
-    dataIndex: "studentId",
-    key: "2",
-    width: "22%"
-  },
-  {
-    title: "成绩相关说明",
-    dataIndex: "scoresNote",
-    key: "3",
-    width: "33%",
-    scopedSlots: { customRender: "scoresNote" }
-  },
-  {
-    title: "成绩",
-    dataIndex: "scores",
-    key: "4",
-    width: "23%",
-    scopedSlots: { customRender: "scores" }
-  }
-];
+import EditableCell from "./EditableCell";
+const columns = [];
 var data = [];
 export default {
+  components: {
+    EditableCell
+  },
   inject: ["reload"],
   props: {
     teachingClassInformationData: null
@@ -85,13 +68,25 @@ export default {
     return {
       data,
       columns,
+      stageColumns: [],
       visible: false,
+      editable: false,
+      allData: [],
       confirmLoading: false,
       form: this.$form.createForm(this),
       pagination: { defaultPageSize: 15, total: 15 }
     };
   },
   methods: {
+    onCellChange(key, dataIndex, value) {
+      const dataSource = [...this.data];
+      const target = dataSource.find(item => item.key === key);
+      // debugger;
+      if (target) {
+        target[dataIndex] = value;
+        this.data = dataSource;
+      }
+    },
     handleChange(value, key, column) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
@@ -110,7 +105,7 @@ export default {
     update() {
       this.axios
         .post(
-          "/sourceFinal/updates",
+          "/teachingClass/updateFinal",
           JSON.stringify({
             data: this.data
           }),
@@ -142,8 +137,101 @@ export default {
           }.bind(this)
         );
     },
+    getTableHeader() {
+      const stageColumns = [];
+      const columns = [
+        {
+          title: "名字",
+          dataIndex: "name",
+          key: "1",
+          scopedSlots: { customRender: "name" }
+        },
+        {
+          title: "学号",
+          dataIndex: "studentId",
+          key: "2",
+          scopedSlots: { customRender: "studentId" }
+        }
+      ];
+      for (let index = 0; index < this.allData.length; index++) {
+        var nextColumns = {
+          title: this.allData[index].stageNote,
+          dataIndex: this.allData[index].id,
+          key: index + 3 + "",
+          width: "150px",
+          scopedSlots: { customRender: this.allData[index].id }
+        };
+        columns.push(nextColumns);
+        stageColumns.push(nextColumns);
+      }
+      let col = {
+        title: "期末成绩",
+        dataIndex: "final",
+        width: "150px",
+        key: 3 + this.allData.length,
+        scopedSlots: { customRender: "final" }
+      };
+      columns.push(col);
+      col = {
+        title: "最终成绩",
+        dataIndex: "result",
+        width: "150px",
+        key: 4 + this.allData.length,
+        scopedSlots: { customRender: "result" }
+      };
+      columns.push(col);
+      this.columns = columns;
+      this.stageColumns = stageColumns;
+      console.log(this.columns);
+    },
+    getAllStageInfo() {
+      this.axios
+        .post(
+          "/sourceStageInformation/selectByPage",
+          this.qs.stringify({
+            pageNum: 1,
+            pageSize: 100,
+            teachingClassId: this.teachingClassInformationData.teachingClassId
+          }),
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        )
+        .then(
+          function(res) {
+            //console.log(res.data);
+            //每条数据需要一个唯一的key值
+            for (let index = 0; index < res.data.data.length; index++) {
+              res.data.data[index].key = index;
+            }
+            this.allData = res.data.data;
+            this.getTableHeader();
+            // this.pagination.total = res.data.data.length;
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
+    },
     showModal() {
-      // console.log(this.courseData);
+      this.getAllStageInfo();
       this.getdata(1, 15);
       this.visible = true;
     },
@@ -152,7 +240,7 @@ export default {
     },
     handleTableChange(pagination, filters, sorter) {
       this.update();
-      this.getdata(pagination.current, 15);
+      // this.getdata(pagination.current, 15);
     },
     //查询时提交数据
     handleSubmit(e) {
@@ -167,7 +255,7 @@ export default {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/sourceFinal/selectByPage",
+          "/teachingClass/selectFinal",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
@@ -211,54 +299,6 @@ export default {
             //bind(this)可以不用
           }.bind(this)
         );
-    },
-    updateStudent() {
-      this.axios
-        .get(
-          "/sourceFinal/updateStudent/" +
-            this.teachingClassInformationData.teachingClassId,
-          {
-            params: {},
-            headers: {
-              Authorization: this.$store.state.token,
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-          }
-        )
-        .then(
-          function(res) {
-            //console.log(res.data);
-            //每条数据需要一个唯一的key值
-            if (res.data.status != 0) {
-              this.data = newData.filter(item => item.key !== key);
-              this.$notification.success({
-                message: "同步成功！"
-              });
-              this.getdata(1, 15);
-            } else {
-              this.$notification.error({
-                message: "无需要同步学生！"
-              });
-            }
-          }.bind(this)
-        )
-        .catch(
-          function(err) {
-            if (err.response) {
-              //console.log(err.response);
-              //控制台打印错误返回的内容
-              if (err.response.status == 403) {
-                //console.log(err.response);
-                this.$notification.error({
-                  message: "账号密码已过期，请重新登录！"
-                });
-                this.$router.push("/login");
-                //控制台打印错误返回的内容
-              }
-            }
-            //bind(this)可以不用
-          }.bind(this)
-        );
     }
   }
   // mounted() {
@@ -266,3 +306,47 @@ export default {
   // }
 };
 </script>
+<style>
+.editable-cell {
+  position: relative;
+}
+
+.editable-cell-input-wrapper,
+.editable-cell-text-wrapper {
+  padding-right: 24px;
+}
+
+.editable-cell-text-wrapper {
+  padding: 5px 24px 5px 5px;
+}
+
+.editable-cell-icon,
+.editable-cell-icon-check {
+  position: absolute;
+  right: 0;
+  width: 10px;
+  cursor: pointer;
+}
+
+.editable-cell-icon {
+  line-height: 18px;
+  display: none;
+}
+
+.editable-cell-icon-check {
+  line-height: 28px;
+}
+
+.editable-cell:hover .editable-cell-icon {
+  display: inline-block;
+}
+
+.editable-cell-icon:hover,
+.editable-cell-icon-check:hover {
+  color: #108ee9;
+}
+
+.editable-add-btn {
+  margin-bottom: 8px;
+}
+</style>

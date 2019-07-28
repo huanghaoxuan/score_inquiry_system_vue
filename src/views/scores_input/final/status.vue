@@ -6,6 +6,7 @@
         :columns="columns"
         :dataSource="data"
         @change="handleTableChange"
+        :scroll="{ x: true }"
       >
         <template slot="operation1" slot-scope="text, record">
           <div class="editable-row-operations">
@@ -145,3 +146,8 @@ export default {
   }
 };
 </script>
+<style>
+.ant-table td {
+  white-space: nowrap;
+}
+</style>

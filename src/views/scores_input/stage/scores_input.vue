@@ -7,6 +7,7 @@
       okText="确认"
       cancelText="取消"
       :maskClosable="false"
+      :destroyOnClose="true"
       :confirmLoading="confirmLoading"
       width="70%"
       @cancel="handleCancel"

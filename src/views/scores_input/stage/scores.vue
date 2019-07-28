@@ -24,7 +24,13 @@
           @change="handleTableChange"
         >
           <template
-            v-for="col in ['name', 'teachingClassId', 'stageId', 'stageNote']"
+            v-for="col in [
+              'name',
+              'teachingClassId',
+              'stageId',
+              'stageNote',
+              'percentage'
+            ]"
             :slot="col"
             slot-scope="text, record"
           >
@@ -90,48 +96,47 @@ const columns = [
   {
     title: "课程名",
     dataIndex: "name",
-    key: "1",
-    width: "15%"
+    key: "1"
   },
   {
     title: "教学班号",
     dataIndex: "teachingClassId",
-    key: "2",
-    width: "15%"
+    key: "2"
   },
   {
     title: "阶段性测验序号",
     dataIndex: "stageId",
     key: "3",
-    width: "15%",
     scopedSlots: { customRender: "stageId" }
   },
   {
     title: "阶段性测验名称",
     dataIndex: "stageNote",
     key: "4",
-    width: "15%",
     scopedSlots: { customRender: "stageNote" }
+  },
+  {
+    title: "占比（单位%）",
+    dataIndex: "percentage",
+    key: "5",
+    scopedSlots: { customRender: "percentage" }
   },
   {
     title: "查看学生",
     dataIndex: "operation1",
-    key: "5",
-    width: "15%",
+    key: "6",
     scopedSlots: { customRender: "operation1" }
   },
   {
     title: "录入成绩",
     dataIndex: "operation2",
-    key: "6",
-    width: "15%",
+    key: "7",
     scopedSlots: { customRender: "operation2" }
   },
   {
     title: "操作",
     dataIndex: "operation",
-    key: "7",
-    width: "15%",
+    key: "8",
     scopedSlots: { customRender: "operation" }
   }
 ];
@@ -174,7 +179,7 @@ export default {
     onDelete(key) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
-      //console.log(target);
+      // debugger;
       this.axios
         .get("/sourceStageInformation/delete/" + target.id, {
           params: {},
@@ -188,7 +193,8 @@ export default {
             //console.log(res.data);
             //每条数据需要一个唯一的key值
             if (res.data.status != 0) {
-              this.data = newData.filter(item => item.key !== key);
+              // this.data = newData.filter(item => item.key !== key);
+              this.getdata(1, 5);
               this.$notification.warning({
                 message: "删除成功！"
               });

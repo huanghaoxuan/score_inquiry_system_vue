@@ -44,22 +44,12 @@ export default {
         )
         .then(
           function(res) {
-            if (res.data.status != 0) {
-              this.$notification.success({
-                message: "修改成功！"
-              });
-              //关闭输入框
-              this.editable = false;
-              this.$emit("change", this.value);
-            } else if (res.data.status == 0) {
-              this.$notification.warning({
-                message: "数据未进行修改或修改有误，请检查数据正确性！"
-              });
-            } else {
-              this.$notification.error({
-                message: "修改失败，请重新修改！"
-              });
-            }
+            this.$notification.success({
+              message: "修改成功！"
+            });
+            //关闭输入框
+            this.editable = false;
+            this.$emit("change", this.value);
           }.bind(this)
         )
         .catch(

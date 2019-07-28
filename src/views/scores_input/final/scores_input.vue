@@ -21,6 +21,7 @@
           :pagination="pagination"
           :columns="columns"
           :dataSource="data"
+          :scroll="{ x: true }"
           @change="handleTableChange"
         >
           <template
@@ -38,12 +39,15 @@
               />
             </div>
           </template>
-
           <template slot="final" slot-scope="text, record">
             <a-input
               style="margin: -5px 0"
               v-model="data[`${record.key}`].final"
             />
+          </template>
+          <template slot="result" slot-scope="text, record">
+            <!-- {{ data[`${record.key}`].result }} -->
+            {{ showResult(`${record.key}`) }}
           </template>
         </a-table>
       </a-card>
@@ -56,6 +60,13 @@ import EditableCell from "./EditableCell";
 const columns = [];
 var data = [];
 export default {
+  computed: {
+    showResult() {
+      return function(key) {
+        return this.getRseult(key);
+      };
+    }
+  },
   components: {
     EditableCell
   },
@@ -78,6 +89,33 @@ export default {
     };
   },
   methods: {
+    getRseult(key) {
+      let result = 0;
+      let percentage = 0;
+      let unpercentage = 0;
+      for (let index = 0; index < this.stageColumns.length; index++) {
+        let uid = this.stageColumns[index].dataIndex;
+        //获得权重
+        for (let i = 0; i < this.allData.length; i++) {
+          if (this.allData[i].id == uid) {
+            percentage = parseInt(this.allData[i].percentage);
+            unpercentage += parseInt(this.allData[i].percentage);
+          }
+        }
+        // debugger
+        //获得阶段性成绩
+        if (this.data[key][uid] != "") {
+          result = parseInt(this.data[key][uid]) * percentage * 0.01 + result;
+        }
+      }
+      if (this.data[key].final != "") {
+        result =
+          parseInt(this.data[key].final) * (100 - unpercentage) * 0.01 + result;
+      }
+      // debugger;
+      this.data[key].result = result.toFixed(2);
+      return result.toFixed(2);
+    },
     onCellChange(key, dataIndex, value) {
       const dataSource = [...this.data];
       const target = dataSource.find(item => item.key === key);
@@ -144,18 +182,26 @@ export default {
           title: "名字",
           dataIndex: "name",
           key: "1",
+          width: "150px",
+          // fixed: "left",
           scopedSlots: { customRender: "name" }
         },
         {
           title: "学号",
           dataIndex: "studentId",
           key: "2",
+          width: "150px",
+          // fixed: "left",
           scopedSlots: { customRender: "studentId" }
         }
       ];
       for (let index = 0; index < this.allData.length; index++) {
         var nextColumns = {
-          title: this.allData[index].stageNote,
+          title:
+            this.allData[index].stageNote +
+            "（" +
+            this.allData[index].percentage +
+            "%）",
           dataIndex: this.allData[index].id,
           key: index + 3 + "",
           width: "150px",
@@ -168,6 +214,7 @@ export default {
         title: "期末成绩",
         dataIndex: "final",
         width: "150px",
+        // fixed: "right",
         key: 3 + this.allData.length,
         scopedSlots: { customRender: "final" }
       };
@@ -176,13 +223,14 @@ export default {
         title: "最终成绩",
         dataIndex: "result",
         width: "150px",
+        // fixed: "right",
         key: 4 + this.allData.length,
         scopedSlots: { customRender: "result" }
       };
       columns.push(col);
       this.columns = columns;
       this.stageColumns = stageColumns;
-      console.log(this.columns);
+      console.log(this.allData);
     },
     getAllStageInfo() {
       this.axios
@@ -348,5 +396,8 @@ export default {
 
 .editable-add-btn {
   margin-bottom: 8px;
+}
+.ant-table td {
+  white-space: nowrap;
 }
 </style>

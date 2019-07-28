@@ -46,6 +46,23 @@
             placeholder="请输入阶段性测验标题"
           />
         </a-form-item>
+        <a-form-item
+          label="阶段性测验占比"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <a-input
+            v-decorator="[
+              'percentage',
+              {
+                rules: [{ required: true, message: '阶段性测验占比号不能为空' }]
+              }
+            ]"
+            style="width:100%"
+            placeholder="请输入阶段性测验占比"
+            addonAfter="%"
+          />
+        </a-form-item>
       </a-form>
     </a-modal>
   </div>

@@ -235,10 +235,8 @@ export default {
     getAllStageInfo() {
       this.axios
         .post(
-          "/sourceStageInformation/selectByPage",
+          "/sourceStageInformation/selectAll",
           this.qs.stringify({
-            pageNum: 1,
-            pageSize: 100,
             teachingClassId: this.teachingClassInformationData.teachingClassId
           }),
           {

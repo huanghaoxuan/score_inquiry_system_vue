@@ -52,23 +52,9 @@ const columns = [
     scopedSlots: { customRender: "semester" }
   },
   {
-    title: "阶段性成绩",
-    dataIndex: "sourceStage",
-    key: "4",
-    width: "16%",
-    scopedSlots: { customRender: "sourceStage" }
-  },
-  {
-    title: "期末成绩成绩注释",
-    dataIndex: "scoresNote",
-    key: "5",
-    width: "20%",
-    scopedSlots: { customRender: "scoresNote" }
-  },
-  {
     title: "期末成绩成绩",
-    dataIndex: "scores",
-    key: "6",
+    dataIndex: "result",
+    key: "4",
     width: "16%",
     scopedSlots: { customRender: "scores" }
   }
@@ -102,7 +88,7 @@ export default {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/ShowSource/final",
+          "/teachingClass/showFinal",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,

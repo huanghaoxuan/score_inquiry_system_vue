@@ -25,6 +25,10 @@
             </a-button>
           </a-form-item>
         </a-form>
+        <button v-on:click="download">
+          下载
+        </button>
+        <br />
         <a-table
           :pagination="pagination"
           :columns="columns"
@@ -59,10 +63,8 @@ export default {
     getAllStageInfo() {
       this.axios
         .post(
-          "/sourceStageInformation/selectByPage",
+          "/sourceStageInformation/selectAll",
           this.qs.stringify({
-            pageNum: 1,
-            pageSize: 100,
             teachingClassId: this.teachingClassInformationData.teachingClassId
           }),
           {
@@ -214,6 +216,40 @@ export default {
       columns.push(col);
       this.columns = columns;
       console.log(this.columns);
+    },
+    download() {
+      this.axios
+        .get(
+          "/teachingClass/download/" +
+            this.teachingClassInformationData.teachingClassId,
+          {
+            params: {},
+            responseType: "blob",
+            headers: {
+              Authorization: this.$store.state.token,
+            }
+          }
+        )
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+            "download",
+            this.teachingClassInformationData.teachingClassId + ".xlsx"
+          );
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(
+          function(err) {
+            if (err.response) {
+              console.log(err.response);
+              //控制台打印错误返回的内容
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
     }
   }
   // mounted() {

@@ -7,7 +7,7 @@
     <a-layout-sider :trigger="null" collapsible v-model="collapsed">
       <div class="logo" />
       <a-menu theme="dark" :defaultSelectedKeys="['']" mode="inline">
-        <a-sub-menu key="management" v-if="permissions != 1">
+        <a-sub-menu key="management" v-if="permissions == 3">
           <span slot="title"> <a-icon type="user" /><span>管理</span></span>
           <a-menu-item
             key="student_management"

@@ -8,6 +8,7 @@
       cancelText="取消"
       :maskClosable="false"
       :destroyOnClose="true"
+      :scroll="{ x: true }"
       :confirmLoading="confirmLoading"
       width="70%"
       @cancel="handleCancel"
@@ -211,3 +212,8 @@ export default {
   // }
 };
 </script>
+<style>
+.ant-table td {
+  white-space: nowrap;
+}
+</style>

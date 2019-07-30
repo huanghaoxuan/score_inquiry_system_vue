@@ -126,7 +126,7 @@ export default {
                   this.$store.commit("isLogin", true);
                   this.$store.commit("setToken", res.data.token);
                   this.$store.commit("setNameStudentId", res.data.data);
-                  this.$router.push("/sidebar");
+                  this.$router.push("/welcome");
                 }
               }.bind(this)
             )

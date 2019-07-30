@@ -44,6 +44,11 @@ export default new Router({
           path: "/show_scores",
           name: "show_scores",
           component: () => import("./views/show_sources/final.vue")
+        },
+        {
+          path: "/welcome",
+          name: "welcome",
+          component: () => import("./views/welcome/welcome.vue")
         }
       ]
     },
@@ -55,7 +60,7 @@ export default new Router({
     },
     {
       path: "*",
-      redirect: "/sidebar"
+      redirect: "/welcome"
     }
   ]
 });

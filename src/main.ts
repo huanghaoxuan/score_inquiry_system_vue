@@ -8,6 +8,8 @@ import "ant-design-vue/dist/antd.css";
 import axios from "axios";
 import Qs from "qs";
 import "@babel/polyfill";
+import Viser from "viser-vue";
+Vue.use(Viser);
 
 Vue.prototype.axios = axios;
 Vue.prototype.qs = Qs;

@@ -38,12 +38,15 @@
             >期末成绩录入</a-menu-item
           >
         </a-sub-menu>
+        <!-- <span slot="title"> <a-icon type="user" /><span>管理</span></span> -->
         <a-menu-item
           key="show_scores"
           @click="() => jump('/show_scores')"
           v-if="permissions == 1"
-          >成绩查询</a-menu-item
         >
+          <a-icon type="pie-chart" />
+          <span>成绩查询</span>
+        </a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>

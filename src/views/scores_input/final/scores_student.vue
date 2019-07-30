@@ -12,6 +12,13 @@
       @cancel="handleCancel"
     >
       <a-card title="学生成绩查看">
+        <a-tooltip placement="bottom" slot="extra">
+          <template slot="title">
+            <span>下载</span>
+          </template>
+          <a-icon type="download" v-on:click="download" style="fontSize:20px" />
+        </a-tooltip>
+
         <a-form layout="inline" :form="form" @submit="handleSubmit">
           <a-form-item label="名字">
             <a-input v-decorator="['name']" placeholder="请输入名字" />
@@ -25,9 +32,6 @@
             </a-button>
           </a-form-item>
         </a-form>
-        <button v-on:click="download">
-          下载
-        </button>
         <br />
         <a-table
           :pagination="pagination"
@@ -226,7 +230,7 @@ export default {
             params: {},
             responseType: "blob",
             headers: {
-              Authorization: this.$store.state.token,
+              Authorization: this.$store.state.token
             }
           }
         )

@@ -1,17 +1,19 @@
 <template>
   <div>
-    <v-chart :forceFit="true" :height="height" :data="data" :scale="scale">
-      <v-tooltip :showTitle="false" dataKey="item*percent" />
-      <v-axis />
-      <v-legend dataKey="item" />
-      <v-pie
-        position="percent"
-        color="item"
-        :vStyle="pieStyle"
-        :label="labelConfig"
-      />
-      <v-coord type="theta" :radius="0.75" :innerRadius="0.6" />
-    </v-chart>
+    <a-spin :spinning="spinning" size="large">
+      <v-chart :forceFit="true" :height="height" :data="data" :scale="scale">
+        <v-tooltip :showTitle="false" dataKey="item*percent" />
+        <v-axis />
+        <v-legend dataKey="item" />
+        <v-pie
+          position="percent"
+          color="item"
+          :vStyle="pieStyle"
+          :label="labelConfig"
+        />
+        <v-coord type="theta" :radius="0.75" :innerRadius="0.6" />
+      </v-chart>
+    </a-spin>
   </div>
 </template>
 
@@ -24,6 +26,7 @@ export default {
       data: null,
       scale: null,
       height: 400,
+      spinning: true,
       pieStyle: {
         stroke: "#fff",
         lineWidth: 1
@@ -69,6 +72,7 @@ export default {
 
             this.data = data;
             this.scale = scale;
+            this.spinning = false;
           }.bind(this)
         )
         .catch(

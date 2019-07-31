@@ -20,6 +20,7 @@ export default new Vuex.Store({
       state.token = token;
     },
     setNameStudentId(state, data) {
+      // debugger
       state.name = data.name;
       state.studentId = data.studentId;
       state.permissions = data.permissions;

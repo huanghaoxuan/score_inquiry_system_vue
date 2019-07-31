@@ -7,6 +7,10 @@
     <a-layout-sider :trigger="null" collapsible v-model="collapsed">
       <div class="logo" />
       <a-menu theme="dark" :defaultSelectedKeys="['']" mode="inline">
+        <a-menu-item key="welcome" @click="() => jump('/welcome')">
+          <a-icon type="home" />
+          <span>首页</span>
+        </a-menu-item>
         <a-sub-menu key="management" v-if="permissions == 3">
           <span slot="title"> <a-icon type="user" /><span>管理</span></span>
           <a-menu-item

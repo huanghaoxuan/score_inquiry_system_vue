@@ -1,5 +1,5 @@
 <template>
-  <div style="background:#ECECEC; padding:30px">
+  <div style="background:#ECECEC; padding:30px;width:100%">
     <a-card title="成绩分析">
       <score-chart></score-chart>
     </a-card>

@@ -34,7 +34,7 @@ export default {
             const scale = [
               {
                 dataKey: "count",
-                tickInterval: 20
+                tickInterval: 5
               }
             ];
             this.data = data;

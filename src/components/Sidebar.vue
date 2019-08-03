@@ -1,4 +1,3 @@
-/* eslint-disable vue/no-parsing-error */
 <template>
   <a-layout
     id="components-layout-demo-custom-trigger"
@@ -29,7 +28,7 @@
             >课程管理</a-menu-item
           >
         </a-sub-menu>
-        <a-sub-menu key="scores_input" v-if="permissions != 1">
+        <a-sub-menu key="scores_input" v-if="permissions == 2">
           <span slot="title"> <a-icon type="user" /><span>成绩录入</span></span>
           <a-menu-item
             key="scores_input_stage"
@@ -47,6 +46,14 @@
           key="show_scores"
           @click="() => jump('/show_scores')"
           v-if="permissions == 1"
+        >
+          <a-icon type="pie-chart" />
+          <span>成绩查询</span>
+        </a-menu-item>
+        <a-menu-item
+          key="show_all_scores"
+          @click="() => jump('/show_all_scores')"
+          v-if="permissions == 3"
         >
           <a-icon type="pie-chart" />
           <span>成绩查询</span>

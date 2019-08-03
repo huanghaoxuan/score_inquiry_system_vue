@@ -17,18 +17,19 @@
         :dataSource="data"
         @change="handleTableChange"
       >
-        <template slot="sourceStage" slot-scope="text, record">
+      <!-- 查看阶段性成绩 -->
+        <!-- <template slot="sourceStage" slot-scope="text, record">
           <div class="editable-row-operations">
             <stage :sourceStageData="data[record.key]"></stage>
           </div>
-        </template>
+        </template> -->
       </a-table>
     </a-card>
   </div>
 </template>
 
 <script>
-import stage from "./stage.vue";
+// import stage from "./stage.vue";
 const columns = [
   {
     title: "课程名字",
@@ -62,7 +63,7 @@ const columns = [
 const data = [];
 export default {
   inject: ["reload"],
-  components: { stage },
+  // components: { stage },
   data() {
     return {
       data,

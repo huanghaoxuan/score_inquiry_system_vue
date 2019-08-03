@@ -182,7 +182,7 @@ export default {
           title: "名字",
           dataIndex: "name",
           key: "1",
-          width: "150px",
+          width: "200px",
           // fixed: "left",
           scopedSlots: { customRender: "name" }
         },
@@ -190,7 +190,7 @@ export default {
           title: "学号",
           dataIndex: "studentId",
           key: "2",
-          width: "150px",
+          width: "200px",
           // fixed: "left",
           scopedSlots: { customRender: "studentId" }
         }
@@ -204,7 +204,7 @@ export default {
             "%）",
           dataIndex: this.allData[index].id,
           key: index + 3 + "",
-          width: "150px",
+          width: "200px",
           scopedSlots: { customRender: this.allData[index].id }
         };
         columns.push(nextColumns);
@@ -213,7 +213,7 @@ export default {
       let col = {
         title: "期末成绩",
         dataIndex: "final",
-        width: "150px",
+        width: "200px",
         // fixed: "right",
         key: 3 + this.allData.length,
         scopedSlots: { customRender: "final" }
@@ -222,7 +222,7 @@ export default {
       col = {
         title: "最终成绩",
         dataIndex: "result",
-        width: "150px",
+        width: "200px",
         // fixed: "right",
         key: 4 + this.allData.length,
         scopedSlots: { customRender: "result" }

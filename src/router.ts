@@ -46,6 +46,11 @@ export default new Router({
           component: () => import("./views/show_sources/final.vue")
         },
         {
+          path: "/show_all_scores",
+          name: "show_all_scores",
+          component: () => import("./views/show_all_sources/status.vue")
+        },
+        {
           path: "/welcome",
           name: "welcome",
           component: () => import("./views/welcome/welcome.vue")

@@ -1,6 +1,6 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
-    <a-card title="阶段性成绩录入">
+    <a-card title="成绩查看">
       <a-table
         :pagination="pagination"
         :columns="columns"
@@ -10,12 +10,9 @@
       >
         <template slot="operation1" slot-scope="text, record">
           <div class="editable-row-operations">
-            <student :teachingClassInformationData="data[record.key]"></student>
-          </div>
-        </template>
-        <template slot="operation2" slot-scope="text, record">
-          <div class="editable-row-operations">
-            <scores :teachingClassInformationData="data[record.key]"></scores>
+            <scores_student
+              :teachingClassInformationData="data[record.key]"
+            ></scores_student>
           </div>
         </template>
       </a-table>
@@ -24,8 +21,7 @@
 </template>
 
 <script>
-import student from "./student.vue";
-import scores from "./scores.vue";
+import scores_student from "./scores_student.vue";
 const columns = [
   {
     title: "课程名称",
@@ -46,24 +42,17 @@ const columns = [
     width: "20%"
   },
   {
-    title: "学生管理",
+    title: "操作",
     dataIndex: "operation1",
     key: "4",
     width: "20%",
     scopedSlots: { customRender: "operation1" }
-  },
-  {
-    title: "管理",
-    dataIndex: "operation2",
-    key: "5",
-    width: "20%",
-    scopedSlots: { customRender: "operation2" }
   }
 ];
 const data = [];
 export default {
   inject: ["reload"],
-  components: { student, scores },
+  components: { scores_student },
   props: {
     courseData: {}
   },
@@ -97,8 +86,7 @@ export default {
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
-            ...formData,
-            courseTeacherName: this.$store.state.name
+            ...formData
           }),
           {
             headers: {

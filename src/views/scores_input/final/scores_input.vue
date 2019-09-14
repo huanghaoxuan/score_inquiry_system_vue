@@ -45,9 +45,13 @@
               v-model="data[`${record.key}`].final"
             />
           </template>
-          <template slot="result" slot-scope="text, record">
-            <!-- {{ data[`${record.key}`].result }} -->
-            {{ showResult(`${record.key}`) }}
+          <template slot="result" slot-scope="result, record">
+            <div v-if="parseInt(`${result}`) < 60" style="color : #f00;">
+              {{ showResult(`${record.key}`) }}
+            </div>
+            <div v-else>
+              {{ showResult(`${record.key}`) }}
+            </div>
           </template>
         </a-table>
       </a-card>

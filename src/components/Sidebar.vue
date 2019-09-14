@@ -75,6 +75,20 @@
               <a-list itemLayout="horizontal">
                 <a-list-item>
                   <a-list-item-meta
+                    ><a
+                      slot="title"
+                      @click="() => (this.newPasswordBool = true)"
+                    >
+                      <a-avatar
+                        size="small"
+                        slot="avatar"
+                        icon="security-scan"
+                      />&nbsp;&nbsp;修改密码</a
+                    >
+                  </a-list-item-meta>
+                </a-list-item>
+                <a-list-item>
+                  <a-list-item-meta
                     ><a slot="title" @click="() => jump('/login')">
                       <a-avatar
                         size="small"
@@ -85,6 +99,108 @@
                   </a-list-item-meta>
                 </a-list-item>
               </a-list>
+              <!-- 修改密码弹窗 -->
+              <a-modal
+                title="修改密码"
+                v-model="newPasswordBool"
+                @ok="handleOk"
+                width="40%"
+              >
+                <template slot="footer">
+                  <a-button key="back" @click="handleCancel">取消</a-button>
+                  <a-button key="submit" type="primary" @click="handleOk">
+                    确认
+                  </a-button>
+                </template>
+                <a-form
+                  id="components-form-demo-normal-login"
+                  :form="form"
+                  class="login-form"
+                  @submit="handleOk"
+                >
+                  <a-form-item
+                    label="旧密码"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                  >
+                    <a-input
+                      v-decorator="[
+                        'oldPassword',
+                        {
+                          rules: [
+                            {
+                              required: true,
+                              message: '请输入旧密码'
+                            }
+                          ]
+                        }
+                      ]"
+                      type="password"
+                      placeholder="请输入旧密码"
+                    >
+                      <a-icon
+                        slot="prefix"
+                        type="lock"
+                        style="color: rgba(0,0,0,.25)"
+                      />
+                    </a-input>
+                  </a-form-item>
+                  <a-form-item
+                    label="新密码"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                  >
+                    <a-input
+                      v-decorator="[
+                        'newPassword',
+                        {
+                          rules: [
+                            {
+                              required: true,
+                              message: '请输入新密码'
+                            }
+                          ]
+                        }
+                      ]"
+                      type="password"
+                      placeholder="请输入新密码"
+                    >
+                      <a-icon
+                        slot="prefix"
+                        type="lock"
+                        style="color: rgba(0,0,0,.25)"
+                      />
+                    </a-input>
+                  </a-form-item>
+                  <a-form-item
+                    label="再输入新密码"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+                  >
+                    <a-input
+                      v-decorator="[
+                        'newPassword2',
+                        {
+                          rules: [
+                            {
+                              required: true,
+                              message: '请重新输入新密码'
+                            }
+                          ]
+                        }
+                      ]"
+                      type="password"
+                      placeholder="请重新输入新密码"
+                    >
+                      <a-icon
+                        slot="prefix"
+                        type="lock"
+                        style="color: rgba(0,0,0,.25)"
+                      />
+                    </a-input>
+                  </a-form-item>
+                </a-form>
+              </a-modal>
             </template>
             <a-avatar
               shape="square"
@@ -101,7 +217,11 @@
 </template>
 <script>
 import router from "../router";
+import crypto from "crypto";
 export default {
+  beforeCreate() {
+    this.form = this.$form.createForm(this);
+  },
   provide() {
     return {
       reload: this.reload
@@ -109,15 +229,87 @@ export default {
   },
   data() {
     return {
+      newPasswordBool: false, //修改密码弹窗控制器
       permissions: this.$store.state.permissions,
       alive: true,
       dataIdentity: this.$store.state.dataIdentity,
       avatarValue: "您",
       color: "#f56a00",
-      collapsed: false
+      collapsed: false,
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 12 }
+      }
     };
   },
   methods: {
+    handleCancel(e) {
+      this.newPasswordBool = false;
+    },
+    handleOk(e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          if (values.newPassword2 != values.newPassword) {
+            this.$message.error("请两次输入的新密码保持一致");
+          } else {
+            var md5 = crypto.createHash("md5");
+            md5.update(values.newPassword);
+            var newPassword = md5.digest("hex");
+
+            md5 = crypto.createHash("md5");
+            md5.update(values.oldPassword);
+            var oldPassword = md5.digest("hex");
+            this.axios
+              .post(
+                "/user/UpdatePassWord",
+                JSON.stringify({
+                  studentId: this.$store.state.studentId,
+                  oldPassword: oldPassword,
+                  newPassword: newPassword
+                }),
+                {
+                  headers: {
+                    Authorization: this.$store.state.token,
+                    "Content-Type": "application/json"
+                  }
+                }
+              )
+              .then(
+                function(res) {
+                  if (res.data.status == 0) {
+                    this.$notification.error({
+                      message: "旧密码错误！"
+                    });
+                  } else {
+                    this.$notification.success({
+                      message: "密码修改成功！"
+                    });
+                    this.newPasswordBool = false;
+                  }
+                }.bind(this)
+              )
+              .catch(
+                function(err) {
+                  if (err.response.status == 403) {
+                    //console.log(err.response);
+                    this.$notification.error({
+                      message: "账号密码已过期，请重新登录！"
+                    });
+                    this.$router.push("/login");
+                    //控制台打印错误返回的内容
+                  }
+                  //bind(this)可以不用
+                }.bind(this)
+              );
+          }
+        }
+      });
+    },
     jump(address) {
       this.$router.push(address);
     },
@@ -152,5 +344,14 @@ export default {
   height: 32px;
   background: rgba(255, 255, 255, 0.2);
   margin: 16px;
+}
+#components-form-demo-normal-login .login-form {
+  max-width: 300px;
+}
+#components-form-demo-normal-login .login-form-forgot {
+  float: right;
+}
+#components-form-demo-normal-login .login-form-button {
+  width: 100%;
 }
 </style>

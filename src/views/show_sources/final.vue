@@ -17,7 +17,7 @@
         :dataSource="data"
         @change="handleTableChange"
       >
-      <!-- 查看阶段性成绩 -->
+        <!-- 查看阶段性成绩 -->
         <!-- <template slot="sourceStage" slot-scope="text, record">
           <div class="editable-row-operations">
             <stage :sourceStageData="data[record.key]"></stage>

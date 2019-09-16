@@ -39,7 +39,16 @@
           :columns="columns"
           :dataSource="data"
           @change="handleTableChange"
-        />
+        >
+          <template slot="result" slot-scope="result">
+            <div v-if="parseInt(`${result}`) < 60" style="color : #f00;">
+              {{ result }}
+            </div>
+            <div v-else>
+              {{ result }}
+            </div>
+          </template>
+        </a-table>
       </a-card>
     </a-modal>
   </div>

@@ -47,7 +47,6 @@
             </form>
           </span>
         </div>
-
         <div id="login_img">
           <!-- 图片绘制框 -->
           <span class="circle">

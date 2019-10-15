@@ -1,6 +1,22 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
     <a-card title="阶段性成绩录入">
+      <a-form layout="inline" :form="form" @submit="handleSubmit">
+        <a-form-item label="课程名">
+          <a-input v-decorator="['courseName']" placeholder="请输入课程名" />
+        </a-form-item>
+        <a-form-item label="教学班号">
+          <a-input
+            v-decorator="['teachingClassId']"
+            placeholder="请输入教学班号"
+          />
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" html-type="submit">
+            查询
+          </a-button>
+        </a-form-item>
+      </a-form>
       <a-table
         :pagination="pagination"
         :columns="columns"

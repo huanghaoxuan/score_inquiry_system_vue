@@ -2,21 +2,30 @@
   <div style="background:#ECECEC; padding:30px">
     <a-card title="成绩查询">
       <a-form layout="inline" :form="form" @submit="handleSubmit">
-        <!-- <a-form-item label="名字">
-          <a-input v-decorator="['name']" placeholder="请输入名字" />
+        <a-form-item label="课程名">
+          <a-input v-decorator="['courseName']" placeholder="请输入课程名" />
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit">
             查询
           </a-button>
-        </a-form-item> -->
+        </a-form-item>
       </a-form>
       <a-table
+        :scroll="{ x: true }"
         :pagination="pagination"
         :columns="columns"
         :dataSource="data"
         @change="handleTableChange"
       >
+        <template slot="result" slot-scope="result">
+          <div v-if="parseInt(`${result}`) < 60" style="color : #f00;">
+            {{ result }}
+          </div>
+          <div v-else>
+            {{ result }}
+          </div>
+        </template>
         <!-- 查看阶段性成绩 -->
         <!-- <template slot="sourceStage" slot-scope="text, record">
           <div class="editable-row-operations">
@@ -57,7 +66,7 @@ const columns = [
     dataIndex: "result",
     key: "4",
     width: "16%",
-    scopedSlots: { customRender: "scores" }
+    scopedSlots: { customRender: "result" }
   }
 ];
 const data = [];

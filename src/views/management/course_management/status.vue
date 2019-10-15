@@ -3,6 +3,9 @@
     <a-card title="课程管理">
       <floder slot="extra"></floder>
       <a-form layout="inline" :form="form" @submit="handleSubmit">
+        <a-form-item label="课程号">
+          <a-input v-decorator="['courseId']" placeholder="请输入课程号" />
+        </a-form-item>
         <a-form-item label="课程名">
           <a-input v-decorator="['name']" placeholder="请输入课程名" />
         </a-form-item>
@@ -14,13 +17,14 @@
       </a-form>
       <br />
       <a-table
+        :scroll="{ x: true }"
         :pagination="pagination"
         :columns="columns"
         :dataSource="data"
         @change="handleTableChange"
       >
         <template
-          v-for="col in ['name', 'year', 'semester']"
+          v-for="col in ['courseId', 'name', 'year', 'semester']"
           :slot="col"
           slot-scope="text, record"
         >
@@ -68,28 +72,29 @@ import floder from "./floder.vue";
 import classes_management from "./../classes_management/status.vue";
 const columns = [
   {
+    title: "课程号",
+    dataIndex: "courseId",
+    key: "0"
+  },
+  {
     title: "课程名",
-    width: "20%",
     dataIndex: "name",
     key: "1"
   },
   {
     title: "学年（若显示为2019，即为2019-2020学年）",
-    width: "20%",
     dataIndex: "year",
     key: "2",
     scopedSlots: { customRender: "year" }
   },
   {
     title: "学期",
-    width: "20%",
     dataIndex: "semester",
     key: "3",
     scopedSlots: { customRender: "semester" }
   },
   {
     title: "教学班管理",
-    width: "20%",
     dataIndex: "operation",
     key: "4",
     scopedSlots: { customRender: "operation" }
@@ -98,7 +103,6 @@ const columns = [
     title: "操作",
     dataIndex: "operation2",
     key: "5",
-    width: "20%",
     scopedSlots: { customRender: "operation2" }
   }
 ];

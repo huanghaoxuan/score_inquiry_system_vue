@@ -18,6 +18,7 @@
           >确认添加</a-button
         >
         <a-table
+          :scroll="{ x: true }"
           :pagination="pagination"
           :columns="columns"
           :dataSource="data"
@@ -157,7 +158,8 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let _this = this;
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/sourceStage/selectByPage",
@@ -181,6 +183,7 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].sourceStageId = _this.sourceStageData.id;
             }
             console.log(this.data);
             this.data = res.data.data;

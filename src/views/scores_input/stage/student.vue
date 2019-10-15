@@ -58,6 +58,7 @@
           </a-form-item>
         </a-form>
         <a-table
+          :scroll="{ x: true }"
           :pagination="pagination"
           :columns="columns"
           :dataSource="data"

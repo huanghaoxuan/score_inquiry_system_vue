@@ -95,6 +95,16 @@
           </a-select>
         </a-form-item>
         <a-form-item
+          label="原所在专业"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <a-input
+            v-decorator="['profesionalOld']"
+            placeholder="请输入原所在专业"
+          />
+        </a-form-item>
+        <a-form-item
           label="原所在年级"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
@@ -139,6 +149,16 @@
               经济管理学院
             </a-select-option>
           </a-select>
+        </a-form-item>
+        <a-form-item
+          label="现所在专业"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <a-input
+            v-decorator="['profesionalNew']"
+            placeholder="请输入现所在专业"
+          />
         </a-form-item>
         <a-form-item
           label="现所在年级"

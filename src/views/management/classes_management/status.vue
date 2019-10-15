@@ -19,6 +19,7 @@
           @getdata="getdata"
         ></floder>
         <a-table
+          :scroll="{ x: true }"
           :pagination="pagination"
           :columns="columns"
           :dataSource="data"

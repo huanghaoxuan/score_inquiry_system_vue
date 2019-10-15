@@ -14,6 +14,19 @@
     >
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item
+          label="课程号"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <a-input
+            v-decorator="[
+              'courseId',
+              { rules: [{ required: true, message: '课程号不能为空' }] }
+            ]"
+            placeholder="请输入课程号"
+          />
+        </a-form-item>
+        <a-form-item
           label="课程名"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"

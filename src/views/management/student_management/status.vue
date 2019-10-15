@@ -49,6 +49,7 @@
       </a-form>
       <br />
       <a-table
+        :scroll="{ x: true }"
         :pagination="pagination"
         :columns="columns"
         :dataSource="data"
@@ -59,6 +60,7 @@
             'name',
             'studentId',
             'departmentNew',
+            'profesionalNew',
             'gradeNew',
             'classNew'
           ]"
@@ -120,6 +122,13 @@ const columns = [
     key: "3",
     width: "16%",
     scopedSlots: { customRender: "departmentNew" }
+  },
+  {
+    title: "所在专业",
+    dataIndex: "profesionalNew",
+    key: "31",
+    width: "16%",
+    scopedSlots: { customRender: "profesionalNew" }
   },
   {
     title: "所在年级",

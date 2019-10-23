@@ -48,22 +48,34 @@ import scores_student from "./scores_student.vue";
 import scores_input from "./scores_input.vue";
 const columns = [
   {
+    title: "课程编号",
+    dataIndex: "courseId",
+    key: "01"
+  },
+  {
     title: "课程名称",
     dataIndex: "courseName",
-    key: "1",
-    width: "20%"
+    key: "1"
+  },
+  {
+    title: "学年",
+    dataIndex: "yearAli",
+    key: "12"
+  },
+  {
+    title: "学期",
+    dataIndex: "semester",
+    key: "13"
   },
   {
     title: "教学班号",
     dataIndex: "teachingClassId",
-    key: "2",
-    width: "20%"
+    key: "2"
   },
   {
     title: "任课老师名字",
     dataIndex: "courseTeacherName",
-    key: "3",
-    width: "20%"
+    key: "3"
   },
   {
     title: "学生管理",

@@ -44,22 +44,34 @@ import student from "./student.vue";
 import scores from "./scores.vue";
 const columns = [
   {
+    title: "课程编号",
+    dataIndex: "courseId",
+    key: "01"
+  },
+  {
     title: "课程名称",
     dataIndex: "courseName",
-    key: "1",
-    width: "20%"
+    key: "1"
+  },
+  {
+    title: "学年",
+    dataIndex: "yearAli",
+    key: "12"
+  },
+  {
+    title: "学期",
+    dataIndex: "semester",
+    key: "13"
   },
   {
     title: "教学班号",
     dataIndex: "teachingClassId",
-    key: "2",
-    width: "20%"
+    key: "2"
   },
   {
     title: "任课老师名字",
     dataIndex: "courseTeacherName",
-    key: "3",
-    width: "20%"
+    key: "3"
   },
   {
     title: "学生管理",
@@ -129,6 +141,10 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].yearAli =
+                res.data.data[index].year +
+                " - " +
+                (res.data.data[index].year + 1);
             }
             this.data = res.data.data;
             this.pagination.total = res.data.data.length;

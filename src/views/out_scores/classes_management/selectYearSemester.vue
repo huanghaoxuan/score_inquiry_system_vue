@@ -3,8 +3,8 @@
     <a-button @click="showModal">跨学期课程导出</a-button>
     <a-modal
       :visible="visible"
-      @ok="handleOk"
-      okText="确认"
+      @ok="downloadCrossSemester"
+      okText="导出"
       cancelText="取消"
       :maskClosable="false"
       :confirmLoading="confirmLoading"
@@ -28,21 +28,6 @@
 </template>
 
 <script>
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows
-    );
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows);
-  }
-};
 const columns = [
   {
     title: "课程名称",
@@ -57,8 +42,19 @@ const columns = [
   {
     title: "任课老师名字",
     dataIndex: "courseTeacherName",
-    key: "3",
-    scopedSlots: { customRender: "courseTeacherName" }
+    key: "3"
+  },
+  {
+    title: "学年",
+    dataIndex: "yearAli",
+    key: "4",
+    scopedSlots: { customRender: "year" }
+  },
+  {
+    title: "学期",
+    dataIndex: "semester",
+    key: "5",
+    scopedSlots: { customRender: "semester" }
   }
 ];
 const data = [];
@@ -76,10 +72,49 @@ export default {
       allData: [],
       form: this.$form.createForm(this),
       pagination: { defaultPageSize: 15, total: 15 },
-      rowSelection
+      rowSelection: {},
+      outRes: "" //需要导出的
     };
   },
   methods: {
+    downloadCrossSemester() {
+      const _this = this;
+      const formData = this.form.getFieldsValue();
+      this.axios
+        .post(
+          "/teachingClass/downloadCrossSemester",
+          JSON.stringify({
+            data: _this.outRes,
+            ...formData
+          }),
+          {
+            params: {},
+            responseType: "blob",
+            headers: {
+              Authorization: this.$store.state.token,
+              "Content-Type": "application/json"
+            }
+          }
+        )
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "_this.outRes" + ".xlsx");
+          document.body.appendChild(link);
+          link.click();
+          this.visible = false;
+        })
+        .catch(
+          function(err) {
+            if (err.response) {
+              console.log(err.response);
+              //控制台打印错误返回的内容
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
+    },
     showModal() {
       this.getdata(1, 15);
       this.visible = true;
@@ -105,14 +140,22 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
+      const _this = this;
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/teachingClassInformation/selectByPage",
+          "/teachingClassInformation/selectCrossSemester",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
-            teachingClassId: this.teachingClassInformationData.teachingClassId,
+            teachingClassId: _this.teachingClassInformationData.teachingClassId,
+            id: _this.teachingClassInformationData.id,
+            uniqueSign: _this.teachingClassInformationData.uniqueSign,
+            courseName: _this.teachingClassInformationData.courseName,
+            courseId: _this.teachingClassInformationData.courseId,
+            courseTeacherName:
+              _this.teachingClassInformationData.courseTeacherName,
+            courseTeacherId: _this.teachingClassInformationData.courseTeacherId,
             ...formData
           }),
           {
@@ -128,6 +171,10 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].yearAli =
+                res.data.data[index].year +
+                " - " +
+                (res.data.data[index].year + 1);
             }
             this.data = res.data.data;
             this.pagination.total = res.data.data.length;
@@ -150,45 +197,16 @@ export default {
             //bind(this)可以不用
           }.bind(this)
         );
-    },
-    download() {
-      this.axios
-        .get(
-          "/teachingClass/download/" +
-            this.teachingClassInformationData.teachingClassId,
-          {
-            params: {},
-            responseType: "blob",
-            headers: {
-              Authorization: this.$store.state.token
-            }
-          }
-        )
-        .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute(
-            "download",
-            this.teachingClassInformationData.teachingClassId + ".xlsx"
-          );
-          document.body.appendChild(link);
-          link.click();
-        })
-        .catch(
-          function(err) {
-            if (err.response) {
-              console.log(err.response);
-              //控制台打印错误返回的内容
-            }
-            //bind(this)可以不用
-          }.bind(this)
-        );
     }
+  },
+  mounted() {
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.outRes = selectedRows;
+      }
+    };
+    this.rowSelection = rowSelection;
   }
-  // mounted() {
-  //   this.getdata(1, 15);
-  // }
 };
 </script>
 <style>

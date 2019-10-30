@@ -29,6 +29,7 @@
               style="margin: -5px 0"
               v-model="data[`${record.key}`].scores"
             />
+            
           </template>
         </a-table>
       </a-card>
@@ -167,6 +168,7 @@ export default {
             pageNum: pageNum,
             pageSize: pageSize,
             ...formData,
+            courseId: this.sourceStageData.courseId,
             id: this.sourceStageData.id,
             teachingClassId: this.sourceStageData.teachingClassId
           }),

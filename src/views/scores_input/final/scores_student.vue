@@ -80,7 +80,8 @@ export default {
         .post(
           "/sourceStageInformation/selectAll",
           this.qs.stringify({
-            teachingClassId: this.teachingClassInformationData.teachingClassId
+            teachingClassId: this.teachingClassInformationData.teachingClassId,
+            courseId: this.teachingClassInformationData.id
           }),
           {
             headers: {
@@ -153,6 +154,7 @@ export default {
             pageNum: pageNum,
             pageSize: pageSize,
             teachingClassId: this.teachingClassInformationData.teachingClassId,
+            courseId: this.teachingClassInformationData.id,
             ...formData
           }),
           {
@@ -240,7 +242,9 @@ export default {
       this.axios
         .get(
           "/teachingClass/download/" +
-            this.teachingClassInformationData.teachingClassId,
+            this.teachingClassInformationData.teachingClassId +
+            "/" +
+            this.teachingClassInformationData.id,
           {
             params: {},
             responseType: "blob",

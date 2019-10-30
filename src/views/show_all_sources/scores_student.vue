@@ -1,48 +1,54 @@
 <template>
   <div>
     <a @click="showModal">查看学生成绩</a>
-    <a-modal
-      :visible="visible"
-      @ok="handleOk"
-      okText="确认"
-      cancelText="取消"
-      :maskClosable="false"
-      :confirmLoading="confirmLoading"
-      width="70%"
-      :scroll="{ x: true }"
-      @cancel="handleCancel"
-    >
+    <a-modal :visible="visible"
+             @ok="handleOk"
+             okText="确认"
+             cancelText="取消"
+             :maskClosable="false"
+             :confirmLoading="confirmLoading"
+             width="70%"
+             :scroll="{ x: true }"
+             @cancel="handleCancel">
       <a-card title="学生成绩查看">
-        <a-tooltip placement="bottom" slot="extra">
+        <a-tooltip placement="bottom"
+                   slot="extra">
           <template slot="title">
             <span>下载</span>
           </template>
-          <a-icon type="download" v-on:click="download" style="fontSize:20px" />
+          <a-icon type="download"
+                  v-on:click="download"
+                  style="fontSize:20px" />
         </a-tooltip>
 
-        <a-form layout="inline" :form="form" @submit="handleSubmit">
+        <a-form layout="inline"
+                :form="form"
+                @submit="handleSubmit">
           <a-form-item label="名字">
-            <a-input v-decorator="['name']" placeholder="请输入名字" />
+            <a-input v-decorator="['name']"
+                     placeholder="请输入名字" />
           </a-form-item>
           <a-form-item label="学号">
-            <a-input v-decorator="['studentId']" placeholder="请输入学号" />
+            <a-input v-decorator="['studentId']"
+                     placeholder="请输入学号" />
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" html-type="submit">
+            <a-button type="primary"
+                      html-type="submit">
               查询
             </a-button>
           </a-form-item>
         </a-form>
         <br />
-        <a-table
-          :scroll="{ x: true }"
-          :pagination="pagination"
-          :columns="columns"
-          :dataSource="data"
-          @change="handleTableChange"
-        >
-          <template slot="result" slot-scope="result">
-            <div v-if="parseInt(`${result}`) < 60" style="color : #f00;">
+        <a-table :scroll="{ x: true }"
+                 :pagination="pagination"
+                 :columns="columns"
+                 :dataSource="data"
+                 @change="handleTableChange">
+          <template slot="result"
+                    slot-scope="result">
+            <div v-if="parseInt(`${result}`) < 60"
+                 style="color : #f00;">
               {{ result }}
             </div>
             <div v-else>
@@ -63,7 +69,7 @@ export default {
   props: {
     teachingClassInformationData: {}
   },
-  data() {
+  data () {
     return {
       data,
       columns,
@@ -75,12 +81,13 @@ export default {
     };
   },
   methods: {
-    getAllStageInfo() {
+    getAllStageInfo () {
       this.axios
         .post(
           "/sourceStageInformation/selectAll",
           this.qs.stringify({
-            teachingClassId: this.teachingClassInformationData.teachingClassId
+            teachingClassId: this.teachingClassInformationData.teachingClassId,
+            courseId: this.teachingClassInformationData.id
           }),
           {
             headers: {
@@ -90,7 +97,7 @@ export default {
           }
         )
         .then(
-          function(res) {
+          function (res) {
             //console.log(res.data);
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
@@ -102,7 +109,7 @@ export default {
           }.bind(this)
         )
         .catch(
-          function(err) {
+          function (err) {
             if (err.response) {
               //console.log(err.response);
               //控制台打印错误返回的内容
@@ -119,24 +126,24 @@ export default {
           }.bind(this)
         );
     },
-    showModal() {
+    showModal () {
       this.getAllStageInfo();
       this.getdata(1, 15);
       this.visible = true;
     },
-    handleOk(e) {
+    handleOk (e) {
       this.visible = false;
       //this.confirmLoading = true;
       //this.handleSubmit(e);
     },
-    handleCancel(e) {
+    handleCancel (e) {
       this.visible = false;
     },
-    handleTableChange(pagination, filters, sorter) {
+    handleTableChange (pagination, filters, sorter) {
       // this.getdata(pagination.current, 15);
     },
     //查询时提交数据
-    handleSubmit(e) {
+    handleSubmit (e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
@@ -144,7 +151,7 @@ export default {
         }
       });
     },
-    getdata(pageNum, pageSize) {
+    getdata (pageNum, pageSize) {
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
@@ -153,6 +160,7 @@ export default {
             pageNum: pageNum,
             pageSize: pageSize,
             teachingClassId: this.teachingClassInformationData.teachingClassId,
+            courseId: this.teachingClassInformationData.id,
             ...formData
           }),
           {
@@ -163,7 +171,7 @@ export default {
           }
         )
         .then(
-          function(res) {
+          function (res) {
             //console.log(res.data);
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
@@ -174,7 +182,7 @@ export default {
           }.bind(this)
         )
         .catch(
-          function(err) {
+          function (err) {
             if (err.response) {
               //console.log(err.response);
               //控制台打印错误返回的内容
@@ -191,7 +199,7 @@ export default {
           }.bind(this)
         );
     },
-    getTableHeader() {
+    getTableHeader () {
       const columns = [
         {
           title: "名字",
@@ -236,11 +244,13 @@ export default {
       this.columns = columns;
       console.log(this.columns);
     },
-    download() {
+    download () {
       this.axios
         .get(
           "/teachingClass/download/" +
-            this.teachingClassInformationData.teachingClassId,
+          this.teachingClassInformationData.teachingClassId +
+          "/" +
+          this.teachingClassInformationData.id,
           {
             params: {},
             responseType: "blob",
@@ -261,7 +271,7 @@ export default {
           link.click();
         })
         .catch(
-          function(err) {
+          function (err) {
             if (err.response) {
               console.log(err.response);
               //控制台打印错误返回的内容

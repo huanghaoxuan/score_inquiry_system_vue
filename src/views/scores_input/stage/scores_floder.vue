@@ -103,6 +103,7 @@ export default {
                 "/sourceStageInformation/insert",
                 this.qs.stringify({
                   ...this.teachingClassInformationData,
+                  courseId: this.teachingClassInformationData.id,
                   name: this.teachingClassInformationData.courseName,
                   createdAt: null,
                   ...values

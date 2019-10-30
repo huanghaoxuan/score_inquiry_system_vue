@@ -44,23 +44,40 @@
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-input
-            v-decorator="[
-              'year',
-              {
-                rules: [
-                  {
-                    pattern: /(^[\-0-9][0-9]*([0-9]+)?)$/,
-                    required: true,
-                    message:
-                      '学年输入有误（请输入数字）（若为  2018 — 2019 学年 请输入 2018）'
-                  }
-                ]
-              }
-            ]"
-            placeholder="若为2018—2019学年请输入2018"
-            addonAfter="年"
-          />
+          <a-input-group compact>
+            <a-input
+              style=" width: 100px; text-align: center"
+              v-decorator="[
+                'year',
+                {
+                  getValueFromEvent: yearChange(),
+                  rules: [
+                    {
+                      pattern: /(^[\-0-9][0-9]*([0-9]+)?)$/,
+                      required: true,
+                      message:
+                        '学年输入有误（请输入数字）'
+                    }
+                  ]
+                }
+              ]"
+            />
+            <a-input
+              style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff"
+              placeholder="-"
+              disabled
+            />
+            <a-input
+              v-model="year2"
+              style="width: 100px; text-align: center; border-left: 0;pointer-events: none;backgroundColor: #fff"
+              disabled
+            />
+            <a-input
+              style=" width: 60px; border-left: 0; pointer-events: none; backgroundColor: #fff"
+              placeholder="学年"
+              disabled
+            />
+          </a-input-group>
         </a-form-item>
 
         <a-form-item
@@ -98,10 +115,14 @@ export default {
     return {
       visible: false,
       confirmLoading: false,
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      year2: ""
     };
   },
   methods: {
+    yearChange(value) {
+      this.year2 = parseInt(this.form.getFieldValue("year")) + 1;
+    },
     showModal() {
       this.visible = true;
     },

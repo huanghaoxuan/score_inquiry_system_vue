@@ -351,6 +351,7 @@ export default {
             pageNum: pageNum,
             pageSize: pageSize,
             teachingClassId: this.teachingClassInformationData.teachingClassId,
+            courseId: this.teachingClassInformationData.id,
             ...formData
           }),
           {

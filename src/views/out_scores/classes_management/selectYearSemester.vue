@@ -100,7 +100,7 @@ export default {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "_this.outRes" + ".xlsx");
+          link.setAttribute("download", "crossSemester.xlsx");
           document.body.appendChild(link);
           link.click();
           this.visible = false;

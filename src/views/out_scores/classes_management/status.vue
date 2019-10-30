@@ -95,13 +95,19 @@ export default {
   methods: {
     download1(teachingClassId) {
       this.axios
-        .get("/teachingClass/download/" + teachingClassId, {
-          params: {},
-          responseType: "blob",
-          headers: {
-            Authorization: this.$store.state.token
+        .get(
+          "/teachingClass/download/" +
+            teachingClassId +
+            "/" +
+            this.courseData.id,
+          {
+            params: {},
+            responseType: "blob",
+            headers: {
+              Authorization: this.$store.state.token
+            }
           }
-        })
+        )
         .then(response => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");

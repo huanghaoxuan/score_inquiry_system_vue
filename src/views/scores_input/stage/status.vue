@@ -11,6 +11,46 @@
             placeholder="请输入教学班号"
           />
         </a-form-item>
+        <a-form-item label="学年">
+          <a-input-group compact>
+            <a-input
+              style=" width: 100px; text-align: center"
+              v-decorator="['year', { getValueFromEvent: yearChange() }]"
+            />
+            <a-input
+              style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff"
+              placeholder="-"
+              disabled
+            />
+            <a-input
+              v-model="year2"
+              style="width: 100px; text-align: center; border-left: 0;pointer-events: none;backgroundColor: #fff"
+              disabled
+            />
+            <a-input
+              style=" width: 60px; border-left: 0; pointer-events: none; backgroundColor: #fff"
+              placeholder="学年"
+              disabled
+            />
+          </a-input-group>
+        </a-form-item>
+        <a-form-item label="学期">
+          <a-select
+            v-decorator="['semester']"
+            placeholder="请选择学期"
+            style="width: 120px;"
+          >
+            <a-select-option value="第一学期">
+              第一学期
+            </a-select-option>
+            <a-select-option value="第二学期">
+              第二学期
+            </a-select-option>
+            <a-select-option value="">
+              暂无
+            </a-select-option>
+          </a-select>
+        </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit">
             查询
@@ -101,10 +141,14 @@ export default {
       columns,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 9, total: 9 }
+      pagination: { defaultPageSize: 9, total: 9 },
+      year2: ""
     };
   },
   methods: {
+    yearChange(value) {
+      this.year2 = parseInt(this.form.getFieldValue("year")) + 1;
+    },
     handleTableChange(pagination, filters, sorter) {
       this.getdata(pagination.current, 9);
     },

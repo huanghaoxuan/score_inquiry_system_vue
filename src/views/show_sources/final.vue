@@ -9,9 +9,7 @@
           <a-input-group compact>
             <a-input
               style=" width: 100px; text-align: center"
-              v-model="year"
-              v-decorator="['year']"
-              @change="yearChange"
+              v-decorator="['year', { getValueFromEvent: yearChange() }]"
             />
             <a-input
               style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff"

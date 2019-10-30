@@ -24,7 +24,7 @@
         @change="handleTableChange"
       >
         <template
-          v-for="col in ['courseId', 'name', 'year', 'semester']"
+          v-for="col in ['courseId', 'name']"
           :slot="col"
           slot-scope="text, record"
         >
@@ -82,10 +82,10 @@ const columns = [
     key: "1"
   },
   {
-    title: "学年（若显示为2019，即为2019-2020学年）",
-    dataIndex: "year",
+    title: "学年",
+    dataIndex: "year1",
     key: "2",
-    scopedSlots: { customRender: "year" }
+    scopedSlots: { customRender: "year1" }
   },
   {
     title: "学期",
@@ -281,6 +281,9 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              var temp = res.data.data[index].year + 1;
+              res.data.data[index].year1 =
+                res.data.data[index].year + "-" + temp + " 学年";
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;

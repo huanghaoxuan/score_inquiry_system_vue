@@ -105,7 +105,6 @@ import floder from "./floder.vue";
 const columns = [
   {
     title: "姓名",
-    width: "16%",
     dataIndex: "name",
     key: "1",
     scopedSlots: { customRender: "name" }
@@ -114,41 +113,35 @@ const columns = [
     title: "学号",
     dataIndex: "studentId",
     key: "2",
-    width: "16%"
   },
   {
     title: "所在学院",
     dataIndex: "departmentNew",
     key: "3",
-    width: "16%",
     scopedSlots: { customRender: "departmentNew" }
   },
   {
     title: "所在专业",
     dataIndex: "profesionalNew",
     key: "31",
-    width: "16%",
     scopedSlots: { customRender: "profesionalNew" }
   },
   {
     title: "所在年级",
     dataIndex: "gradeNew",
     key: "4",
-    width: "16%",
     scopedSlots: { customRender: "gradeNew" }
   },
   {
     title: "所在班级",
     dataIndex: "classNew",
     key: "5",
-    width: "16%",
     scopedSlots: { customRender: "classNew" }
   },
   {
     title: "操作",
     dataIndex: "operation",
     key: "6",
-    width: "16%",
     scopedSlots: { customRender: "operation" }
   }
 ];

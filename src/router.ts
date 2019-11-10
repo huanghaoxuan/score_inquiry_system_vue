@@ -69,6 +69,11 @@ export default new Router({
       meta: { allowBack: false }
     },
     {
+      path: "/show_scores_mobile",
+      name: "show_scores_mobile",
+      component: () => import("./views/show_sources/final_mobile.vue")
+    },
+    {
       path: "*",
       redirect: "/welcome"
     }

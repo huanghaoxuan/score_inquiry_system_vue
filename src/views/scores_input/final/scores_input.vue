@@ -118,7 +118,7 @@ export default {
       }
       // debugger;
       this.data[key].result = result.toFixed(2);
-      return result.toFixed(2);
+      return result.toFixed(1);
     },
     onCellChange(key, dataIndex, value) {
       const dataSource = [...this.data];

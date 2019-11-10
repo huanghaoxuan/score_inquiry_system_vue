@@ -81,31 +81,33 @@
 // import stage from "./stage.vue";
 const columns = [
   {
+    title: "课程号",
+    dataIndex: "courseId",
+    key: "0",
+    scopedSlots: { customRender: "courseName" }
+  },
+  {
     title: "课程名字",
     dataIndex: "courseName",
     key: "1",
-    width: "16%",
     scopedSlots: { customRender: "courseName" }
   },
   {
     title: "学年",
     dataIndex: "year1",
     key: "2",
-    width: "16%",
     scopedSlots: { customRender: "year1" }
   },
   {
     title: "学期",
     dataIndex: "semester",
     key: "3",
-    width: "16%",
     scopedSlots: { customRender: "semester" }
   },
   {
     title: "期末成绩成绩",
     dataIndex: "result",
     key: "4",
-    width: "16%",
     scopedSlots: { customRender: "result" }
   }
 ];
@@ -119,13 +121,12 @@ export default {
       columns,
       form: this.$form.createForm(this),
       pagination: { defaultPageSize: 9, total: 9 },
-      year: "",
       year2: ""
     };
   },
   methods: {
     yearChange(value) {
-      this.year2 = parseInt(this.year) + 1;
+      this.year2 = parseInt(this.form.getFieldValue("year")) + 1;
     },
     handleTableChange(pagination, filters, sorter) {
       this.getdata(pagination.current, 9);

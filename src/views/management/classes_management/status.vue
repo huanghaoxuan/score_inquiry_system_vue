@@ -82,33 +82,28 @@ const columns = [
     title: "课程名称",
     dataIndex: "courseName",
     key: "1",
-    width: "20%"
   },
   {
     title: "教学班号",
     dataIndex: "teachingClassId",
     key: "2",
-    width: "20%"
   },
   {
     title: "任课老师名字",
     dataIndex: "courseTeacherName",
     key: "3",
-    width: "20%",
     scopedSlots: { customRender: "courseTeacherName" }
   },
   {
     title: "学生管理",
     dataIndex: "operation1",
     key: "4",
-    width: "20%",
     scopedSlots: { customRender: "operation1" }
   },
   {
     title: "操作",
     dataIndex: "operation2",
     key: "5",
-    width: "20%",
     scopedSlots: { customRender: "operation2" }
   }
 ];

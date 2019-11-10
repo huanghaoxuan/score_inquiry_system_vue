@@ -20,6 +20,7 @@
           "^/api": "/api" //路径重写
         }
       }
-    } // 配置多个代理
+    }, // 配置多个代理
+    disableHostCheck: true
   }
 };

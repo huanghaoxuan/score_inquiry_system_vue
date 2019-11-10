@@ -97,7 +97,6 @@ import floder from "./floder.vue";
 const columns = [
   {
     title: "姓名",
-    width: "25%",
     dataIndex: "name",
     key: "1",
     scopedSlots: { customRender: "name" }
@@ -106,20 +105,17 @@ const columns = [
     title: "工号",
     dataIndex: "studentId",
     key: "2",
-    width: "25%"
   },
   {
     title: "所在学院",
     dataIndex: "department",
     key: "3",
-    width: "25%",
     scopedSlots: { customRender: "department" }
   },
   {
     title: "操作",
     dataIndex: "operation",
     key: "4",
-    width: "25%",
     scopedSlots: { customRender: "operation" }
   }
 ];

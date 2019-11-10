@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div id="bg">
+    <div id="bg"
+         @keyup.enter="login">
       <div id="hint">
         <!-- 提示框 -->
         <p>登录失败</p>
@@ -15,35 +16,27 @@
           <span>
             <form action="post">
               <p class="form">
-                <input
-                  type="text"
-                  id="user"
-                  placeholder="学号"
-                  v-model="studentId"
-                />
+                <input type="text"
+                       id="user"
+                       placeholder="学号"
+                       v-model="studentId" />
               </p>
               <p class="form confirm">
-                <input
-                  type="password"
-                  id="passwd"
-                  placeholder="密码"
-                  v-model="password"
-                />
+                <input type="password"
+                       id="passwd"
+                       placeholder="密码"
+                       v-model="password" />
               </p>
-              <input
-                type="button"
-                value="登录"
-                class="btn"
-                @click="login()"
-                style="margin-right: 20px;"
-              />
-              <input
-                type="button"
-                value="重置"
-                class="btn"
-                @click="signin()"
-                id="btn"
-              />
+              <input type="button"
+                     value="登录"
+                     class="btn"
+                     @click="login()"
+                     style="margin-right: 20px;" />
+              <input type="button"
+                     value="重置"
+                     class="btn"
+                     @click="signin()"
+                     id="btn" />
             </form>
           </span>
         </div>
@@ -67,7 +60,7 @@
             <span></span>
             <span></span>
           </span>
-          <p id="title">东南大学成贤学院<br /><br />成绩查询系统</p>
+          <p id="title">东南大学成贤学院<br /><br />过程性考核课程成绩管理系统</p>
         </div>
       </div>
     </div>
@@ -77,7 +70,7 @@
 <script>
 import crypto from "crypto";
 export default {
-  data() {
+  data () {
     return {
       onoff: true,
       studentId: null,
@@ -85,7 +78,7 @@ export default {
     };
   },
   methods: {
-    login() {
+    login () {
       var confirm = document.getElementsByClassName("confirm")[0];
       if (this.onoff) {
         if (this.studentId == null || this.studentId == "") {
@@ -115,7 +108,7 @@ export default {
               }
             )
             .then(
-              function(res) {
+              function (res) {
                 //console.log(res);
                 if (res.data.status == 0) {
                   this.$notification.error({
@@ -130,7 +123,7 @@ export default {
               }.bind(this)
             )
             .catch(
-              function(err) {
+              function (err) {
                 if (err.response.status == 403) {
                   //console.log(err.response);
                   this.$notification.error({
@@ -153,7 +146,7 @@ export default {
         this.onoff = !this.onoff;
       }
     },
-    signin() {
+    signin () {
       var confirm = document.getElementsByClassName("confirm")[0];
       let status = document.getElementById("status").getElementsByTagName("i");
       let hit = document.getElementById("hint").getElementsByTagName("p")[0];
@@ -176,13 +169,13 @@ export default {
               }
             })
             .then(
-              function(res) {
+              function (res) {
                 //console.log(res.data);
                 //每条数据需要一个唯一的key值
               }.bind(this)
             )
             .catch(
-              function(err) {
+              function (err) {
                 if (err.response) {
                   //console.log(err.response);
                   //控制台打印错误返回的内容
@@ -194,7 +187,7 @@ export default {
       }
     }
   },
-  mounted() {
+  mounted () {
     this.$store.commit("isLogin", false);
     this.$store.commit("setToken", "");
     //console.log(this.$store.state.token);

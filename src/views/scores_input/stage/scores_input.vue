@@ -29,7 +29,6 @@
               style="margin: -5px 0"
               v-model="data[`${record.key}`].scores"
             />
-            
           </template>
         </a-table>
       </a-card>

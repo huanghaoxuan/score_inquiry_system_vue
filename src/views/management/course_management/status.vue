@@ -152,7 +152,6 @@ export default {
     onDelete(key) {
       const newData = [...this.data];
       const target = newData.filter(item => key === item.key)[0];
-      //console.log(target);
       this.axios
         .get("/course/delete/" + target.id, {
           params: {},

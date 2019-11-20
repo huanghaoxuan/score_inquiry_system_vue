@@ -149,6 +149,7 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
+      let _this = this;
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
@@ -174,8 +175,8 @@ export default {
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
             }
-            this.data = res.data.data;
-            this.pagination.total = res.data.data.length;
+            _this.data = res.data.data;
+            _this.pagination.total = res.data.count;
           }.bind(this)
         )
         .catch(

@@ -192,6 +192,7 @@ export default {
     }
   },
   mounted() {
+    
     this.getdata(1, 9);
   }
 };

@@ -195,6 +195,6 @@ export default {
 };
 </script>
 
-<style>
+<style scope="this api replaced by slot-scope in 2.5.0+">
 @import url("./css/main.css");
 </style>

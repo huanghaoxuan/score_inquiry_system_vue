@@ -1,9 +1,8 @@
 <template>
   <div>
     <van-list v-model="loading"
-              :finished="finished"
-              finished-text="没有更多了"
-              @load="onLoad">
+              :finished="true"
+              finished-text="没有更多了">
       <van-cell v-for="item in list"
                 :key="item"
                 :title="item" />
@@ -12,32 +11,19 @@
 </template>
 
 <script>
-import { List } from 'vant';
+import Vue from 'vue';
+import { List, Cell, CellGroup } from 'vant';
+import 'vant/lib/index.css';
+Vue.use(List).use(Cell).use(CellGroup);
 export default {
   data () {
     return {
-      list: [],
+      list: [1,1,1,1],
       loading: false,
-      finished: false
     };
   },
 
   methods: {
-    onLoad () {
-      // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
-        }
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 500);
-    }
   }
 }
 </script>

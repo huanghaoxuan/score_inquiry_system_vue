@@ -188,7 +188,7 @@ export default {
             }
             console.log(this.data);
             this.data = res.data.data;
-            this.pagination.total = res.data.data.length;
+            this.pagination.total = res.data.count;
             this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )

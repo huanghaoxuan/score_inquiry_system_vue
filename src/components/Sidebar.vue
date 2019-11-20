@@ -241,7 +241,7 @@ export default {
       permissions: this.$store.state.permissions,
       alive: true,
       dataIdentity: this.$store.state.dataIdentity,
-      avatarValue: "您",
+      avatarValue: "我",
       color: "#f56a00",
       collapsed: false,
       labelCol: {
@@ -331,6 +331,11 @@ export default {
         this.alive = true;
       });
     }
+  },
+  mounted() {
+    // if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+    //   this.$router.push("/show_scores_mobile")
+    // }
   }
 };
 </script>

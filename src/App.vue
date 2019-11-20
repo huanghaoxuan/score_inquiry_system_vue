@@ -3,7 +3,13 @@
     <div id="app">
       <router-view />
     </div>
-    <div class="footer">Copyright © 2019 黄浩轩. All rights reserved.</div>
+    <div class="footer">
+      Copyright © 2019
+      <a href="https://github.com/huanghaoxuan" style="text-decoration:none;">
+        黄浩轩.</a
+      >
+      All rights reserved.
+    </div>
   </div>
 </template>
 <script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-button style="margin: 0 20px 0 0" @click="showModal"
-      >添加单个信息</a-button
+      >添加学生信息</a-button
     >
     <a-tooltip placement="left">
       <template slot="title">

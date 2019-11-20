@@ -1,6 +1,26 @@
 <template>
   <div>
     <a-button style="margin: 0 20px 0 0" @click="showModal">添加课程</a-button>
+    <a-tooltip placement="left">
+      <template slot="title">
+        <span>
+          1、该按钮用于课程信息批量上传<br />
+          2、仅接受xls、xlsx为后缀的表格文件<br />
+          3、课程号唯一，当有多个重复时，以第一个为准，若需修改，请手动修改
+        </span>
+      </template>
+      <a-icon type="question-circle" style="fontSize:17px;padding:10px" />
+    </a-tooltip>
+    <a-upload
+      name="file"
+      :multiple="true"
+      action="/api/course/upload"
+      accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      :headers="headers"
+      @change="handleChangeUpload"
+    >
+      <a-button> <a-icon type="upload" />批量上传</a-button>
+    </a-upload>
     <a-modal
       title="正在新添加课程"
       :visible="visible"

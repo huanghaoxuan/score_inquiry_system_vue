@@ -177,7 +177,7 @@ export default {
                 (res.data.data[index].year + 1);
             }
             this.data = res.data.data;
-            this.pagination.total = res.data.data.length;
+            this.pagination.total = res.data.count;
           }.bind(this)
         )
         .catch(

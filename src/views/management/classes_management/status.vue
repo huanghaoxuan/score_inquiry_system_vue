@@ -12,7 +12,7 @@
       width="70%"
       @cancel="handleCancel"
     >
-      <a-card title="课程管理">
+      <a-card title="教学班管理">
         <floder
           slot="extra"
           :courseData="this.courseData"
@@ -79,14 +79,19 @@ import student from "./student.vue";
 import floder from "./floder.vue";
 const columns = [
   {
+    title: "课程号",
+    dataIndex: "courseId",
+    key: "0"
+  },
+  {
     title: "课程名称",
     dataIndex: "courseName",
-    key: "1",
+    key: "1"
   },
   {
     title: "教学班号",
     dataIndex: "teachingClassId",
-    key: "2",
+    key: "2"
   },
   {
     title: "任课老师名字",
@@ -172,7 +177,7 @@ export default {
       const target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
-        .get("/teachingClassInformation/delete/" + target.id, {
+        .get("/teachingClassInformation/delete/" + target.uniqueSign, {
           params: {},
           headers: {
             Authorization: this.$store.state.token,
@@ -277,6 +282,7 @@ export default {
       }
     },
     getdata(pageNum, pageSize) {
+      let _this = this;
       const formData = this.form.getFieldsValue();
       this.axios
         .post(
@@ -300,6 +306,7 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].courseId = _this.courseData.courseId;
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;

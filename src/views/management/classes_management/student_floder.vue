@@ -127,7 +127,8 @@ export default {
                 "/teachingClass/insert",
                 this.qs.stringify({
                   ...this.teachingClassInformationData,
-                  ...values
+                  ...values,
+                  courseId: this.teachingClassInformationData.id
                 }),
                 {
                   headers: {

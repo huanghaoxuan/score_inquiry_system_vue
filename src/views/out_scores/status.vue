@@ -114,7 +114,11 @@ export default {
       data,
       columns,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 10, total: 10 }
+      pagination: {
+        defaultPageSize: 10,
+        total: 10,
+        showTotal: total => `共 ${total} 条记录`
+      }
     };
   },
   methods: {

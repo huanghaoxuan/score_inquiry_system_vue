@@ -120,7 +120,11 @@ export default {
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 5, total: 5 }
+      pagination: {
+        defaultPageSize: 5,
+        total: 5,
+        showTotal: total => `共 ${total} 条记录`
+      }
     };
   },
   methods: {

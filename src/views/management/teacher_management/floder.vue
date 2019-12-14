@@ -89,6 +89,18 @@
             <a-select-option value="经济管理学院">
               经济管理学院
             </a-select-option>
+            <a-select-option value="教务处">
+              教务处
+            </a-select-option>
+            <a-select-option value="学生处">
+              学生处
+            </a-select-option>
+            <a-select-option value="团委">
+              团委
+            </a-select-option>
+            <a-select-option value="基础部">
+              基础部
+            </a-select-option>
           </a-select>
         </a-form-item>
       </a-form>
@@ -103,10 +115,25 @@ export default {
     return {
       visible: false,
       confirmLoading: false,
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      headers: {
+        Authorization: this.$store.state.token
+      }
     };
   },
   methods: {
+    //上传
+    handleChangeUpload(info) {
+      if (info.file.status !== "uploading") {
+        //console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        this.$message.success(`${info.file.name} 上传成功`);
+        this.reload();
+      } else if (info.file.status === "error") {
+        this.$message.error(`${info.file.name} 上传失败，请重试！`);
+      }
+    },
     showModal() {
       this.visible = true;
     },

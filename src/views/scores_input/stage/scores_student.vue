@@ -52,7 +52,11 @@ export default {
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 15, total: 15 }
+      pagination: {
+        defaultPageSize: 15,
+        total: 15,
+        showTotal: total => `共 ${total} 条记录`
+      }
     };
   },
   methods: {
@@ -119,6 +123,7 @@ export default {
             pageNum: pageNum,
             pageSize: pageSize,
             teachingClassId: this.sourceStageData.teachingClassId,
+            courseId: this.sourceStageData.courseId,
             ...formData
           }),
           {

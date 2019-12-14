@@ -112,7 +112,7 @@ const columns = [
   {
     title: "学号",
     dataIndex: "studentId",
-    key: "2",
+    key: "2"
   },
   {
     title: "所在学院",
@@ -155,7 +155,11 @@ export default {
       data,
       columns,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 10, total: 10 }
+      pagination: {
+        defaultPageSize: 10,
+        total: 10,
+        showTotal: total => `共 ${total} 条记录`
+      }
     };
   },
   methods: {

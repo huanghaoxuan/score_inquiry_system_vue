@@ -127,7 +127,11 @@ export default {
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 5, total: 5 }
+      pagination: {
+        defaultPageSize: 5,
+        total: 5,
+        showTotal: total => `共 ${total} 条记录`
+      }
     };
   },
   methods: {
@@ -177,7 +181,7 @@ export default {
       const target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
-        .get("/teachingClassInformation/delete/" + target.uniqueSign, {
+        .get("/teachingClassInformation/delete/" + target.uniqueSign , {
           params: {},
           headers: {
             Authorization: this.$store.state.token,

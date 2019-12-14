@@ -5,7 +5,11 @@
     </div>
     <div class="footer">
       Copyright © 2019
-      <a href="https://github.com/huanghaoxuan" style="text-decoration:none;">
+      <a
+        href="https://github.com/huanghaoxuan"
+        target="_blank"
+        style="text-decoration:none;"
+      >
         黄浩轩.</a
       >
       All rights reserved.

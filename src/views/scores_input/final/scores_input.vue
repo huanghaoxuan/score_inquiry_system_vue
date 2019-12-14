@@ -1,6 +1,18 @@
 <template>
   <div>
     <a @click="showModal">录入期末测验成绩</a>
+    <a
+      @click="updateStauts(2)"
+      v-if="teachingClassInformationData.status == 1"
+      style="margin-left:10px"
+      >发布</a
+    >
+    <a
+      @click="updateStauts(1)"
+      v-if="teachingClassInformationData.status == 2"
+      style="margin-left:10px"
+      >禁用</a
+    >
     <a-modal
       :visible="visible"
       @ok="handleOk"
@@ -35,6 +47,7 @@
                 :dataIndex="col.dataIndex"
                 :studentId="data[record.key].studentId"
                 :teachingClassId="teachingClassInformationData.teachingClassId"
+                :courseId="teachingClassInformationData.id"
                 @change="onCellChange(record.key, col.dataIndex, $event)"
               />
             </div>
@@ -89,10 +102,66 @@ export default {
       allData: [],
       confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 15, total: 15 }
+      pagination: {
+        defaultPageSize: 15,
+        total: 15,
+        showTotal: total => `共 ${total} 条记录`
+      }
     };
   },
   methods: {
+    updateStauts(status) {
+      let _this = this;
+      this.axios
+        .post(
+          "/teachingClassInformation/updateStauts",
+          this.qs.stringify({
+            ..._this.teachingClassInformationData,
+            courseId: _this.teachingClassInformationData.id,
+            id: _this.teachingClassInformationData.uniqueSign,
+            status: status
+          }),
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        )
+        .then(
+          function(res) {
+            //console.log(res.data);
+            //每条数据需要一个唯一的key值
+            if (res.data.status != 0) {
+              _this.$notification.success({
+                message: "状态变更成功！"
+              });
+              _this.teachingClassInformationData.status = parseInt(status);
+            } else {
+              _this.$notification.error({
+                message: "状态变更失败，请重新尝试！"
+              });
+            }
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
+    },
     getRseult(key) {
       let result = 0;
       let percentage = 0;
@@ -117,8 +186,8 @@ export default {
           parseInt(this.data[key].final) * (100 - unpercentage) * 0.01 + result;
       }
       // debugger;
-      this.data[key].result = result.toFixed(2);
-      return result.toFixed(1);
+      this.data[key].result = result.toFixed(0);
+      return result.toFixed(0);
     },
     onCellChange(key, dataIndex, value) {
       const dataSource = [...this.data];

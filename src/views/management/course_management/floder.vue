@@ -104,13 +104,7 @@
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-select
-            v-decorator="[
-              'semester',
-              { rules: [{ required: true, message: '学期不能为空' }] }
-            ]"
-            placeholder="请选择学期"
-          >
+          <a-select v-decorator="['semester']" placeholder="请选择学期">
             <a-select-option value="第一学期">
               第一学期
             </a-select-option>
@@ -135,10 +129,25 @@ export default {
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      year2: ""
+      year2: "",
+      headers: {
+        Authorization: this.$store.state.token
+      }
     };
   },
   methods: {
+    //上传
+    handleChangeUpload(info) {
+      if (info.file.status !== "uploading") {
+        //console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        this.$message.success(`${info.file.name} 上传成功`);
+        this.reload();
+      } else if (info.file.status === "error") {
+        this.$message.error(`${info.file.name} 上传失败，请重试！`);
+      }
+    },
     yearChange(value) {
       this.year2 = parseInt(this.form.getFieldValue("year")) + 1;
     },

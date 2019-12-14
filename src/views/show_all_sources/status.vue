@@ -79,7 +79,11 @@ export default {
       columns,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 9, total: 9 }
+      pagination: {
+        defaultPageSize: 9,
+        total: 9,
+        showTotal: total => `共 ${total} 条记录`
+      }
     };
   },
   methods: {

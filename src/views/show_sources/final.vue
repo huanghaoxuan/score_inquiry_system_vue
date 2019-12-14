@@ -120,7 +120,11 @@ export default {
       data,
       columns,
       form: this.$form.createForm(this),
-      pagination: { defaultPageSize: 9, total: 9 },
+      pagination: {
+        defaultPageSize: 9,
+        total: 9,
+        showTotal: total => `共 ${total} 条记录`
+      },
       year2: ""
     };
   },
@@ -149,7 +153,8 @@ export default {
             pageNum: pageNum,
             pageSize: pageSize,
             ...formData,
-            studentId: this.$store.state.studentId
+            studentId: this.$store.state.studentId,
+            status: 2
           }),
           {
             headers: {
@@ -192,7 +197,6 @@ export default {
     }
   },
   mounted() {
-    
     this.getdata(1, 9);
   }
 };

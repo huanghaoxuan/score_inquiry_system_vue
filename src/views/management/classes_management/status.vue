@@ -77,7 +77,7 @@
 <script>
 import student from "./student.vue";
 import floder from "./floder.vue";
-const columns = [
+let columns = [
   {
     title: "课程号",
     dataIndex: "courseId",
@@ -100,19 +100,25 @@ const columns = [
     scopedSlots: { customRender: "courseTeacherName" }
   },
   {
+    title: "学生人数",
+    dataIndex: "studentCount",
+    key: "4",
+    scopedSlots: { customRender: "studentCount" }
+  },
+  {
     title: "学生管理",
     dataIndex: "operation1",
-    key: "4",
+    key: "5",
     scopedSlots: { customRender: "operation1" }
   },
   {
     title: "操作",
     dataIndex: "operation2",
-    key: "5",
+    key: "6",
     scopedSlots: { customRender: "operation2" }
   }
 ];
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   components: { student, floder },
@@ -160,8 +166,8 @@ export default {
       });
     },
     handleChange(value, key, column) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target[column] = value;
         this.data = newData;
@@ -169,19 +175,19 @@ export default {
       //axios
     },
     edit(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target.editable = true;
         this.data = newData;
       }
     },
     onDelete(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
-        .get("/teachingClassInformation/delete/" + target.uniqueSign , {
+        .get("/teachingClassInformation/delete/" + target.uniqueSign, {
           params: {},
           headers: {
             Authorization: this.$store.state.token,
@@ -223,8 +229,8 @@ export default {
         );
     },
     save(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
         .post(
@@ -274,8 +280,8 @@ export default {
         );
     },
     cancel(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         Object.assign(
           target,
@@ -287,7 +293,7 @@ export default {
     },
     getdata(pageNum, pageSize) {
       let _this = this;
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/teachingClassInformation/selectByPage",

@@ -38,7 +38,7 @@
 </template>
 
 <script>
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   props: {
@@ -68,7 +68,7 @@ export default {
     },
     //生成表头
     getTableHeader() {
-      const columns = [
+      let columns = [
         {
           title: "名字",
           dataIndex: "name",
@@ -115,7 +115,7 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/sourceStage/selectByPage",

@@ -93,7 +93,7 @@
 import scores_student from "./scores_student";
 import floder from "./scores_floder.vue";
 import scores_input from "./scores_input.vue";
-const columns = [
+let columns = [
   {
     title: "课程名",
     dataIndex: "name",
@@ -165,8 +165,8 @@ export default {
   },
   methods: {
     handleChange(value, key, column) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target[column] = value;
         this.data = newData;
@@ -174,16 +174,16 @@ export default {
       //axios
     },
     edit(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target.editable = true;
         this.data = newData;
       }
     },
     onDelete(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       // debugger;
       this.axios
         .get("/sourceStageInformation/delete/" + target.id, {
@@ -229,8 +229,8 @@ export default {
         );
     },
     save(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
         .post(
@@ -280,8 +280,8 @@ export default {
         );
     },
     cancel(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         Object.assign(
           target,
@@ -316,7 +316,7 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/sourceStageInformation/selectByPage",

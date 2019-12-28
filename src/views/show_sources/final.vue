@@ -79,7 +79,7 @@
 
 <script>
 // import stage from "./stage.vue";
-const columns = [
+let columns = [
   {
     title: "课程号",
     dataIndex: "courseId",
@@ -111,7 +111,7 @@ const columns = [
     scopedSlots: { customRender: "result" }
   }
 ];
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   // components: { stage },
@@ -145,7 +145,7 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/teachingClass/showFinal",

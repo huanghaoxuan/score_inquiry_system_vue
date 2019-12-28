@@ -82,7 +82,7 @@
 <script>
 import student from "./student.vue";
 import scores from "./scores.vue";
-const columns = [
+let columns = [
   {
     title: "课程编号",
     dataIndex: "courseId",
@@ -128,7 +128,7 @@ const columns = [
     scopedSlots: { customRender: "operation2" }
   }
 ];
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   components: { student, scores },
@@ -166,7 +166,7 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/teachingClassInformation/selectByPage",

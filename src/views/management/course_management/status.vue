@@ -70,7 +70,7 @@
 <script>
 import floder from "./floder.vue";
 import classes_management from "./../classes_management/status.vue";
-const columns = [
+let columns = [
   {
     title: "课程号",
     dataIndex: "courseId",
@@ -94,19 +94,31 @@ const columns = [
     scopedSlots: { customRender: "semester" }
   },
   {
+    title: "教学班个数",
+    dataIndex: "classCount",
+    key: "4",
+    scopedSlots: { customRender: "classCount" }
+  },
+  {
+    title: "学生总人数",
+    dataIndex: "studentCount",
+    key: "5",
+    scopedSlots: { customRender: "studentCount" }
+  },
+  {
     title: "教学班管理",
     dataIndex: "operation",
-    key: "4",
+    key: "6",
     scopedSlots: { customRender: "operation" }
   },
   {
     title: "操作",
     dataIndex: "operation2",
-    key: "5",
+    key: "7",
     scopedSlots: { customRender: "operation2" }
   }
 ];
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   components: { floder, classes_management },
@@ -137,8 +149,8 @@ export default {
       });
     },
     handleChange(value, key, column) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target[column] = value;
         this.data = newData;
@@ -146,16 +158,16 @@ export default {
       //axios
     },
     edit(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target.editable = true;
         this.data = newData;
       }
     },
     onDelete(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       this.axios
         .get("/course/delete/" + target.id, {
           params: {},
@@ -199,8 +211,8 @@ export default {
         );
     },
     save(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
         .post(
@@ -250,8 +262,8 @@ export default {
         );
     },
     cancel(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         Object.assign(
           target,
@@ -262,7 +274,7 @@ export default {
       }
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/course/selectByPage",

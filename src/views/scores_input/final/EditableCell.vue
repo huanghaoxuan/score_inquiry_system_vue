@@ -1,20 +1,12 @@
 <template>
   <div class="editable-cell">
-    <div v-if="editable"
-         class="editable-cell-input-wrapper">
-      <a-input :value="value"
-               @change="handleChange"
-               @pressEnter="check" />
-      <a-icon type="check"
-              class="editable-cell-icon-check"
-              @click="check" />
+    <div v-if="editable" class="editable-cell-input-wrapper">
+      <a-input :value="value" @change="handleChange" @pressEnter="check" />
+      <a-icon type="check" class="editable-cell-icon-check" @click="check" />
     </div>
-    <div v-else
-         class="editable-cell-text-wrapper">
+    <div v-else class="editable-cell-text-wrapper">
       {{ value || " " }}
-      <a-icon type="edit"
-              class="editable-cell-icon"
-              @click="edit" />
+      <a-icon type="edit" class="editable-cell-icon" @click="edit" />
     </div>
   </div>
 </template>
@@ -27,14 +19,14 @@ export default {
     dataIndex: String,
     courseId: String
   },
-  data () {
+  data() {
     return {
       value: this.text,
       editable: false
     };
   },
   methods: {
-    updataStage (id, scores) {
+    updataStage(id, scores) {
       this.axios
         .post(
           "/sourceStage/update",
@@ -53,7 +45,7 @@ export default {
           }
         )
         .then(
-          function (res) {
+          function(res) {
             this.$notification.success({
               message: "修改成功！"
             });
@@ -63,7 +55,7 @@ export default {
           }.bind(this)
         )
         .catch(
-          function (err) {
+          function(err) {
             if (err.response.status == 403) {
               //console.log(err.response);
               this.$notification.error({
@@ -76,14 +68,14 @@ export default {
           }.bind(this)
         );
     },
-    handleChange (e) {
-      const value = e.target.value;
+    handleChange(e) {
+      let value = e.target.value;
       this.value = value;
     },
-    check () {
+    check() {
       this.updataStage(this.dataIndex, this.value);
     },
-    edit () {
+    edit() {
       this.editable = true;
     }
   }

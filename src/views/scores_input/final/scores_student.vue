@@ -56,8 +56,8 @@
 </template>
 
 <script>
-const columns = [];
-const data = [];
+let columns = [];
+let data = [];
 export default {
   inject: ["reload"],
   props: {
@@ -150,7 +150,7 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/teachingClass/selectFinal",
@@ -198,7 +198,7 @@ export default {
         );
     },
     getTableHeader() {
-      const columns = [
+      let columns = [
         {
           title: "名字",
           dataIndex: "name",
@@ -258,8 +258,8 @@ export default {
           }
         )
         .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
+          let url = window.URL.createObjectURL(new Blob([response.data]));
+          let link = document.createElement("a");
           link.href = url;
           link.setAttribute(
             "download",

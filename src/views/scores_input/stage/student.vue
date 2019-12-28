@@ -70,7 +70,7 @@
 </template>
 
 <script>
-const columns = [
+let columns = [
   {
     title: "名字",
     dataIndex: "name",
@@ -107,7 +107,7 @@ const columns = [
     scopedSlots: { customRender: "class" }
   }
 ];
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   props: {
@@ -154,7 +154,7 @@ export default {
     },
     getdata(pageNum, pageSize) {
       let _this = this;
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/teachingClass/selectByPage",

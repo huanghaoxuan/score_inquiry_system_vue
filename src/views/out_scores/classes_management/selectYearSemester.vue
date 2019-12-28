@@ -28,7 +28,7 @@
 </template>
 
 <script>
-const columns = [
+let columns = [
   {
     title: "课程名称",
     dataIndex: "courseName",
@@ -57,7 +57,7 @@ const columns = [
     scopedSlots: { customRender: "semester" }
   }
 ];
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   props: {
@@ -82,8 +82,8 @@ export default {
   },
   methods: {
     downloadCrossSemester() {
-      const _this = this;
-      const formData = this.form.getFieldsValue();
+      let _this = this;
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/teachingClass/downloadCrossSemester",
@@ -101,8 +101,8 @@ export default {
           }
         )
         .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
+          let url = window.URL.createObjectURL(new Blob([response.data]));
+          let link = document.createElement("a");
           link.href = url;
           link.setAttribute("download", "crossSemester.xlsx");
           document.body.appendChild(link);
@@ -144,8 +144,8 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
-      const _this = this;
-      const formData = this.form.getFieldsValue();
+      let _this = this;
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/teachingClassInformation/selectCrossSemester",
@@ -204,7 +204,7 @@ export default {
     }
   },
   mounted() {
-    const rowSelection = {
+    let rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         this.outRes = selectedRows;
       }

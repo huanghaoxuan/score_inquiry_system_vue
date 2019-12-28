@@ -35,7 +35,7 @@
 </template>
 
 <script>
-const columns = [
+let columns = [
   {
     title: "阶段性序号",
     dataIndex: "stageId",
@@ -65,7 +65,7 @@ const columns = [
     scopedSlots: { customRender: "scores" }
   }
 ];
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   props: {
@@ -112,7 +112,7 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/ShowSource/Stage",

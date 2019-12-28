@@ -74,7 +74,7 @@
 
 <script>
 import EditableCell from "./EditableCell";
-const columns = [];
+let columns = [];
 var data = [];
 export default {
   computed: {
@@ -190,8 +190,8 @@ export default {
       return result.toFixed(0);
     },
     onCellChange(key, dataIndex, value) {
-      const dataSource = [...this.data];
-      const target = dataSource.find(item => item.key === key);
+      let dataSource = [...this.data];
+      let target = dataSource.find(item => item.key === key);
       // debugger;
       if (target) {
         target[dataIndex] = value;
@@ -199,8 +199,8 @@ export default {
       }
     },
     handleChange(value, key, column) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target[column] = value;
         this.data = newData;
@@ -249,8 +249,8 @@ export default {
         );
     },
     getTableHeader() {
-      const stageColumns = [];
-      const columns = [
+      let stageColumns = [];
+      let columns = [
         {
           title: "名字",
           dataIndex: "name",
@@ -372,7 +372,7 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/teachingClass/selectFinal",

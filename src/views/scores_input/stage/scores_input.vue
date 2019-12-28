@@ -37,7 +37,7 @@
 </template>
 
 <script>
-const columns = [];
+let columns = [];
 var data = [];
 export default {
   inject: ["reload"],
@@ -62,8 +62,8 @@ export default {
   },
   methods: {
     handleChange(value, key, column) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target[column] = value;
         this.data = newData;
@@ -119,7 +119,7 @@ export default {
     },
     //生成表头
     getTableHeader() {
-      const columns = [
+      let columns = [
         {
           title: "名字",
           dataIndex: "name",

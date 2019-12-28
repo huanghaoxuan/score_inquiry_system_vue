@@ -30,8 +30,8 @@ export default {
         })
         .then(
           function(res) {
-            const data = res.data.data;
-            const scale = [
+            let data = res.data.data;
+            let scale = [
               {
                 dataKey: "count",
                 tickInterval: 5

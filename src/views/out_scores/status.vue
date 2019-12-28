@@ -68,7 +68,7 @@
 
 <script>
 import classes_management from "./classes_management/status.vue";
-const columns = [
+let columns = [
   {
     title: "课程号",
     dataIndex: "courseId",
@@ -104,7 +104,7 @@ const columns = [
   //   scopedSlots: { customRender: "operation2" }
   // }
 ];
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   components: { classes_management },
@@ -135,8 +135,8 @@ export default {
       });
     },
     handleChange(value, key, column) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target[column] = value;
         this.data = newData;
@@ -144,16 +144,16 @@ export default {
       //axios
     },
     edit(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target.editable = true;
         this.data = newData;
       }
     },
     onDelete(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
         .get("/course/delete/" + target.id, {
@@ -198,8 +198,8 @@ export default {
         );
     },
     save(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
         .post(
@@ -249,8 +249,8 @@ export default {
         );
     },
     cancel(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         Object.assign(
           target,
@@ -261,7 +261,7 @@ export default {
       }
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/course/selectByPage",

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-const DataSet = require("@antv/data-set");
+let DataSet = require("@antv/data-set");
 
 export default {
   data() {
@@ -51,9 +51,9 @@ export default {
         })
         .then(
           function(res) {
-            const sourceData = res.data.data;
+            let sourceData = res.data.data;
 
-            const scale = [
+            let scale = [
               {
                 dataKey: "percent",
                 min: 0,
@@ -61,14 +61,14 @@ export default {
               }
             ];
 
-            const dv = new DataSet.View().source(sourceData);
+            let dv = new DataSet.View().source(sourceData);
             dv.transform({
               type: "percent",
               field: "count",
               dimension: "item",
               as: "percent"
             });
-            const data = dv.rows;
+            let data = dv.rows;
 
             this.data = data;
             this.scale = scale;

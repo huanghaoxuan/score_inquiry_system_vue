@@ -42,7 +42,7 @@
 
 <script>
 import selectYearSemester from "./selectYearSemester";
-const columns = [
+let columns = [
   {
     title: "课程名称",
     dataIndex: "courseName",
@@ -72,7 +72,7 @@ const columns = [
     scopedSlots: { customRender: "operation2" }
   }
 ];
-const data = [];
+let data = [];
 export default {
   inject: ["reload"],
   props: {
@@ -113,8 +113,8 @@ export default {
           }
         )
         .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
+          let url = window.URL.createObjectURL(new Blob([response.data]));
+          let link = document.createElement("a");
           link.href = url;
           link.setAttribute("download", teachingClassId + ".xlsx");
           document.body.appendChild(link);
@@ -155,8 +155,8 @@ export default {
       });
     },
     handleChange(value, key, column) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target[column] = value;
         this.data = newData;
@@ -164,16 +164,16 @@ export default {
       //axios
     },
     edit(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         target.editable = true;
         this.data = newData;
       }
     },
     onDelete(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
         .get("/teachingClassInformation/delete/" + target.id, {
@@ -218,8 +218,8 @@ export default {
         );
     },
     save(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       //console.log(target);
       this.axios
         .post(
@@ -269,8 +269,8 @@ export default {
         );
     },
     cancel(key) {
-      const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      let newData = [...this.data];
+      let target = newData.filter(item => key === item.key)[0];
       if (target) {
         Object.assign(
           target,
@@ -281,7 +281,7 @@ export default {
       }
     },
     getdata(pageNum, pageSize) {
-      const formData = this.form.getFieldsValue();
+      let formData = this.form.getFieldsValue();
       this.axios
         .post(
           "/teachingClassInformation/selectByPage",

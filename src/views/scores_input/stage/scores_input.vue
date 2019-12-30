@@ -26,6 +26,10 @@
         >
           <template :slot="sourceStageData.id" slot-scope="text, record">
             <a-input
+              :ref="record.key"
+              v-on:keyup.right="nextInput(record.key)"
+              v-on:keyup.down="nextInput(record.key)"
+              v-on:keyup.up="preInput(record.key)"
               style="margin: -5px 0"
               v-model="data[`${record.key}`].scores"
             />
@@ -61,6 +65,32 @@ export default {
     };
   },
   methods: {
+    /**
+    焦点向后移动
+     */
+    nextInput(index) {
+      //向右移动
+      //如果移动到最后一个单元格，阻止操作
+      index = index + 1;
+      //设置目标焦点
+      if (index % 15 == 0 || index == this.pagination.total) {
+        return false;
+      }
+      this.$refs[index].focus();
+    },
+    /**
+    焦点向前移动
+     */
+    preInput(index) {
+      //向右移动
+      //如果移动到最后一个单元格，阻止操作
+      index = index - 1;
+      //设置目标焦点
+      if (index == 0 || index % 14 == 0) {
+        return false;
+      }
+      this.$refs[index].focus();
+    },
     handleChange(value, key, column) {
       let newData = [...this.data];
       let target = newData.filter(item => key === item.key)[0];

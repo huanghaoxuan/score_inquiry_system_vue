@@ -135,7 +135,7 @@ export default {
       //如果移动到最后一个单元格，阻止操作
       index = index - 1;
       //设置目标焦点
-      if (index == 0 || index % 14 == 0) {
+      if (index == -1 || index % 14 == 0) {
         return false;
       }
       this.$refs[index].focus();

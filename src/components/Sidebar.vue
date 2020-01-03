@@ -10,7 +10,10 @@
           <a-icon type="home" />
           <span>首页</span>
         </a-menu-item>
-        <a-sub-menu key="management" v-if="permissions == 3">
+        <a-sub-menu
+          key="management"
+          v-if="permissions == 3 || permissions == 4"
+        >
           <span slot="title"> <a-icon type="user" /><span>管理</span></span>
           <a-menu-item
             key="student_management"
@@ -61,7 +64,7 @@
         <a-menu-item
           key="show_all_scores"
           @click="() => jump('/show_all_scores')"
-          v-if="permissions == 3"
+          v-if="permissions == 3 || permissions == 4"
         >
           <a-icon type="pie-chart" />
           <span>成绩查询</span>

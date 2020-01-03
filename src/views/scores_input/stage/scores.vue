@@ -45,6 +45,27 @@
               <template v-else>{{ text }}</template>
             </div>
           </template>
+          <template slot="type" slot-scope="text, record">
+            <div key="type">
+              <a-select
+                :defaultValue="text"
+                v-if="record.editable"
+                style="width: 80px"
+                @change="
+                  value => {
+                    handleChange(value, record.key, 'type');
+                  }
+                "
+              >
+                <a-select-option value="平时">平时</a-select-option>
+                <a-select-option value="期中">期中</a-select-option>
+                <a-select-option value="实践">实践</a-select-option>
+                <a-select-option value="其他">其他</a-select-option>
+              </a-select>
+
+              <template v-else>{{ text }}</template>
+            </div>
+          </template>
           <template slot="operation1" slot-scope="text, record">
             <div class="editable-row-operations">
               <scores_student
@@ -117,6 +138,12 @@ let columns = [
     scopedSlots: { customRender: "stageNote" }
   },
   {
+    title: "类型",
+    dataIndex: "type",
+    key: "41",
+    scopedSlots: { customRender: "type" }
+  },
+  {
     title: "占比（单位%）",
     dataIndex: "percentage",
     key: "5",
@@ -143,7 +170,7 @@ let columns = [
 ];
 var data = [];
 export default {
-  inject: ["reload"],
+  inject: ["reload  "],
   components: { scores_student, floder, scores_input },
   props: {
     teachingClassInformationData: null
@@ -164,6 +191,46 @@ export default {
     };
   },
   methods: {
+    changeType(value, record) {
+      record.type = value;
+      {
+        this.axios
+          .post(
+            "/sourceStageInformation/update",
+            this.qs.stringify({
+              ...record
+            }),
+            {
+              headers: {
+                Authorization: this.$store.state.token,
+                "Content-Type": "application/x-www-form-urlencoded"
+              }
+            }
+          )
+          .then(
+            function(res) {
+              //console.log(res.data);
+              //每条数据需要一个唯一的key值
+            }.bind(this)
+          )
+          .catch(
+            function(err) {
+              if (err.response) {
+                //console.log(err.response);
+                if (err.response.status == 403) {
+                  //console.log(err.response);
+                  this.$notification.error({
+                    message: "账号密码已过期，请重新登录！"
+                  });
+                  this.$router.push("/login");
+                  //控制台打印错误返回的内容
+                }
+              }
+              //bind(this)可以不用
+            }.bind(this)
+          );
+      }
+    },
     handleChange(value, key, column) {
       let newData = [...this.data];
       let target = newData.filter(item => key === item.key)[0];

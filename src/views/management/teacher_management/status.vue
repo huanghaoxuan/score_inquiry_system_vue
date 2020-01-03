@@ -67,6 +67,26 @@
             <template v-else>{{ text }}</template>
           </div>
         </template>
+        <template slot="permissions" slot-scope="text, record">
+          <div key="permissions">
+            <a-select
+              :value="record.permissionsName"
+              v-if="record.editable"
+              style="width: 150px"
+              @change="
+                value => {
+                  handleChange(value, record.key, 'permissions');
+                }
+              "
+            >
+              <a-select-option value="2">教师</a-select-option>
+              <a-select-option value="4">教务秘书</a-select-option>
+              <a-select-option value="3">管理员</a-select-option>
+            </a-select>
+
+            <template v-else>{{ record.permissionsName }}</template>
+          </div>
+        </template>
         <template slot="operation" slot-scope="text, record">
           <div class="editable-row-operations">
             <span v-if="record.editable">
@@ -113,9 +133,15 @@ let columns = [
     scopedSlots: { customRender: "department" }
   },
   {
+    title: "权限",
+    dataIndex: "permissions",
+    key: "4",
+    scopedSlots: { customRender: "permissions" }
+  },
+  {
     title: "操作",
     dataIndex: "operation",
-    key: "4",
+    key: "5",
     scopedSlots: { customRender: "operation" }
   }
 ];
@@ -153,6 +179,15 @@ export default {
       let newData = [...this.data];
       let target = newData.filter(item => key === item.key)[0];
       if (target) {
+        if (column == "permissions") {
+          if (value == 2) {
+            target.permissionsName = "教师";
+          } else if (value == 3) {
+            target.permissionsName = "管理员";
+          } else if (value == 4) {
+            target.permissionsName = "教务秘书";
+          }
+        }
         target[column] = value;
         this.data = newData;
       }
@@ -271,6 +306,7 @@ export default {
           target,
           this.cacheData.filter(item => key === item.key)[0]
         );
+        debugger;
         delete target.editable;
         this.data = newData;
       }
@@ -298,6 +334,13 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              if (res.data.data[index].permissions == 2) {
+                res.data.data[index].permissionsName = "教师";
+              } else if (res.data.data[index].permissions == 3) {
+                res.data.data[index].permissionsName = "管理员";
+              } else if (res.data.data[index].permissions == 4) {
+                res.data.data[index].permissionsName = "教务秘书";
+              }
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;

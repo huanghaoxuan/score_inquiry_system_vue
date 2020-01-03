@@ -32,6 +32,27 @@
           />
         </a-form-item>
         <a-form-item
+          label="请选择类型"
+          :label-col="{ span: 9 }"
+          :wrapper-col="{ span: 10 }"
+        >
+          <a-select
+            v-decorator="[
+              'type',
+              {
+                rules: [{ required: true, message: '类型不能为空' }]
+              }
+            ]"
+            style="width:100%"
+            placeholder="请选择类型"
+          >
+            <a-select-option value="平时">平时</a-select-option>
+            <a-select-option value="期中">期中</a-select-option>
+            <a-select-option value="期末">实践</a-select-option>
+            <a-select-option value="其他">其他</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
           label="阶段性测验标题"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"

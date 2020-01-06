@@ -79,6 +79,7 @@
               <scores_input
                 :allData="data"
                 :sourceStageData="data[record.key]"
+                :class="data.status == 1 ? '' : 'disabled'"
               ></scores_input>
             </div>
           </template>
@@ -170,7 +171,7 @@ let columns = [
 ];
 var data = [];
 export default {
-  inject: ["reload  "],
+  inject: ["reload"],
   components: { scores_student, floder, scores_input },
   props: {
     teachingClassInformationData: null
@@ -436,3 +437,11 @@ export default {
   // }
 };
 </script>
+<style lang="scss">
+.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+  -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+  opacity: 0.5; /*其他，透明度50%*/
+}
+</style>

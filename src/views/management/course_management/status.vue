@@ -38,6 +38,28 @@
             <template v-else>{{ text }}</template>
           </div>
         </template>
+        <template slot="status" slot-scope="text">
+          <div v-if="text == 3" style="color : #1f640a;">
+            成绩已发布
+          </div>
+          <div v-else style="color : #f00;">
+            成绩未发布
+          </div>
+        </template>
+        <template slot="release" slot-scope="text, record">
+          <a
+            @click="() => updateStauts(record, 3)"
+            v-if="
+              record.status == 2 || record.status == 1 || record.status == 0
+            "
+            >发布</a
+          >
+          <a
+            @click="() => updateStauts(record, 2)"
+            v-else-if="record.status == 3"
+            >取消发布</a
+          >
+        </template>
         <template slot="operation" slot-scope="text, record">
           <div class="editable-row-operations">
             <classes_management
@@ -54,7 +76,7 @@
             <span v-else>
               <a @click="() => edit(record.key)">修改</a>
               <a-popconfirm
-                title="确定删除该条数据？?"
+                title="确定删除该条数据？？"
                 @confirm="() => onDelete(record.key)"
               >
                 <a style="padding:10px">删除</a>
@@ -106,6 +128,30 @@ let columns = [
     scopedSlots: { customRender: "studentCount" }
   },
   {
+    title: "已完成录入教学班个数",
+    dataIndex: "completeInput",
+    key: "51",
+    scopedSlots: { customRender: "completeInput" }
+  },
+  {
+    title: "未完成录入教学班个数",
+    dataIndex: "unCompleteInput",
+    key: "52",
+    scopedSlots: { customRender: "unCompleteInput" }
+  },
+  {
+    title: "发布状态",
+    dataIndex: "status",
+    key: "53",
+    scopedSlots: { customRender: "status" }
+  },
+  {
+    title: "发布状态变更",
+    dataIndex: "release",
+    key: "54",
+    scopedSlots: { customRender: "release" }
+  },
+  {
     title: "教学班管理",
     dataIndex: "operation",
     key: "6",
@@ -136,6 +182,56 @@ export default {
     };
   },
   methods: {
+    updateStauts(record, status) {
+      let _this = this;
+      this.axios
+        .post(
+          "/course/releaseCourse",
+          this.qs.stringify({
+            id: record.id,
+            status: status
+          }),
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        )
+        .then(
+          function(res) {
+            //console.log(res.data);
+            //每条数据需要一个唯一的key值
+            if (res.data.status != 0) {
+              _this.$notification.success({
+                message: "状态变更成功！"
+              });
+              this.data[record.key].status = status;
+            } else {
+              _this.$notification.error({
+                message: "状态变更失败，请重新尝试！"
+              });
+            }
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
+    },
     handleTableChange(pagination, filters, sorter) {
       this.getdata(pagination.current, 9);
     },

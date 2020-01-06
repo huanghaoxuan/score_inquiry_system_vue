@@ -38,6 +38,20 @@
             </a-select-option>
           </a-select>
         </a-form-item>
+        <a-form-item label="权限">
+          <a-select
+            v-decorator="['permissions']"
+            placeholder="请选择权限"
+            style="width: 200px"
+          >
+            <a-select-option value="">
+              全部权限
+            </a-select-option>
+            <a-select-option value="2">教师</a-select-option>
+            <a-select-option value="4">教务秘书</a-select-option>
+            <a-select-option value="3">管理员</a-select-option>
+          </a-select>
+        </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit">
             查询

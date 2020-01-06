@@ -48,7 +48,7 @@
         >
           <a-select v-decorator="['department']" placeholder="请输入所在学院">
             <a-select-option value="">
-              学院不参与筛选
+              暂无
             </a-select-option>
             <a-select-option value="电子与计算机工程学院">
               电子与计算机工程学院

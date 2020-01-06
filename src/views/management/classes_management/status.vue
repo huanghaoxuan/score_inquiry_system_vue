@@ -15,6 +15,7 @@
       <a-card title="教学班管理">
         <floder
           slot="extra"
+          v-if="extraBool"
           :courseData="this.courseData"
           @getdata="getdata"
         ></floder>
@@ -44,6 +45,32 @@
               <template v-else>{{ text }}</template>
             </div>
           </template>
+          <template slot="status" slot-scope="text">
+            <div v-if="text == 1">
+              教师录入中
+            </div>
+            <div v-else-if="text == 2" style="color : #f00;">
+              教师已确认
+            </div>
+            <div v-else-if="text == 3" style="color : #1f640a;">
+              成绩已发布
+            </div>
+          </template>
+          <template slot="newStatus" slot-scope="text, record">
+            <a
+              @click="updateStauts(record, 2)"
+              v-if="record.status == 1"
+              style="margin-left:10px"
+              >确认成绩</a
+            >
+            <a
+              @click="updateStauts(record, 1)"
+              v-if="record.status == 2 || record.status == 3"
+              :class="record.status == 3 ? 'disabled' : ''"
+              style="margin-left:10px"
+              >重新录入</a
+            >
+          </template>
           <template slot="operation1" slot-scope="text, record">
             <div class="editable-row-operations">
               <student
@@ -58,12 +85,17 @@
                 <a @click="() => cancel(record.key)">取消</a>
               </span>
               <span v-else>
-                <a @click="() => edit(record.key)" style="padding:10px">修改</a>
+                <a
+                  @click="() => edit(record.key)"
+                  style="padding:10px"
+                  :class="extraBool ? '' : 'disabled'"
+                  >修改</a
+                >
                 <a-popconfirm
                   title="确定删除该条数据？?"
                   @confirm="() => onDelete(record.key)"
                 >
-                  <a>删除</a>
+                  <a :class="extraBool ? '' : 'disabled'">删除</a>
                 </a-popconfirm>
               </span>
             </div>
@@ -106,6 +138,18 @@ let columns = [
     scopedSlots: { customRender: "studentCount" }
   },
   {
+    title: "当前状态",
+    dataIndex: "status",
+    key: "41",
+    scopedSlots: { customRender: "status" }
+  },
+  {
+    title: "状态变更",
+    dataIndex: "nemStatus",
+    key: "42",
+    scopedSlots: { customRender: "newStatus" }
+  },
+  {
     title: "学生管理",
     dataIndex: "operation1",
     key: "5",
@@ -123,6 +167,10 @@ export default {
   inject: ["reload"],
   components: { student, floder },
   props: {
+    extraBool: {
+      type: Boolean,
+      default: true
+    },
     courseData: {}
   },
   data() {
@@ -141,6 +189,58 @@ export default {
     };
   },
   methods: {
+    updateStauts(record, status) {
+      let _this = this;
+      this.axios
+        .post(
+          "/teachingClassInformation/updateStauts",
+          this.qs.stringify({
+            ...record,
+            courseId: record.id,
+            id: record.uniqueSign,
+            status: status
+          }),
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        )
+        .then(
+          function(res) {
+            //console.log(res.data);
+            //每条数据需要一个唯一的key值
+            if (res.data.status != 0) {
+              _this.$notification.success({
+                message: "状态变更成功！"
+              });
+              record.status = parseInt(status);
+            } else {
+              _this.$notification.error({
+                message: "状态变更失败，请重新尝试！"
+              });
+            }
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
+    },
     showModal() {
       this.getdata(1, 5);
       this.visible = true;
@@ -346,3 +446,11 @@ export default {
   // }
 };
 </script>
+<style lang="scss">
+.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+  -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+  opacity: 0.5; /*其他，透明度50%*/
+}
+</style>

@@ -1,17 +1,28 @@
 <template>
   <div>
-    <a @click="showModal">录入期末测验成绩</a>
     <a
-      @click="updateStauts(2)"
-      v-if="teachingClassInformationData.status == 1"
-      style="margin-left:10px"
-      >发布</a
+      @click="showModal"
+      :class="teachingClassInformationData.status == 1 ? '' : 'disabled'"
+      >录入期末测验成绩</a
     >
+    <a-popconfirm
+      title="确认成绩后修改后将不可修改"
+      @confirm="() => updateStauts(2)"
+    >
+      <a
+        v-if="teachingClassInformationData.status == 1"
+        :class="teachingClassInformationData.status == 1 ? '' : 'disabled'"
+        style="margin-left:10px"
+        >确认成绩</a
+      >
+    </a-popconfirm>
+
     <a
       @click="updateStauts(1)"
       v-if="teachingClassInformationData.status == 2"
+      :class="teachingClassInformationData.status == 1 ? '' : 'disabled'"
       style="margin-left:10px"
-      >禁用</a
+      >重新录入</a
     >
     <a-modal
       :visible="visible"
@@ -93,7 +104,8 @@ export default {
   },
   inject: ["reload"],
   props: {
-    teachingClassInformationData: null
+    teachingClassInformationData: Object,
+    index: Number
   },
   data() {
     this.cacheData = data.map(item => ({ ...item }));
@@ -167,6 +179,11 @@ export default {
                 message: "状态变更成功！"
               });
               _this.teachingClassInformationData.status = parseInt(status);
+              _this.$emit(
+                "setTeachingClassInformationData",
+                _this.teachingClassInformationData,
+                _this.index
+              );
             } else {
               _this.$notification.error({
                 message: "状态变更失败，请重新尝试！"
@@ -502,5 +519,11 @@ export default {
 }
 .ant-table td {
   white-space: nowrap;
+}
+.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+  -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+  opacity: 0.5; /*其他，透明度50%*/
 }
 </style>

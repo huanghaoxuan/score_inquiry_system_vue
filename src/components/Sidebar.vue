@@ -22,6 +22,7 @@
           >
           <a-menu-item
             key="teacher_management"
+            v-if="permissions == 3"
             @click="() => jump('/management/teacher_management')"
             >教师管理</a-menu-item
           >
@@ -31,7 +32,10 @@
             >课程管理</a-menu-item
           >
         </a-sub-menu>
-        <a-sub-menu key="scores_input" v-if="permissions == 2">
+        <a-sub-menu
+          key="scores_input"
+          v-if="permissions == 2 || permissions == 3 || permissions == 4"
+        >
           <span slot="title"> <a-icon type="user" /><span>成绩录入</span></span>
           <a-menu-item
             key="scores_input_stage"
@@ -47,12 +51,11 @@
         <a-menu-item
           key="show_scores"
           @click="() => jump('/out_scores')"
-          v-if="permissions == 2"
+          v-if="permissions == 2 || permissions == 3 || permissions == 4"
         >
           <a-icon type="pie-chart" />
           <span>成绩导出</span>
         </a-menu-item>
-        <!-- <span slot="title"> <a-icon type="user" /><span>管理</span></span> -->
         <a-menu-item
           key="show_scores"
           @click="() => jump('/show_scores')"

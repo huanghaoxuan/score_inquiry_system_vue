@@ -64,6 +64,17 @@
         @change="handleTableChange"
         :scroll="{ x: true }"
       >
+        <template slot="status" slot-scope="text">
+          <div v-if="text == 1">
+            教师录入中
+          </div>
+          <div v-else-if="text == 2" style="color : #f00;">
+            教师已确认
+          </div>
+          <div v-else-if="text == 3">
+            成绩已发布
+          </div>
+        </template>
         <template slot="operation1" slot-scope="text, record">
           <div class="editable-row-operations">
             <scores_student
@@ -75,6 +86,8 @@
           <div class="editable-row-operations">
             <scores_input
               :teachingClassInformationData="data[record.key]"
+              :index="record.key"
+              @setTeachingClassInformationData="setTeachingClassInformationData"
             ></scores_input>
           </div>
         </template>
@@ -118,17 +131,21 @@ let columns = [
     key: "3"
   },
   {
+    title: "当前状态",
+    dataIndex: "status",
+    key: "31",
+    scopedSlots: { customRender: "status" }
+  },
+  {
     title: "学生管理",
     dataIndex: "operation1",
     key: "4",
-    width: "20%",
     scopedSlots: { customRender: "operation1" }
   },
   {
     title: "成绩录入",
     dataIndex: "operation2",
     key: "5",
-    width: "20%",
     scopedSlots: { customRender: "operation2" }
   }
 ];
@@ -154,6 +171,10 @@ export default {
     };
   },
   methods: {
+    setTeachingClassInformationData(teachingClassInformation, index) {
+      let _this = this;
+      _this.data[index] = teachingClassInformation;
+    },
     yearChange(value) {
       this.year2 = parseInt(this.form.getFieldValue("year")) + 1;
     },

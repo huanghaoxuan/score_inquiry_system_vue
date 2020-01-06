@@ -154,7 +154,7 @@ export default {
             pageSize: pageSize,
             ...formData,
             studentId: this.$store.state.studentId,
-            status: 2
+            status: 3
           }),
           {
             headers: {

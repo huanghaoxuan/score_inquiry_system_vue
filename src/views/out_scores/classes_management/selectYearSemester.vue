@@ -21,6 +21,9 @@
           :dataSource="data"
           @change="handleTableChange"
         >
+          <template slot="serial" slot-scope="text">
+            {{ text + 1 }}
+          </template>
         </a-table>
       </a-card>
     </a-modal>
@@ -29,6 +32,12 @@
 
 <script>
 let columns = [
+  {
+    title: "序号",
+    dataIndex: "serial",
+    key: "0",
+    scopedSlots: { customRender: "serial" }
+  },
   {
     title: "课程名称",
     dataIndex: "courseName",
@@ -175,6 +184,7 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
               res.data.data[index].yearAli =
                 res.data.data[index].year +
                 " - " +
@@ -182,6 +192,7 @@ export default {
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
           }.bind(this)
         )
         .catch(

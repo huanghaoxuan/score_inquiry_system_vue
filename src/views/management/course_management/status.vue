@@ -23,6 +23,9 @@
         :dataSource="data"
         @change="handleTableChange"
       >
+        <template slot="serial" slot-scope="text">
+          {{ text + 1 }}
+        </template>
         <template
           v-for="col in ['courseId', 'name']"
           :slot="col"
@@ -38,7 +41,7 @@
             <template v-else>{{ text }}</template>
           </div>
         </template>
-        <template slot="status" slot-scope="text">
+        <!-- <template slot="status" slot-scope="text">
           <div v-if="text == 3" style="color : #1f640a;">
             成绩已发布
           </div>
@@ -59,7 +62,7 @@
             v-else-if="record.status == 3"
             >取消发布</a
           >
-        </template>
+        </template> -->
         <template slot="operation" slot-scope="text, record">
           <div class="editable-row-operations">
             <classes_management
@@ -93,6 +96,12 @@
 import floder from "./floder.vue";
 import classes_management from "./../classes_management/status.vue";
 let columns = [
+  {
+    title: "序号",
+    dataIndex: "serial",
+    key: "01",
+    scopedSlots: { customRender: "serial" }
+  },
   {
     title: "课程号",
     dataIndex: "courseId",
@@ -139,18 +148,18 @@ let columns = [
     key: "52",
     scopedSlots: { customRender: "unCompleteInput" }
   },
-  {
-    title: "发布状态",
-    dataIndex: "status",
-    key: "53",
-    scopedSlots: { customRender: "status" }
-  },
-  {
-    title: "发布状态变更",
-    dataIndex: "release",
-    key: "54",
-    scopedSlots: { customRender: "release" }
-  },
+  // {
+  //   title: "发布状态",
+  //   dataIndex: "status",
+  //   key: "53",
+  //   scopedSlots: { customRender: "status" }
+  // },
+  // {
+  //   title: "发布状态变更",
+  //   dataIndex: "release",
+  //   key: "54",
+  //   scopedSlots: { customRender: "release" }
+  // },
   {
     title: "教学班管理",
     dataIndex: "operation",
@@ -392,12 +401,14 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
               var temp = res.data.data[index].year + 1;
               res.data.data[index].year1 =
                 res.data.data[index].year + "-" + temp + " 学年";
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
           }.bind(this)
         )
         .catch(

@@ -47,6 +47,9 @@
           :scroll="{ x: true }"
           @change="handleTableChange"
         >
+          <template slot="serial" slot-scope="text">
+            {{ text + 1 }}
+          </template>
           <template
             v-for="col in stageColumns"
             :slot="col.dataIndex"
@@ -299,10 +302,15 @@ export default {
       let stageColumns = [];
       let columns = [
         {
+          title: "序号",
+          dataIndex: "serial",
+          key: "0",
+          scopedSlots: { customRender: "serial" }
+        },
+        {
           title: "名字",
           dataIndex: "name",
           key: "1",
-          width: "200px",
           // fixed: "left",
           scopedSlots: { customRender: "name" }
         },
@@ -310,7 +318,6 @@ export default {
           title: "学号",
           dataIndex: "studentId",
           key: "2",
-          width: "200px",
           // fixed: "left",
           scopedSlots: { customRender: "studentId" }
         }
@@ -324,7 +331,6 @@ export default {
             "%）",
           dataIndex: this.allData[index].id,
           key: index + 3 + "",
-          width: "200px",
           scopedSlots: { customRender: this.allData[index].id }
         };
         columns.push(nextColumns);
@@ -333,7 +339,6 @@ export default {
       let col = {
         title: "期末成绩",
         dataIndex: "final",
-        width: "200px",
         // fixed: "right",
         key: 3 + this.allData.length,
         scopedSlots: { customRender: "final" }
@@ -342,7 +347,6 @@ export default {
       col = {
         title: "最终成绩",
         dataIndex: "result",
-        width: "200px",
         // fixed: "right",
         key: 4 + this.allData.length,
         scopedSlots: { customRender: "result" }
@@ -443,10 +447,12 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
             }
             console.log(this.data);
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
             this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )

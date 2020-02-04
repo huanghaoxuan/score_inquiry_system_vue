@@ -243,6 +243,7 @@ export default {
         title: "最终成绩",
         dataIndex: "result",
         key: 4 + this.allData.length,
+        width: "200px",
         scopedSlots: { customRender: "result" }
       };
       columns.push(col);

@@ -22,6 +22,9 @@
         :dataSource="data"
         @change="handleTableChange"
       >
+        <template slot="serial" slot-scope="text">
+          {{ text + 1 }}
+        </template>
         <template
           v-for="col in ['courseId', 'name', 'year', 'semester']"
           :slot="col"
@@ -69,6 +72,12 @@
 <script>
 import classes_management from "./classes_management/status.vue";
 let columns = [
+  {
+    title: "序号",
+    dataIndex: "serial",
+    key: "01",
+    scopedSlots: { customRender: "serial" }
+  },
   {
     title: "课程号",
     dataIndex: "courseId",
@@ -283,6 +292,7 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
               res.data.data[index].yearAli =
                 res.data.data[index].year +
                 " - " +
@@ -290,6 +300,7 @@ export default {
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
           }.bind(this)
         )
         .catch(

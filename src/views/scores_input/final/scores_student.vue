@@ -41,6 +41,9 @@
           :dataSource="data"
           @change="handleTableChange"
         >
+          <template slot="serial" slot-scope="text">
+            {{ text + 1 }}
+          </template>
           <template slot="result" slot-scope="result">
             <div v-if="parseInt(`${result}`) < 60" style="color : #f00;">
               {{ result }}
@@ -174,9 +177,11 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
           }.bind(this)
         )
         .catch(
@@ -200,17 +205,21 @@ export default {
     getTableHeader() {
       let columns = [
         {
+          title: "序号",
+          dataIndex: "serial",
+          key: "0",
+          scopedSlots: { customRender: "serial" }
+        },
+        {
           title: "名字",
           dataIndex: "name",
           key: "1",
-          width: "200px",
           scopedSlots: { customRender: "name" }
         },
         {
           title: "学号",
           dataIndex: "studentId",
           key: "2",
-          width: "200px",
           scopedSlots: { customRender: "studentId" }
         }
       ];
@@ -227,7 +236,6 @@ export default {
         title: "期末成绩",
         dataIndex: "final",
         key: 3 + this.allData.length,
-        width: "200px",
         scopedSlots: { customRender: "final" }
       };
       columns.push(col);
@@ -235,7 +243,6 @@ export default {
         title: "最终成绩",
         dataIndex: "result",
         key: 4 + this.allData.length,
-        width: "200px",
         scopedSlots: { customRender: "result" }
       };
       columns.push(col);

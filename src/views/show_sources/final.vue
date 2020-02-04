@@ -58,6 +58,9 @@
         :dataSource="data"
         @change="handleTableChange"
       >
+        <template slot="serial" slot-scope="text">
+          {{ text + 1 }}
+        </template>
         <template slot="result" slot-scope="result">
           <div v-if="parseInt(`${result}`) < 60" style="color : #f00;">
             {{ result }}
@@ -80,6 +83,12 @@
 <script>
 // import stage from "./stage.vue";
 let columns = [
+  {
+    title: "序号",
+    dataIndex: "serial",
+    key: "01",
+    scopedSlots: { customRender: "serial" }
+  },
   {
     title: "课程号",
     dataIndex: "courseId",
@@ -169,12 +178,14 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
               var temp = res.data.data[index].year + 1;
               res.data.data[index].year1 =
                 res.data.data[index].year + "-" + temp + " 学年";
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
           }.bind(this)
         )
         .catch(

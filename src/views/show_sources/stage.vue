@@ -28,7 +28,8 @@
           :columns="columns"
           :dataSource="data"
           @change="handleTableChange"
-        />
+        >
+        </a-table>
       </a-card>
     </a-modal>
   </div>
@@ -136,9 +137,11 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
           }.bind(this)
         )
         .catch(

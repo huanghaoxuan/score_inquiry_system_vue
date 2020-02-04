@@ -26,6 +26,9 @@
           :dataSource="data"
           @change="handleTableChange"
         >
+          <template slot="serial" slot-scope="text">
+            {{ text + 1 }}
+          </template>
           <template
             v-for="col in [
               'courseName',
@@ -45,7 +48,7 @@
               <template v-else>{{ text }}</template>
             </div>
           </template>
-          <template slot="status" slot-scope="text">
+          <!-- <template slot="status" slot-scope="text">
             <div v-if="text == 1">
               教师录入中
             </div>
@@ -70,7 +73,7 @@
               style="margin-left:10px"
               >重新录入</a
             >
-          </template>
+          </template> -->
           <template slot="operation1" slot-scope="text, record">
             <div class="editable-row-operations">
               <student
@@ -111,6 +114,12 @@ import student from "./student.vue";
 import floder from "./floder.vue";
 let columns = [
   {
+    title: "序号",
+    dataIndex: "serial",
+    key: "01",
+    scopedSlots: { customRender: "serial" }
+  },
+  {
     title: "课程号",
     dataIndex: "courseId",
     key: "0"
@@ -137,18 +146,18 @@ let columns = [
     key: "4",
     scopedSlots: { customRender: "studentCount" }
   },
-  {
-    title: "当前状态",
-    dataIndex: "status",
-    key: "41",
-    scopedSlots: { customRender: "status" }
-  },
-  {
-    title: "状态变更",
-    dataIndex: "nemStatus",
-    key: "42",
-    scopedSlots: { customRender: "newStatus" }
-  },
+  // {
+  //   title: "当前状态",
+  //   dataIndex: "status",
+  //   key: "41",
+  //   scopedSlots: { customRender: "status" }
+  // },
+  // {
+  //   title: "状态变更",
+  //   dataIndex: "nemStatus",
+  //   key: "42",
+  //   scopedSlots: { customRender: "newStatus" }
+  // },
   {
     title: "学生管理",
     dataIndex: "operation1",
@@ -416,10 +425,12 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
               res.data.data[index].courseId = _this.courseData.courseId;
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
           }.bind(this)
         )
         .catch(

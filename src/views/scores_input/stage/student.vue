@@ -63,7 +63,11 @@
           :columns="columns"
           :dataSource="data"
           @change="handleTableChange"
-        />
+        >
+          <template slot="serial" slot-scope="text">
+            {{ text + 1 }}
+          </template>
+        </a-table>
       </a-card>
     </a-modal>
   </div>
@@ -72,38 +76,39 @@
 <script>
 let columns = [
   {
+    title: "序号",
+    dataIndex: "serial",
+    key: "0",
+    scopedSlots: { customRender: "serial" }
+  },
+  {
     title: "名字",
     dataIndex: "name",
     key: "1",
-    width: "20%",
     scopedSlots: { customRender: "name" }
   },
   {
     title: "学号",
     dataIndex: "studentId",
     key: "2",
-    width: "20%",
     scopedSlots: { customRender: "studentId" }
   },
   {
     title: "学院",
     dataIndex: "department",
     key: "3",
-    width: "20%",
     scopedSlots: { customRender: "department" }
   },
   {
     title: "专业",
     dataIndex: "professional",
     key: "4",
-    width: "20%",
     scopedSlots: { customRender: "professional" }
   },
   {
     title: "班级",
     dataIndex: "class",
     key: "5",
-    width: "20%",
     scopedSlots: { customRender: "class" }
   }
 ];
@@ -178,9 +183,11 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
             }
             _this.data = res.data.data;
             _this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
           }.bind(this)
         )
         .catch(

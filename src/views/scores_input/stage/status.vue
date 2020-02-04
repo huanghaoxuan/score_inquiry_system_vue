@@ -64,6 +64,9 @@
         @change="handleTableChange"
         :scroll="{ x: true }"
       >
+        <template slot="serial" slot-scope="text">
+          {{ text + 1 }}
+        </template>
         <template slot="operation1" slot-scope="text, record">
           <div class="editable-row-operations">
             <student :teachingClassInformationData="data[record.key]"></student>
@@ -83,6 +86,12 @@
 import student from "./student.vue";
 import scores from "./scores.vue";
 let columns = [
+  {
+    title: "序号",
+    dataIndex: "serial",
+    key: "0",
+    scopedSlots: { customRender: "serial" }
+  },
   {
     title: "课程编号",
     dataIndex: "courseId",
@@ -117,14 +126,12 @@ let columns = [
     title: "学生管理",
     dataIndex: "operation1",
     key: "4",
-    width: "20%",
     scopedSlots: { customRender: "operation1" }
   },
   {
     title: "管理",
     dataIndex: "operation2",
     key: "5",
-    width: "20%",
     scopedSlots: { customRender: "operation2" }
   }
 ];
@@ -189,6 +196,7 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
               res.data.data[index].yearAli =
                 res.data.data[index].year +
                 " - " +
@@ -196,6 +204,7 @@ export default {
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
           }.bind(this)
         )
         .catch(

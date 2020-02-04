@@ -31,6 +31,11 @@
             @click="() => jump('/management/course_management')"
             >课程管理</a-menu-item
           >
+          <a-menu-item
+            key="class_status_management"
+            @click="() => jump('/management/class_status_management')"
+            >成绩发布管理</a-menu-item
+          >
         </a-sub-menu>
         <a-sub-menu
           key="scores_input"

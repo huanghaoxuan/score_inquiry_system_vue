@@ -31,7 +31,11 @@
           :columns="columns"
           :dataSource="data"
           @change="handleTableChange"
-        />
+        >
+          <template slot="serial" slot-scope="text">
+            {{ text + 1 }}
+          </template>
+        </a-table>
       </a-card>
     </a-modal>
   </div>
@@ -69,6 +73,12 @@ export default {
     //生成表头
     getTableHeader() {
       let columns = [
+        {
+          title: "序号",
+          dataIndex: "serial",
+          key: "0",
+          scopedSlots: { customRender: "serial" }
+        },
         {
           title: "名字",
           dataIndex: "name",
@@ -139,9 +149,11 @@ export default {
             //每条数据需要一个唯一的key值
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
+              res.data.data[index].serial = (pageNum - 1) * pageSize + index;
             }
             this.data = res.data.data;
             this.pagination.total = res.data.count;
+            this.pagination.defaultPageSize = res.data.pageSize;
             this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )

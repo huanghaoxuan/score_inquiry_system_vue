@@ -69,7 +69,6 @@
           <template slot="final" slot-scope="text, record">
             <a-input
               :ref="record.key"
-              v-on:keyup.right="nextInput(record.key)"
               v-on:keyup.down="nextInput(record.key)"
               v-on:keyup.up="preInput(record.key)"
               style="margin: -5px 0"
@@ -451,8 +450,8 @@ export default {
             }
             console.log(this.data);
             this.data = res.data.data;
-            this.pagination.total = res.data.count;
-            this.pagination.defaultPageSize = res.data.pageSize;
+            this.pagination.total = parseInt(res.data.count);
+            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
             this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )

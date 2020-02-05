@@ -41,28 +41,32 @@
             <template v-else>{{ text }}</template>
           </div>
         </template>
-        <!-- <template slot="status" slot-scope="text">
-          <div v-if="text == 3" style="color : #1f640a;">
-            成绩已发布
-          </div>
-          <div v-else style="color : #f00;">
-            成绩未发布
+        <template slot="courseAdministrator" slot-scope="text, record">
+          <div key="courseAdministrator">
+            <a-select
+              showSearch
+              labelInValue
+              placeholder="请选择课程管理员"
+              :defaultActiveFirstOption="false"
+              :showArrow="false"
+              :filterOption="false"
+              @search="searchTeacherInfos"
+              :value="{ key: record.courseAdministratorName }"
+              v-if="record.editable"
+              style="width: 100px"
+              @change="
+                value => {
+                  handleChange(value, record.key, 'courseAdministrator');
+                }
+              "
+            >
+              <a-select-option v-for="data in teacherInfos" :key="data.id">{{
+                data.name
+              }}</a-select-option>
+            </a-select>
+            <template v-else>{{ record.courseAdministratorName }}</template>
           </div>
         </template>
-        <template slot="release" slot-scope="text, record">
-          <a
-            @click="() => updateStauts(record, 3)"
-            v-if="
-              record.status == 2 || record.status == 1 || record.status == 0
-            "
-            >发布</a
-          >
-          <a
-            @click="() => updateStauts(record, 2)"
-            v-else-if="record.status == 3"
-            >取消发布</a
-          >
-        </template> -->
         <template slot="operation" slot-scope="text, record">
           <div class="editable-row-operations">
             <classes_management
@@ -148,18 +152,12 @@ let columns = [
     key: "52",
     scopedSlots: { customRender: "unCompleteInput" }
   },
-  // {
-  //   title: "发布状态",
-  //   dataIndex: "status",
-  //   key: "53",
-  //   scopedSlots: { customRender: "status" }
-  // },
-  // {
-  //   title: "发布状态变更",
-  //   dataIndex: "release",
-  //   key: "54",
-  //   scopedSlots: { customRender: "release" }
-  // },
+  {
+    title: "课程管理员",
+    dataIndex: "courseAdministrator",
+    key: "53",
+    scopedSlots: { customRender: "courseAdministrator" }
+  },
   {
     title: "教学班管理",
     dataIndex: "operation",
@@ -184,10 +182,11 @@ export default {
       columns,
       form: this.$form.createForm(this),
       pagination: {
-        defaultPageSize: 10,
-        total: 10,
+        defaultPageSize: 9,
+        total: 9,
         showTotal: total => `共 ${total} 条记录`
-      }
+      },
+      teacherInfos: []
     };
   },
   methods: {
@@ -257,7 +256,13 @@ export default {
       let newData = [...this.data];
       let target = newData.filter(item => key === item.key)[0];
       if (target) {
-        target[column] = value;
+        if (column == "courseAdministrator") {
+          console.log(value);
+          target.courseAdministratorName = value.label;
+          target[column] = value.key;
+        } else {
+          target[column] = value;
+        }
         this.data = newData;
       }
       //axios
@@ -269,6 +274,42 @@ export default {
         target.editable = true;
         this.data = newData;
       }
+    },
+    searchTeacherInfos(value) {
+      if (value == "") {
+        return;
+      }
+      let _this = this;
+      this.axios
+        .get("/teacherInformation/selectByName/" + value, {
+          params: {},
+          headers: {
+            Authorization: this.$store.state.token,
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
+        .then(
+          function(res) {
+            _this.teacherInfos = res.data.data;
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
     },
     onDelete(key) {
       let newData = [...this.data];
@@ -407,8 +448,8 @@ export default {
                 res.data.data[index].year + "-" + temp + " 学年";
             }
             this.data = res.data.data;
-            this.pagination.total = res.data.count;
-            this.pagination.defaultPageSize = res.data.pageSize;
+            this.pagination.total = parseInt(res.data.count);
+            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
           }.bind(this)
         )
         .catch(

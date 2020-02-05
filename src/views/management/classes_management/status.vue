@@ -429,8 +429,8 @@ export default {
               res.data.data[index].courseId = _this.courseData.courseId;
             }
             this.data = res.data.data;
-            this.pagination.total = res.data.count;
-            this.pagination.defaultPageSize = res.data.pageSize;
+            this.pagination.total = parseInt(res.data.count);
+            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
           }.bind(this)
         )
         .catch(

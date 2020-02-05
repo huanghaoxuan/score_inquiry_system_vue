@@ -16,25 +16,33 @@
         >
           <span slot="title"> <a-icon type="user" /><span>管理</span></span>
           <a-menu-item
-            key="student_management"
+            key="management_student_management"
             @click="() => jump('/management/student_management')"
             >学生学籍管理</a-menu-item
           >
           <a-menu-item
-            key="teacher_management"
+            key="management_teacher_management"
             v-if="permissions == 3"
             @click="() => jump('/management/teacher_management')"
             >教师管理</a-menu-item
           >
           <a-menu-item
-            key="course_management"
+            key="management_course_management"
             @click="() => jump('/management/course_management')"
             >课程管理</a-menu-item
           >
           <a-menu-item
-            key="class_status_management"
+            key="management_class_status_management"
             @click="() => jump('/management/class_status_management')"
             >成绩发布管理</a-menu-item
+          >
+        </a-sub-menu>
+        <a-sub-menu key="teacher_management" v-if="permissions == 2">
+          <span slot="title"> <a-icon type="user" /><span>管理</span></span>
+          <a-menu-item
+            key="teacher_management_course_management"
+            @click="() => jump('/teacher_management/course_management')"
+            >课程管理</a-menu-item
           >
         </a-sub-menu>
         <a-sub-menu

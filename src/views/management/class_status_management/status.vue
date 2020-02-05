@@ -1,6 +1,6 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
-    <a-card title="成绩查看">
+    <a-card title="成绩发布管理">
       <a-form layout="inline" :form="form" @submit="handleSubmit">
         <a-form-item label="课程名">
           <a-input v-decorator="['courseName']" placeholder="请输入课程名" />

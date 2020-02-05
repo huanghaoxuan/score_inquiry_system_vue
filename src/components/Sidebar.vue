@@ -37,7 +37,10 @@
             >成绩发布管理</a-menu-item
           >
         </a-sub-menu>
-        <a-sub-menu key="teacher_management" v-if="permissions == 2">
+        <a-sub-menu
+          key="teacher_management"
+          v-if="permissions == 2 || permissions == 3 || permissions == 4"
+        >
           <span slot="title"> <a-icon type="user" /><span>管理</span></span>
           <a-menu-item
             key="teacher_management_course_management"

@@ -125,7 +125,10 @@ export default {
           let url = window.URL.createObjectURL(new Blob([response.data]));
           let link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", teachingClassId + ".xlsx");
+          link.setAttribute(
+            "download",
+            this.courseData.id + "-" + teachingClassId + ".xlsx"
+          );
           document.body.appendChild(link);
           link.click();
         })

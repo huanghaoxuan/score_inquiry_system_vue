@@ -270,7 +270,10 @@ export default {
           link.href = url;
           link.setAttribute(
             "download",
-            this.teachingClassInformationData.teachingClassId + ".xlsx"
+            this.teachingClassInformationData.id +
+              "-" +
+              this.teachingClassInformationData.teachingClassId +
+              ".xlsx"
           );
           document.body.appendChild(link);
           link.click();

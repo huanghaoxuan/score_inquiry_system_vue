@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     loginStatus: false,
+    id: "",
     name: "",
     studentId: "",
     permissions: 0,
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     },
     setNameStudentId(state, data) {
       // debugger
+      state.id = data.id;
       state.name = data.name;
       state.studentId = data.studentId;
       state.permissions = data.permissions;

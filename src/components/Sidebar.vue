@@ -38,13 +38,15 @@
           >
         </a-sub-menu>
         <a-sub-menu
-          key="teacher_management"
+          key="stage_management"
           v-if="permissions == 2 || permissions == 3 || permissions == 4"
         >
-          <span slot="title"> <a-icon type="user" /><span>管理</span></span>
+          <span slot="title">
+            <a-icon type="user" /><span>阶段性成绩</span></span
+          >
           <a-menu-item
-            key="teacher_management_course_management"
-            @click="() => jump('/teacher_management/course_management')"
+            key="stage_management_course_management"
+            @click="() => jump('/stage_management/course_management')"
             >课程管理</a-menu-item
           >
         </a-sub-menu>

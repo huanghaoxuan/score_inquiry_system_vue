@@ -4,7 +4,7 @@
       >添加单个信息</a-button
     >
     <a-modal
-      title="正在新添加教学班内学生信息"
+      title="正在新添加阶段性测验信息"
       :visible="visible"
       @ok="handleOk"
       okText="确认添加"
@@ -16,76 +16,73 @@
     >
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item
-          label="姓名"
+          label="阶段性测验排序号"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-input
+          <a-input-number
             v-decorator="[
-              'name',
-              { rules: [{ required: true, message: '姓名不能为空' }] }
+              'stageId',
+              {
+                rules: [{ required: true, message: '阶段性测验排序号不能为空' }]
+              }
             ]"
-            placeholder="请输入姓名"
+            style="width:100%"
+            placeholder="请输入阶段性测验排序号"
           />
         </a-form-item>
         <a-form-item
-          label="学号"
+          label="请选择类型"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-input
+          <a-select
             v-decorator="[
-              'studentId',
-              { rules: [{ required: true, message: '学号不能为空' }] }
+              'type',
+              {
+                rules: [{ required: true, message: '类型不能为空' }]
+              }
             ]"
-            placeholder="请输入学号"
-          />
-        </a-form-item>
-        <a-form-item
-          label="所在学院"
-          :label-col="{ span: 9 }"
-          :wrapper-col="{ span: 10 }"
-        >
-          <a-select v-decorator="['department']" placeholder="请输入所在学院">
-            <a-select-option value="">
-              暂无
-            </a-select-option>
-            <a-select-option value="电子与计算机工程学院">
-              电子与计算机工程学院
-            </a-select-option>
-            <a-select-option value="建筑与艺术设计学院">
-              建筑与艺术设计学院
-            </a-select-option>
-            <a-select-option value="土木与交通工程学院">
-              土木与交通工程学院
-            </a-select-option>
-            <a-select-option value="机械与电气工程学院">
-              机械与电气工程学院
-            </a-select-option>
-            <a-select-option value="制药与化学工程学院">
-              制药与化学工程学院
-            </a-select-option>
-            <a-select-option value="经济管理学院">
-              经济管理学院
-            </a-select-option>
+            style="width:100%"
+            placeholder="请选择类型"
+          >
+            <a-select-option value="平时">平时</a-select-option>
+            <a-select-option value="期中">期中</a-select-option>
+            <a-select-option value="期末">实践</a-select-option>
+            <a-select-option value="其他">其他</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item
-          label="所在专业"
+          label="阶段性测验标题"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
           <a-input
-            v-decorator="['professional']"
-            placeholder="请输入所在专业"
+            v-decorator="[
+              'stageNote',
+              {
+                rules: [{ required: true, message: '阶段性测验标题不能为空' }]
+              }
+            ]"
+            placeholder="请输入阶段性测验标题"
           />
         </a-form-item>
         <a-form-item
-          label="所在班级"
+          label="阶段性测验占比"
           :label-col="{ span: 9 }"
           :wrapper-col="{ span: 10 }"
         >
-          <a-input v-decorator="['class']" placeholder="请输入所在班级" />
+          <a-input
+            v-decorator="[
+              'percentage',
+              {
+                rules: [{ required: true, message: '阶段性测验占比号不能为空' }]
+              }
+            ]"
+            style="width:100%"
+            placeholder="请输入阶段性测验占比"
+            addonAfter="%"
+          />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -96,7 +93,7 @@
 export default {
   inject: ["reload"],
   props: {
-    teachingClassInformationData: {}
+    teachingClassInformationData: null
   },
   data() {
     return {
@@ -112,6 +109,7 @@ export default {
     handleOk(e) {
       this.confirmLoading = true;
       this.handleSubmit(e);
+      this.visible = false;
     },
     handleCancel(e) {
       this.visible = false;
@@ -123,11 +121,12 @@ export default {
           {
             this.axios
               .post(
-                "/teachingClass/insert",
+                "/sourceStageInformation/insertByCourseAdministrator",
                 this.qs.stringify({
-                  ...this.teachingClassInformationData,
-                  ...values,
-                  courseId: this.teachingClassInformationData.id
+                  courseId: this.teachingClassInformationData.id,
+                  name: this.teachingClassInformationData.name,
+                  createdAt: null,
+                  ...values
                 }),
                 {
                   headers: {
@@ -140,7 +139,6 @@ export default {
                 function(res) {
                   //console.log(res.data);
                   //每条数据需要一个唯一的key值
-                  this.visible = false;
                   this.$emit("getdata", 1, 5);
                 }.bind(this)
               )

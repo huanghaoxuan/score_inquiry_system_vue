@@ -181,7 +181,7 @@ export default {
             }
             this.data = res.data.data;
             this.pagination.total = parseInt(res.data.count);
-            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
+            this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )
         .catch(
@@ -247,7 +247,7 @@ export default {
       };
       columns.push(col);
       this.columns = columns;
-      console.log(this.columns);
+      // console.log(this.columns);
     },
     download() {
       this.axios
@@ -281,7 +281,7 @@ export default {
         .catch(
           function(err) {
             if (err.response) {
-              console.log(err.response);
+              // console.log(err.response);
               //控制台打印错误返回的内容
             }
             //bind(this)可以不用

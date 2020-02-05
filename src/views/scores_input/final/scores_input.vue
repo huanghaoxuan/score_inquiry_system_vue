@@ -353,7 +353,7 @@ export default {
       columns.push(col);
       this.columns = columns;
       this.stageColumns = stageColumns;
-      console.log(this.allData);
+      // console.log(this.allData);
     },
     getAllStageInfo() {
       this.axios
@@ -448,10 +448,10 @@ export default {
               res.data.data[index].key = index;
               res.data.data[index].serial = (pageNum - 1) * pageSize + index;
             }
-            console.log(this.data);
+            // console.log(this.data);
             this.data = res.data.data;
             this.pagination.total = parseInt(res.data.count);
-            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
+            this.pagination.defaultPageSize = pageSize;
             this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )

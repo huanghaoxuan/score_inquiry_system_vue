@@ -181,7 +181,7 @@ export default {
         columns.push(nextColumns);
       }
       this.columns = columns;
-      console.log(this.columns);
+      // console.log(this.columns);
     },
     handleCancel(e) {
       this.visible = false;
@@ -229,10 +229,10 @@ export default {
               res.data.data[index].serial = (pageNum - 1) * pageSize + index;
               res.data.data[index].sourceStageId = _this.sourceStageData.id;
             }
-            console.log(this.data);
+            // console.log(this.data);
             this.data = res.data.data;
             this.pagination.total = parseInt(res.data.count);
-            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
+            this.pagination.defaultPageSize = pageSize;
             this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )

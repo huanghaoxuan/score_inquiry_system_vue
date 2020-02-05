@@ -231,7 +231,7 @@ export default {
             }
             this.data = res.data.data;
             this.pagination.total = parseInt(res.data.count);
-            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
+            this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )
         .catch(

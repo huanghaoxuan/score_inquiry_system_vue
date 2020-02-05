@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a @click="showModal">查看学生</a>
+    <a @click="showModal">阶段性统一管理</a>
     <a-modal
       :visible="visible"
       @ok="handleOk"
@@ -11,57 +11,12 @@
       width="70%"
       @cancel="handleCancel"
     >
-      <a-card title="学生管理">
+      <a-card title="阶段性统一管理(仅显示由课程管理员统一添加的阶段性成绩)">
         <floder
           slot="extra"
-          :teachingClassInformationData="this.teachingClassInformationData"
           @getdata="getdata"
+          :teachingClassInformationData="this.teachingClassInformationData"
         ></floder>
-        <a-form layout="inline" :form="form" @submit="handleSubmit">
-          <a-form-item label="名字">
-            <a-input v-decorator="['name']" placeholder="请输入名字" />
-          </a-form-item>
-          <a-form-item label="学号">
-            <a-input v-decorator="['studentId']" placeholder="请输入学号" />
-          </a-form-item>
-          <a-form-item label="所在学院">
-            <a-select
-              v-decorator="['department']"
-              placeholder="请输入所在学院"
-              style="width: 200px"
-            >
-              <a-select-option value="">
-                学院不参与筛选
-              </a-select-option>
-              <a-select-option value="电子与计算机工程学院">
-                电子与计算机工程学院
-              </a-select-option>
-              <a-select-option value="建筑与艺术设计学院">
-                建筑与艺术设计学院
-              </a-select-option>
-              <a-select-option value="土木与交通工程学院">
-                土木与交通工程学院
-              </a-select-option>
-              <a-select-option value="机械与电气工程学院">
-                机械与电气工程学院
-              </a-select-option>
-              <a-select-option value="制药与化学工程学院">
-                制药与化学工程学院
-              </a-select-option>
-              <a-select-option value="经济管理学院">
-                经济管理学院
-              </a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="专业">
-            <a-input v-decorator="['professional']" placeholder="请输入专业" />
-          </a-form-item>
-          <a-form-item>
-            <a-button type="primary" html-type="submit">
-              查询
-            </a-button>
-          </a-form-item>
-        </a-form>
         <a-table
           :scroll="{ x: true }"
           :pagination="pagination"
@@ -69,16 +24,16 @@
           :dataSource="data"
           @change="handleTableChange"
         >
-          <template slot="serial" slot-scope="text">
+          <!-- <template slot="serial" slot-scope="text">
             {{ text + 1 }}
-          </template>
+          </template> -->
           <template
             v-for="col in [
               'name',
-              'studentId',
-              'department',
-              'professional',
-              'class'
+              'teachingClassId',
+              'stageId',
+              'stageNote',
+              'percentage'
             ]"
             :slot="col"
             slot-scope="text, record"
@@ -93,17 +48,43 @@
               <template v-else>{{ text }}</template>
             </div>
           </template>
+          <template slot="type" slot-scope="text, record">
+            <div key="type">
+              <a-select
+                :defaultValue="text"
+                v-if="record.editable"
+                style="width: 80px"
+                @change="
+                  value => {
+                    handleChange(value, record.key, 'type');
+                  }
+                "
+              >
+                <a-select-option value="平时">平时</a-select-option>
+                <a-select-option value="期中">期中</a-select-option>
+                <a-select-option value="实践">实践</a-select-option>
+                <a-select-option value="其他">其他</a-select-option>
+              </a-select>
+
+              <template v-else>{{ text }}</template>
+            </div>
+          </template>
           <template slot="operation" slot-scope="text, record">
             <div class="editable-row-operations">
               <span v-if="record.editable">
-                <a @click="() => save(record.key)" style="padding:10px">保存</a>
-                <a @click="() => cancel(record.key)">取消</a>
+                <a @click="() => save(record.key)">
+                  保存
+                </a>
+                <a @click="() => cancel(record.key)" style="padding:10px"
+                  >取消</a
+                >
               </span>
               <span v-else>
-                <a @click="() => edit(record.key)" style="padding:10px">修改</a>
+                <a @click="() => edit(record.key)">修改</a>
                 <a-popconfirm
                   title="确定删除该条数据？?"
                   @confirm="() => onDelete(record.key)"
+                  style="padding:10px"
                 >
                   <a>删除</a>
                 </a-popconfirm>
@@ -117,56 +98,61 @@
 </template>
 
 <script>
-import floder from "./student_floder.vue";
+import floder from "./scores_floder.vue";
 let columns = [
+  // {
+  //   title: "序号",
+  //   dataIndex: "serial",
+  //   key: "0",
+  //   scopedSlots: { customRender: "serial" }
+  // },
   {
-    title: "序号",
-    dataIndex: "serial",
-    key: "0",
-    scopedSlots: { customRender: "serial" }
-  },
-  {
-    title: "名字",
+    title: "课程名",
     dataIndex: "name",
-    key: "1",
-    scopedSlots: { customRender: "name" }
+    key: "1"
   },
   {
-    title: "学号",
-    dataIndex: "studentId",
+    title: "教学班号",
+    dataIndex: "teachingClassId",
     key: "2"
   },
   {
-    title: "学院",
-    dataIndex: "department",
+    title: "阶段性测验序号",
+    dataIndex: "stageId",
     key: "3",
-    scopedSlots: { customRender: "department" }
+    scopedSlots: { customRender: "stageId" }
   },
   {
-    title: "专业",
-    dataIndex: "professional",
+    title: "阶段性测验名称",
+    dataIndex: "stageNote",
     key: "4",
-    scopedSlots: { customRender: "professional" }
+    scopedSlots: { customRender: "stageNote" }
   },
   {
-    title: "班级",
-    dataIndex: "class",
+    title: "类型",
+    dataIndex: "type",
+    key: "41",
+    scopedSlots: { customRender: "type" }
+  },
+  {
+    title: "占比（单位%）",
+    dataIndex: "percentage",
     key: "5",
-    scopedSlots: { customRender: "class" }
+    scopedSlots: { customRender: "percentage" }
   },
   {
     title: "操作",
     dataIndex: "operation",
-    key: "6",
+    key: "8",
     scopedSlots: { customRender: "operation" }
   }
 ];
-let data = [];
+var data = [];
 export default {
   inject: ["reload"],
   components: { floder },
   props: {
-    teachingClassInformationData: {}
+    teachingClassInformationData: Object
   },
   data() {
     this.cacheData = data.map(item => ({ ...item }));
@@ -180,48 +166,49 @@ export default {
         defaultPageSize: 5,
         total: 5,
         showTotal: total => `共 ${total} 条记录`
-      },
-      headers: {
-        Authorization: this.$store.state.token
       }
     };
   },
   methods: {
-    //上传
-    handleChangeUpload(info) {
-      if (info.file.status !== "uploading") {
-        //console.log(info.file, info.fileList);
+    changeType(value, record) {
+      record.type = value;
+      {
+        this.axios
+          .post(
+            "/sourceStageInformation/update",
+            this.qs.stringify({
+              ...record
+            }),
+            {
+              headers: {
+                Authorization: this.$store.state.token,
+                "Content-Type": "application/x-www-form-urlencoded"
+              }
+            }
+          )
+          .then(
+            function(res) {
+              //console.log(res.data);
+              //每条数据需要一个唯一的key值
+            }.bind(this)
+          )
+          .catch(
+            function(err) {
+              if (err.response) {
+                //console.log(err.response);
+                if (err.response.status == 403) {
+                  //console.log(err.response);
+                  this.$notification.error({
+                    message: "账号密码已过期，请重新登录！"
+                  });
+                  this.$router.push("/login");
+                  //控制台打印错误返回的内容
+                }
+              }
+              //bind(this)可以不用
+            }.bind(this)
+          );
       }
-      if (info.file.status === "done") {
-        this.$message.success(`${info.file.name} 上传成功`);
-        this.getdata(1, 5);
-      } else if (info.file.status === "error") {
-        this.$message.error(`${info.file.name} 上传失败，请重试！`);
-      }
-    },
-    showModal() {
-      this.getdata(1, 5);
-      this.visible = true;
-    },
-    handleOk(e) {
-      this.visible = false;
-      //this.confirmLoading = true;
-      //this.handleSubmit(e);
-    },
-    handleCancel(e) {
-      this.visible = false;
-    },
-    handleTableChange(pagination, filters, sorter) {
-      this.getdata(pagination.current, 5);
-    },
-    //查询时提交数据
-    handleSubmit(e) {
-      e.preventDefault();
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          this.getdata(1, 5);
-        }
-      });
     },
     handleChange(value, key, column) {
       let newData = [...this.data];
@@ -243,9 +230,8 @@ export default {
     onDelete(key) {
       let newData = [...this.data];
       let target = newData.filter(item => key === item.key)[0];
-      //console.log(target);
       this.axios
-        .get("/teachingClass/delete/" + target.id, {
+        .get("/sourceStageInformation/ByCourseAdministrator/" + target.batch, {
           params: {},
           headers: {
             Authorization: this.$store.state.token,
@@ -257,7 +243,8 @@ export default {
             //console.log(res.data);
             //每条数据需要一个唯一的key值
             if (res.data.status != 0) {
-              this.data = newData.filter(item => item.key !== key);
+              // this.data = newData.filter(item => item.key !== key);
+              this.getdata(1, 5);
               this.$notification.warning({
                 message: "删除成功！"
               });
@@ -292,7 +279,7 @@ export default {
       //console.log(target);
       this.axios
         .post(
-          "/teachingClass/update",
+          "/sourceStageInformation/updateByCourseAdministrator",
           this.qs.stringify({
             ...target
           }),
@@ -349,16 +336,40 @@ export default {
         this.data = newData;
       }
     },
+    showModal() {
+      this.getdata(1, 5);
+      this.visible = true;
+    },
+    handleOk(e) {
+      this.visible = false;
+      //this.confirmLoading = true;
+      //this.handleSubmit(e);
+    },
+    handleCancel(e) {
+      this.visible = false;
+    },
+    handleTableChange(pagination, filters, sorter) {
+      this.getdata(pagination.current, 5);
+    },
+    //查询时提交数据
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.getdata(1, 5);
+        }
+      });
+    },
     getdata(pageNum, pageSize) {
       let formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/teachingClass/selectByPage",
+          "/sourceStageInformation/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
-            teachingClassId: this.teachingClassInformationData.teachingClassId,
             courseId: this.teachingClassInformationData.id,
+            addPeople: 2,
             ...formData
           }),
           {
@@ -405,3 +416,11 @@ export default {
   // }
 };
 </script>
+<style lang="scss">
+.disabled {
+  pointer-events: none;
+  filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
+  -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
+  opacity: 0.5; /*其他，透明度50%*/
+}
+</style>

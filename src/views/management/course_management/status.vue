@@ -257,7 +257,6 @@ export default {
       let target = newData.filter(item => key === item.key)[0];
       if (target) {
         if (column == "courseAdministrator") {
-          console.log(value);
           target.courseAdministratorName = value.label;
           target[column] = value.key;
         } else {
@@ -449,7 +448,7 @@ export default {
             }
             this.data = res.data.data;
             this.pagination.total = parseInt(res.data.count);
-            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
+            this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )
         .catch(

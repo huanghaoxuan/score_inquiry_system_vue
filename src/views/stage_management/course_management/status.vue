@@ -1,49 +1,12 @@
 <template>
   <div style="background:#ECECEC; padding:30px">
-    <a-card title="成绩查询">
+    <a-card title="课程管理">
       <a-form layout="inline" :form="form" @submit="handleSubmit">
+        <a-form-item label="课程号">
+          <a-input v-decorator="['courseId']" placeholder="请输入课程号" />
+        </a-form-item>
         <a-form-item label="课程名">
-          <a-input v-decorator="['courseName']" placeholder="请输入课程名" />
-        </a-form-item>
-        <a-form-item label="学年">
-          <a-input-group compact>
-            <a-input
-              style=" width: 100px; text-align: center"
-              v-decorator="['year', { getValueFromEvent: yearChange() }]"
-            />
-            <a-input
-              style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff"
-              placeholder="-"
-              disabled
-            />
-            <a-input
-              v-model="year2"
-              style="width: 100px; text-align: center; border-left: 0;pointer-events: none;backgroundColor: #fff"
-              disabled
-            />
-            <a-input
-              style=" width: 60px; border-left: 0; pointer-events: none; backgroundColor: #fff"
-              placeholder="学年"
-              disabled
-            />
-          </a-input-group>
-        </a-form-item>
-        <a-form-item label="学期">
-          <a-select
-            v-decorator="['semester']"
-            placeholder="请选择学期"
-            style="width: 120px;"
-          >
-            <a-select-option value="第一学期">
-              第一学期
-            </a-select-option>
-            <a-select-option value="第二学期">
-              第二学期
-            </a-select-option>
-            <a-select-option value="">
-              暂无
-            </a-select-option>
-          </a-select>
+          <a-input v-decorator="['name']" placeholder="请输入课程名" />
         </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit">
@@ -51,6 +14,7 @@
           </a-button>
         </a-form-item>
       </a-form>
+      <br />
       <a-table
         :scroll="{ x: true }"
         :pagination="pagination"
@@ -61,27 +25,21 @@
         <template slot="serial" slot-scope="text">
           {{ text + 1 }}
         </template>
-        <template slot="result" slot-scope="result">
-          <div v-if="parseInt(`${result}`) < 60" style="color : #f00;">
-            {{ result }}
-          </div>
-          <div v-else>
-            {{ result }}
+        <template slot="courseAdministrator" slot-scope="text, record">
+          {{ record.courseAdministratorName }}
+        </template>
+        <template slot="operation" slot-scope="text, record">
+          <div class="editable-row-operations">
+            <scores :teachingClassInformationData="data[record.key]"></scores>
           </div>
         </template>
-        <!-- 查看阶段性成绩 -->
-        <!-- <template slot="sourceStage" slot-scope="text, record">
-          <div class="editable-row-operations">
-            <stage :sourceStageData="data[record.key]"></stage>
-          </div>
-        </template> -->
       </a-table>
     </a-card>
   </div>
 </template>
 
 <script>
-// import stage from "./stage.vue";
+import scores from "./scores.vue";
 let columns = [
   {
     title: "序号",
@@ -92,14 +50,12 @@ let columns = [
   {
     title: "课程号",
     dataIndex: "courseId",
-    key: "0",
-    scopedSlots: { customRender: "courseName" }
+    key: "0"
   },
   {
-    title: "课程名字",
-    dataIndex: "courseName",
-    key: "1",
-    scopedSlots: { customRender: "courseName" }
+    title: "课程名",
+    dataIndex: "name",
+    key: "1"
   },
   {
     title: "学年",
@@ -114,17 +70,48 @@ let columns = [
     scopedSlots: { customRender: "semester" }
   },
   {
-    title: "期末成绩成绩",
-    dataIndex: "result",
+    title: "教学班个数",
+    dataIndex: "classCount",
     key: "4",
-    scopedSlots: { customRender: "result" }
+    scopedSlots: { customRender: "classCount" }
+  },
+  {
+    title: "学生总人数",
+    dataIndex: "studentCount",
+    key: "5",
+    scopedSlots: { customRender: "studentCount" }
+  },
+  {
+    title: "已完成录入教学班个数",
+    dataIndex: "completeInput",
+    key: "51",
+    scopedSlots: { customRender: "completeInput" }
+  },
+  {
+    title: "未完成录入教学班个数",
+    dataIndex: "unCompleteInput",
+    key: "52",
+    scopedSlots: { customRender: "unCompleteInput" }
+  },
+  {
+    title: "课程管理员",
+    dataIndex: "courseAdministrator",
+    key: "53",
+    scopedSlots: { customRender: "courseAdministrator" }
+  },
+  {
+    title: "管理",
+    dataIndex: "operation",
+    key: "6",
+    scopedSlots: { customRender: "operation" }
   }
 ];
 let data = [];
 export default {
   inject: ["reload"],
-  // components: { stage },
+  components: { scores },
   data() {
+    this.cacheData = data.map(item => ({ ...item }));
     return {
       data,
       columns,
@@ -134,13 +121,10 @@ export default {
         total: 9,
         showTotal: total => `共 ${total} 条记录`
       },
-      year2: ""
+      teacherInfos: []
     };
   },
   methods: {
-    yearChange(value) {
-      this.year2 = parseInt(this.form.getFieldValue("year")) + 1;
-    },
     handleTableChange(pagination, filters, sorter) {
       this.getdata(pagination.current, 9);
     },
@@ -154,16 +138,16 @@ export default {
       });
     },
     getdata(pageNum, pageSize) {
+      let _this = this;
       let formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/teachingClass/showFinal",
+          "/course/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
             ...formData,
-            studentId: this.$store.state.studentId,
-            status: 3
+            courseAdministrator: _this.$store.state.id
           }),
           {
             headers: {

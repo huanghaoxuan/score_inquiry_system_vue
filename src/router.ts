@@ -37,6 +37,12 @@ export default new Router({
             import("./views/management/class_status_management/status.vue")
         },
         {
+          path: "/stage_management/course_management",
+          name: "stage_management_course_management",
+          component: () =>
+            import("./views/stage_management/course_management/status.vue")
+        },
+        {
           path: "/scores_input/stage",
           name: "scores_input_stage",
           component: () => import("./views/scores_input/stage/status.vue")

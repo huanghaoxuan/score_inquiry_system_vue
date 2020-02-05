@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     showModal() {
-      console.log(this.sourceStageData);
+      // console.log(this.sourceStageData);
       this.getdata(1, 9);
       this.visible = true;
     },
@@ -141,7 +141,7 @@ export default {
             }
             this.data = res.data.data;
             this.pagination.total = parseInt(res.data.count);
-            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
+            this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )
         .catch(

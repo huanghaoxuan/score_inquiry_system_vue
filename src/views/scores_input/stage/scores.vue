@@ -24,9 +24,9 @@
           :dataSource="data"
           @change="handleTableChange"
         >
-          <template slot="serial" slot-scope="text">
+          <!-- <template slot="serial" slot-scope="text">
             {{ text + 1 }}
-          </template>
+          </template> -->
           <template
             v-for="col in [
               'name',
@@ -121,12 +121,12 @@ import scores_student from "./scores_student";
 import floder from "./scores_floder.vue";
 import scores_input from "./scores_input.vue";
 let columns = [
-  {
-    title: "序号",
-    dataIndex: "serial",
-    key: "0",
-    scopedSlots: { customRender: "serial" }
-  },
+  // {
+  //   title: "序号",
+  //   dataIndex: "serial",
+  //   key: "0",
+  //   scopedSlots: { customRender: "serial" }
+  // },
   {
     title: "课程名",
     dataIndex: "name",
@@ -423,7 +423,7 @@ export default {
             }
             this.data = res.data.data;
             this.pagination.total = parseInt(res.data.count);
-            this.pagination.defaultPageSize = parseInt(res.data.pageSize);
+            this.pagination.defaultPageSize = pageSize;
           }.bind(this)
         )
         .catch(

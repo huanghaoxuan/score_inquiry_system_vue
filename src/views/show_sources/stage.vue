@@ -20,7 +20,7 @@
             <a-button type="primary" html-type="submit">
               查询
             </a-button>
-          </a-form-item> -->
+          </a-form-item>-->
         </a-form>
         <a-table
           :scroll="{ x: true }"
@@ -28,8 +28,7 @@
           :columns="columns"
           :dataSource="data"
           @change="handleTableChange"
-        >
-        </a-table>
+        ></a-table>
       </a-card>
     </a-modal>
   </div>

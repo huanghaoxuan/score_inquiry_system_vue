@@ -1,5 +1,5 @@
 <template>
-  <div style="background:#ECECEC; padding:30px">
+  <div style="background: #ececec; padding: 30px">
     <a-card title="成绩发布管理">
       <a-form layout="inline" :form="form" @submit="handleSubmit">
         <a-form-item label="课程名">
@@ -11,10 +11,58 @@
             placeholder="请输入教学班号"
           />
         </a-form-item>
+        <a-form-item label="学年">
+          <a-input-group compact>
+            <a-input
+              style="width: 100px; text-align: center"
+              v-decorator="['year', { getValueFromEvent: yearChange() }]"
+            />
+            <a-input
+              style="
+                width: 30px;
+                border-left: 0;
+                pointer-events: none;
+                backgroundcolor: #fff;
+              "
+              placeholder="-"
+              disabled
+            />
+            <a-input
+              v-model="year2"
+              style="
+                width: 100px;
+                text-align: center;
+                border-left: 0;
+                pointer-events: none;
+                backgroundcolor: #fff;
+              "
+              disabled
+            />
+            <a-input
+              style="
+                width: 60px;
+                border-left: 0;
+                pointer-events: none;
+                backgroundcolor: #fff;
+              "
+              placeholder="学年"
+              disabled
+            />
+          </a-input-group>
+        </a-form-item>
+        <a-form-item label="学期">
+          <a-select
+            v-decorator="['semester']"
+            placeholder="请选择学期"
+            style="width: 120px"
+          >
+            <a-select-option value="第一学期"> 第一学期 </a-select-option>
+            <a-select-option value="第二学期"> 第二学期 </a-select-option>
+            <a-select-option value=""> 暂无 </a-select-option>
+          </a-select>
+        </a-form-item>
         <a-form-item>
-          <a-button type="primary" html-type="submit">
-            查询
-          </a-button>
+          <a-button type="primary" html-type="submit"> 查询 </a-button>
         </a-form-item>
       </a-form>
       <br />
@@ -29,28 +77,22 @@
           {{ text + 1 }}
         </template>
         <template slot="status" slot-scope="text">
-          <div v-if="text == 1">
-            教师录入中
-          </div>
-          <div v-else-if="text == 2" style="color : #f00;">
-            教师已确认
-          </div>
-          <div v-else-if="text == 3" style="color : #96ceb4;">
-            成绩已发布
-          </div>
+          <div v-if="text == 1">教师录入中</div>
+          <div v-else-if="text == 2" style="color: #f00">教师已确认</div>
+          <div v-else-if="text == 3" style="color: #96ceb4">成绩已发布</div>
         </template>
         <template slot="newStatus" slot-scope="text, record">
           <a
             @click="updateStauts(record, 2)"
             v-if="record.status == 1"
-            style="margin-left:10px"
+            style="margin-left: 10px"
             >确认成绩</a
           >
           <a
             @click="updateStauts(record, 1)"
             v-if="record.status == 2 || record.status == 3"
             :class="record.status == 3 ? 'disabled' : ''"
-            style="margin-left:10px"
+            style="margin-left: 10px"
             >重新录入</a
           >
         </template>
@@ -66,13 +108,13 @@
             @click="updateStauts(record, 3)"
             v-if="record.status == 2 || record.status == 1"
             :class="record.status == 1 ? 'disabled' : ''"
-            style="margin-left:10px"
+            style="margin-left: 10px"
             >发布成绩</a
           >
           <a
             @click="updateStauts(record, 2)"
             v-if="record.status == 3"
-            style="margin-left:10px"
+            style="margin-left: 10px"
             >取消发布</a
           >
         </template>
@@ -99,6 +141,18 @@ let columns = [
     title: "教学班号",
     dataIndex: "teachingClassId",
     key: "2"
+  },
+  {
+    title: "学年",
+    dataIndex: "year1",
+    key: "21",
+    scopedSlots: { customRender: "year1" }
+  },
+  {
+    title: "学期",
+    dataIndex: "semester",
+    key: "31",
+    scopedSlots: { customRender: "semester" }
   },
   {
     title: "任课老师名字",
@@ -151,6 +205,9 @@ export default {
     };
   },
   methods: {
+    yearChange(value) {
+      this.year2 = parseInt(this.form.getFieldValue("year")) + 1;
+    },
     updateStauts(record, status) {
       let _this = this;
       this.axios
@@ -239,6 +296,9 @@ export default {
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
               res.data.data[index].serial = (pageNum - 1) * pageSize + index;
+              var temp = res.data.data[index].year + 1;
+              res.data.data[index].year1 =
+                res.data.data[index].year + "-" + temp + " 学年";
             }
             this.data = res.data.data;
             this.pagination.total = parseInt(res.data.count);

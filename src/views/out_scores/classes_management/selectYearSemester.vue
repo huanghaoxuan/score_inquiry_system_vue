@@ -110,18 +110,19 @@ export default {
           }
         )
         .then(response => {
+          debugger;
           let url = window.URL.createObjectURL(new Blob([response.data]));
           let link = document.createElement("a");
           link.href = url;
           link.setAttribute("download", "crossSemester.xlsx");
           document.body.appendChild(link);
           link.click();
-          this.visible = false;
+          // this.visible = false;
         })
         .catch(
           function(err) {
             if (err.response) {
-              // console.log(err.response);
+              console.log(err);
               //控制台打印错误返回的内容
             }
             //bind(this)可以不用

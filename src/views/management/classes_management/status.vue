@@ -345,7 +345,8 @@ export default {
         .post(
           "/teachingClassInformation/update",
           this.qs.stringify({
-            ...target
+            id: target.uniqueSign,
+            courseTeacherName: target.courseTeacherName
           }),
           {
             headers: {

@@ -1,5 +1,5 @@
 <template>
-  <div style="background:#ECECEC; padding:30px">
+  <div style="background: #ececec; padding: 30px">
     <a-card title="课程管理">
       <floder slot="extra"></floder>
       <a-form layout="inline" :form="form" @submit="handleSubmit">
@@ -9,10 +9,58 @@
         <a-form-item label="课程名">
           <a-input v-decorator="['name']" placeholder="请输入课程名" />
         </a-form-item>
+        <a-form-item label="学年">
+          <a-input-group compact>
+            <a-input
+              style="width: 100px; text-align: center"
+              v-decorator="['year', { getValueFromEvent: yearChange() }]"
+            />
+            <a-input
+              style="
+                width: 30px;
+                border-left: 0;
+                pointer-events: none;
+                backgroundcolor: #fff;
+              "
+              placeholder="-"
+              disabled
+            />
+            <a-input
+              v-model="year2"
+              style="
+                width: 100px;
+                text-align: center;
+                border-left: 0;
+                pointer-events: none;
+                backgroundcolor: #fff;
+              "
+              disabled
+            />
+            <a-input
+              style="
+                width: 60px;
+                border-left: 0;
+                pointer-events: none;
+                backgroundcolor: #fff;
+              "
+              placeholder="学年"
+              disabled
+            />
+          </a-input-group>
+        </a-form-item>
+        <a-form-item label="学期">
+          <a-select
+            v-decorator="['semester']"
+            placeholder="请选择学期"
+            style="width: 120px"
+          >
+            <a-select-option value="第一学期"> 第一学期 </a-select-option>
+            <a-select-option value="第二学期"> 第二学期 </a-select-option>
+            <a-select-option value=""> 暂无 </a-select-option>
+          </a-select>
+        </a-form-item>
         <a-form-item>
-          <a-button type="primary" html-type="submit">
-            查询
-          </a-button>
+          <a-button type="primary" html-type="submit"> 查询 </a-button>
         </a-form-item>
       </a-form>
       <br />
@@ -36,7 +84,7 @@
               v-if="record.editable"
               style="margin: -5px 0"
               :value="text"
-              @change="e => handleChange(e.target.value, record.key, col)"
+              @change="(e) => handleChange(e.target.value, record.key, col)"
             />
             <template v-else>{{ text }}</template>
           </div>
@@ -55,7 +103,7 @@
               v-if="record.editable"
               style="width: 100px"
               @change="
-                value => {
+                (value) => {
                   handleChange(value, record.key, 'courseAdministrator');
                 }
               "
@@ -78,7 +126,9 @@
           <div class="editable-row-operations">
             <span v-if="record.editable">
               <a @click="() => save(record.key)">保存</a>
-              <a @click="() => cancel(record.key)" style="padding:10px">取消</a>
+              <a @click="() => cancel(record.key)" style="padding: 10px"
+                >取消</a
+              >
             </span>
             <span v-else>
               <a @click="() => edit(record.key)">修改</a>
@@ -86,7 +136,7 @@
                 title="确定删除该条数据？？"
                 @confirm="() => onDelete(record.key)"
               >
-                <a style="padding:10px">删除</a>
+                <a style="padding: 10px">删除</a>
               </a-popconfirm>
             </span>
           </div>
@@ -190,6 +240,9 @@ export default {
     };
   },
   methods: {
+    yearChange(value) {
+      this.year2 = parseInt(this.form.getFieldValue("year")) + 1;
+    },
     updateStauts(record, status) {
       let _this = this;
       this.axios

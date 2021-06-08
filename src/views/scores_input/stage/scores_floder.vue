@@ -76,7 +76,16 @@
             v-decorator="[
               'percentage',
               {
-                rules: [{ required: true, message: '阶段性测验占比号不能为空' }]
+                rules: [
+                  {
+                    pattern: /^(\d{1,2}(\.\d{1,2})?|100)$/,
+                    transform(value) {
+                      return value.trim();
+                    },
+                    message: '请输入0-100之内的数字（包括至小数点后两位）'
+                  },
+                  { required: true, message: '阶段性测验占比号不能为空' }
+                ]
               }
             ]"
             style="width:100%"

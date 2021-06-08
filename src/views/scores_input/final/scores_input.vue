@@ -12,7 +12,7 @@
       <a
         v-if="teachingClassInformationData.status == 1"
         :class="teachingClassInformationData.status == 1 ? '' : 'disabled'"
-        style="margin-left:10px"
+        style="margin-left: 10px"
         >确认成绩</a
       >
     </a-popconfirm>
@@ -21,7 +21,7 @@
       @click="updateStauts(1)"
       v-if="teachingClassInformationData.status == 2"
       :class="teachingClassInformationData.status == 1 ? '' : 'disabled'"
-      style="margin-left:10px"
+      style="margin-left: 10px"
       >重新录入</a
     >
     <a-modal
@@ -36,6 +36,14 @@
     >
       <a-card title="期末成绩管理">
         <div slot="extra">
+          <a-tooltip placement="bottom" slot="extra" style="margin-right: 40px">
+            <template slot="title">
+              <span
+                >若期末成绩显示为-1，即代表该学生期末考试缺考，总评成绩即置为0分</span
+              >
+            </template>
+            <a-icon type="question-circle" />
+          </a-tooltip>
           <a-button style="margin: 0 20px 0 0" @click="handleOk"
             >确认添加</a-button
           >
@@ -71,12 +79,46 @@
               :ref="record.key"
               v-on:keyup.down="nextInput(record.key)"
               v-on:keyup.up="preInput(record.key)"
-              style="margin: -5px 0"
+              style="margin: -5px 0;width: 150px"
               v-model="data[`${record.key}`].final"
-            />
+              :disabled="data[`${record.key}`].final == '缺考'"
+            >
+              <a-tooltip
+                slot="addonAfter"
+                v-if="data[`${record.key}`].final != '缺考'"
+              >
+                <template slot="title">
+                  点击设置为缺考
+                </template>
+                <a-button
+                  size="small"
+                  type="link"
+                  shape="round"
+                  @click="data[`${record.key}`].final = '缺考'"
+                >
+                  <a-icon type="stop" :style="{ color: 'red' }" />
+                </a-button>
+              </a-tooltip>
+              <a-tooltip
+                slot="addonAfter"
+                v-if="data[`${record.key}`].final == '缺考'"
+              >
+                <template slot="title">
+                  点击设置为未缺考
+                </template>
+                <a-button
+                  size="small"
+                  type="link"
+                  shape="round"
+                  @click="data[`${record.key}`].final = '0'"
+                >
+                  <a-icon type="check-circle" />
+                </a-button>
+              </a-tooltip>
+            </a-input>
           </template>
           <template slot="result" slot-scope="result, record">
-            <div v-if="parseInt(`${result}`) < 60" style="color : #f00;">
+            <div v-if="parseInt(`${result}`) < 60" style="color: #f00">
               {{ showResult(`${record.key}`) }}
             </div>
             <div v-else>
@@ -230,10 +272,14 @@ export default {
           result = parseInt(this.data[key][uid]) * percentage * 0.01 + result;
         }
       }
-      if (this.data[key].final != "") {
-        result =
-          parseInt(this.data[key].final) * (100 - unpercentage) * 0.01 + result;
+      let final = this.data[key].final;
+      if (final == "缺考") {
+        final = "0";
       }
+      if (final != "") {
+        result = parseInt(final) * (100 - unpercentage) * 0.01 + result;
+      }
+
       // debugger;
       this.data[key].result = result.toFixed(0);
       return result.toFixed(0);

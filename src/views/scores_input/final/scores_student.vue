@@ -17,9 +17,16 @@
           <template slot="title">
             <span>下载</span>
           </template>
-          <a-icon type="download" v-on:click="download" style="fontSize:20px" />
+          <a-icon type="download" v-on:click="download" />
         </a-tooltip>
-
+        <a-tooltip placement="bottom" slot="extra" style="margin-left: 40px">
+          <template slot="title">
+            <span
+              >若期末成绩显示为-1，即代表该学生期末考试缺考，总评成绩即置为0分</span
+            >
+          </template>
+          <a-icon type="question-circle" />
+        </a-tooltip>
         <a-form layout="inline" :form="form" @submit="handleSubmit">
           <a-form-item label="名字">
             <a-input v-decorator="['name']" placeholder="请输入名字" />
@@ -28,9 +35,7 @@
             <a-input v-decorator="['studentId']" placeholder="请输入学号" />
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" html-type="submit">
-              查询
-            </a-button>
+            <a-button type="primary" html-type="submit"> 查询 </a-button>
           </a-form-item>
         </a-form>
         <br />
@@ -45,7 +50,7 @@
             {{ text + 1 }}
           </template>
           <template slot="result" slot-scope="result">
-            <div v-if="parseInt(`${result}`) < 60" style="color : #f00;">
+            <div v-if="parseInt(`${result}`) < 60" style="color: #f00">
               {{ result }}
             </div>
             <div v-else>

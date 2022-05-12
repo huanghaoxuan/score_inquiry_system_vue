@@ -13,13 +13,7 @@
       @cancel="handleCancel"
     >
       <a-card title="学生成绩查看">
-        <a-tooltip placement="bottom" slot="extra">
-          <template slot="title">
-            <span>下载</span>
-          </template>
-          <a-icon type="download" v-on:click="download" />
-        </a-tooltip>
-        <a-tooltip placement="bottom" slot="extra" style="margin-left: 40px">
+        <a-tooltip placement="bottom" slot="extra" style="margin: 5px">
           <template slot="title">
             <span
               >若期末成绩显示为-1，即代表该学生期末考试缺考，总评成绩即置为0分</span
@@ -27,6 +21,44 @@
           </template>
           <a-icon type="question-circle" />
         </a-tooltip>
+        <a-button
+          style="margin: 5px"
+          placement="bottom"
+          slot="extra"
+          type="primary"
+          icon="download"
+          v-on:click="download"
+        >
+          成绩下载
+        </a-button>
+        <a-button
+          style="margin: 5px"
+          placement="bottom"
+          slot="extra"
+          type="primary"
+          icon="download"
+          :href="`${path}/static/teachingClassInformation.xlsx`"
+          download="学生信息导入模板.xlsx"
+        >
+          模板下载
+        </a-button>
+        <a-upload
+          style="margin: 5px"
+          placement="bottom"
+          slot="extra"
+          name="file"
+          :multiple="true"
+          action="/api/teachingClass/upload"
+          :data="{
+            courseId: this.teachingClassInformationData.courseId,
+            courseName: this.teachingClassInformationData.courseName
+          }"
+          accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          :headers="headers"
+          @change="handleChangeUpload"
+        >
+          <a-button> <a-icon type="upload" />学生信息上传</a-button>
+        </a-upload>
         <a-form layout="inline" :form="form" @submit="handleSubmit">
           <a-form-item label="名字">
             <a-input v-decorator="['name']" placeholder="请输入名字" />
@@ -79,10 +111,14 @@ export default {
       confirmLoading: false,
       allData: [],
       form: this.$form.createForm(this),
+      path: process.env.BASE_URL,
       pagination: {
         defaultPageSize: 15,
         total: 15,
         showTotal: total => `共 ${total} 条记录`
+      },
+      headers: {
+        Authorization: this.$store.state.token
       }
     };
   },
@@ -292,6 +328,18 @@ export default {
             //bind(this)可以不用
           }.bind(this)
         );
+    },
+    //上传
+    handleChangeUpload(info) {
+      if (info.file.status !== "uploading") {
+        //console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        this.$message.success(`${info.file.name} 上传成功`);
+        this.$emit("getdata", 1, 5);
+      } else if (info.file.status === "error") {
+        this.$message.error(`${info.file.name} 上传失败，请重试！`);
+      }
     }
   }
   // mounted() {

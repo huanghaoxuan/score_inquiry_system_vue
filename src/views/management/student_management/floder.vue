@@ -3,6 +3,14 @@
     <a-button style="margin: 0 20px 0 0" @click="showModal"
       >添加学生信息</a-button
     >
+    <a-button
+      type="primary"
+      icon="download"
+      :href="`${path}/static/studentInformation.xlsx`"
+      download="学生信息管理批量导入模板.xlsx"
+    >
+      模板下载
+    </a-button>
     <a-tooltip placement="left">
       <template slot="title">
         <span>
@@ -187,6 +195,7 @@ export default {
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
+      path: process.env.BASE_URL,
       headers: {
         Authorization: this.$store.state.token
       }

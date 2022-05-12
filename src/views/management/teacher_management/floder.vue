@@ -3,26 +3,34 @@
     <a-button style="margin: 0 20px 0 0" @click="showModal"
       >添加教师信息</a-button
     >
+    <a-button
+      type="primary"
+      icon="download"
+      :href="`${path}/static/teacherInformation.xlsx`"
+      download="教师信息管理批量导入模板.xlsx"
+    >
+      模板下载
+    </a-button>
     <a-tooltip placement="left">
       <template slot="title">
         <span>
-          1、该按钮用于教师信息批量上传<br />
-          2、仅接受xls、xlsx为后缀的表格文件<br />
-          3、教师工号唯一，当有多个重复时，以第一个为准，若需修改，请手动修改<br />
-          4、该工号将作为教师登录凭证
+          1、该按钮用于教师信息批量上传
+          <br />2、仅接受xls、xlsx为后缀的表格文件
+          <br />3、教师工号唯一，当有多个重复时，以第一个为准，若需修改，请手动修改
+          <br />4、该工号将作为教师登录凭证 <br />PS: 请严格按照模板进行上传
         </span>
       </template>
-      <a-icon type="question-circle" style="fontSize:17px;padding:10px" />
+      <a-icon type="question-circle" style="fontsize: 17px; padding: 10px" />
     </a-tooltip>
     <a-upload
       name="file"
       :multiple="true"
       action="/api/teacherInformation/upload"
-      accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       :headers="headers"
       @change="handleChangeUpload"
     >
-      <a-button> <a-icon type="upload" />批量上传</a-button>
+      <a-button> <a-icon type="upload" />批量上传 </a-button>
     </a-upload>
     <a-modal
       title="正在新添加教师信息"
@@ -68,39 +76,27 @@
           :wrapper-col="{ span: 10 }"
         >
           <a-select v-decorator="['department']" placeholder="请输入现所在学院">
-            <a-select-option value="">
-              暂无
-            </a-select-option>
-            <a-select-option value="电子与计算机工程学院">
-              电子与计算机工程学院
-            </a-select-option>
-            <a-select-option value="建筑与艺术设计学院">
-              建筑与艺术设计学院
-            </a-select-option>
-            <a-select-option value="土木与交通工程学院">
-              土木与交通工程学院
-            </a-select-option>
-            <a-select-option value="机械与电气工程学院">
-              机械与电气工程学院
-            </a-select-option>
-            <a-select-option value="制药与化学工程学院">
-              制药与化学工程学院
-            </a-select-option>
-            <a-select-option value="经济管理学院">
-              经济管理学院
-            </a-select-option>
-            <a-select-option value="教务处">
-              教务处
-            </a-select-option>
-            <a-select-option value="学生处">
-              学生处
-            </a-select-option>
-            <a-select-option value="团委">
-              团委
-            </a-select-option>
-            <a-select-option value="基础部">
-              基础部
-            </a-select-option>
+            <a-select-option value>暂无</a-select-option>
+            <a-select-option value="电子与计算机工程学院"
+              >电子与计算机工程学院</a-select-option
+            >
+            <a-select-option value="建筑与艺术设计学院"
+              >建筑与艺术设计学院</a-select-option
+            >
+            <a-select-option value="土木与交通工程学院"
+              >土木与交通工程学院</a-select-option
+            >
+            <a-select-option value="机械与电气工程学院"
+              >机械与电气工程学院</a-select-option
+            >
+            <a-select-option value="制药与化学工程学院"
+              >制药与化学工程学院</a-select-option
+            >
+            <a-select-option value="经济管理学院">经济管理学院</a-select-option>
+            <a-select-option value="教务处">教务处</a-select-option>
+            <a-select-option value="学生处">学生处</a-select-option>
+            <a-select-option value="团委">团委</a-select-option>
+            <a-select-option value="基础部">基础部</a-select-option>
           </a-select>
         </a-form-item>
       </a-form>
@@ -116,6 +112,7 @@ export default {
       visible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
+      path: process.env.BASE_URL,
       headers: {
         Authorization: this.$store.state.token
       }

@@ -70,6 +70,10 @@
         :columns="columns"
         :dataSource="data"
         @change="handleTableChange"
+        class="ant-table-striped"
+        :row-class-name="
+          (_record, index) => (index % 2 === 1 ? 'table-striped' : null)
+        "
       >
         <template slot="serial" slot-scope="text">
           {{ text + 1 }}
@@ -84,7 +88,7 @@
               v-if="record.editable"
               style="margin: -5px 0"
               :value="text"
-              @change="(e) => handleChange(e.target.value, record.key, col)"
+              @change="e => handleChange(e.target.value, record.key, col)"
             />
             <template v-else>{{ text }}</template>
           </div>
@@ -94,7 +98,7 @@
             <a-select
               showSearch
               labelInValue
-              placeholder="请选择课程管理员"
+              placeholder="请选择课程负责人"
               :defaultActiveFirstOption="false"
               :showArrow="false"
               :filterOption="false"
@@ -103,7 +107,7 @@
               v-if="record.editable"
               style="width: 100px"
               @change="
-                (value) => {
+                value => {
                   handleChange(value, record.key, 'courseAdministrator');
                 }
               "
@@ -203,7 +207,7 @@ let columns = [
     scopedSlots: { customRender: "unCompleteInput" }
   },
   {
-    title: "课程管理员",
+    title: "课程负责人",
     dataIndex: "courseAdministrator",
     key: "53",
     scopedSlots: { customRender: "courseAdministrator" }
@@ -528,3 +532,8 @@ export default {
   }
 };
 </script>
+<style>
+.table-striped {
+  background-color: #e3e3e3;
+}
+</style>

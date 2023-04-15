@@ -21,6 +21,10 @@
         :columns="columns"
         :dataSource="data"
         @change="handleTableChange"
+        class="ant-table-striped"
+        :row-class-name="
+          (_record, index) => (index % 2 === 1 ? 'table-striped' : null)
+        "
       >
         <template slot="serial" slot-scope="text">
           {{ text + 1 }}
@@ -94,7 +98,7 @@ let columns = [
     scopedSlots: { customRender: "unCompleteInput" }
   },
   {
-    title: "课程管理员",
+    title: "课程负责人",
     dataIndex: "courseAdministrator",
     key: "53",
     scopedSlots: { customRender: "courseAdministrator" }
@@ -196,3 +200,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.table-striped {
+  background-color: #e3e3e3;
+}
+</style>

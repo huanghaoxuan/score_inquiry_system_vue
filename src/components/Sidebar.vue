@@ -31,6 +31,11 @@
             @click="() => jump('/management/course_management')"
             >课程管理</a-menu-item
           >
+          <!-- <a-menu-item
+            key="multi_course_assessment_management"
+            @click="() => jump('/management/multi_course_assessment')"
+            >多课程管理</a-menu-item
+          > -->
           <a-menu-item
             key="management_class_status_management"
             @click="() => jump('/management/class_status_management')"
@@ -69,7 +74,15 @@
         <a-menu-item
           key="show_scores"
           @click="() => jump('/out_scores')"
-          v-if="permissions == 2 || permissions == 3 || permissions == 4"
+          v-if="permissions == 3 || permissions == 4"
+        >
+          <a-icon type="pie-chart" />
+          <span>成绩导出</span>
+        </a-menu-item>
+        <a-menu-item
+          key="teacher_out_scores"
+          @click="() => jump('/teacher_out_scores')"
+          v-if="permissions == 2"
         >
           <a-icon type="pie-chart" />
           <span>成绩导出</span>

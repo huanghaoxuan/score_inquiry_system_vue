@@ -1,6 +1,7 @@
 <template>
-  <div style="background:#ECECEC; padding:30px">
+  <div style="background: #ececec; padding: 30px">
     <a-card title="课程管理">
+      <floder slot="extra"></floder>
       <a-form layout="inline" :form="form" @submit="handleSubmit">
         <a-form-item label="课程号">
           <a-input v-decorator="['courseId']" placeholder="请输入课程号" />
@@ -11,21 +12,37 @@
         <a-form-item label="学年">
           <a-input-group compact>
             <a-input
-              style=" width: 100px; text-align: center"
+              style="width: 100px; text-align: center"
               v-decorator="['year', { getValueFromEvent: yearChange() }]"
             />
             <a-input
-              style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff"
+              style="
+                width: 30px;
+                border-left: 0;
+                pointer-events: none;
+                backgroundcolor: #fff;
+              "
               placeholder="-"
               disabled
             />
             <a-input
               v-model="year2"
-              style="width: 100px; text-align: center; border-left: 0;pointer-events: none;backgroundColor: #fff"
+              style="
+                width: 100px;
+                text-align: center;
+                border-left: 0;
+                pointer-events: none;
+                backgroundcolor: #fff;
+              "
               disabled
             />
             <a-input
-              style=" width: 60px; border-left: 0; pointer-events: none; backgroundColor: #fff"
+              style="
+                width: 60px;
+                border-left: 0;
+                pointer-events: none;
+                backgroundcolor: #fff;
+              "
               placeholder="学年"
               disabled
             />
@@ -35,23 +52,15 @@
           <a-select
             v-decorator="['semester']"
             placeholder="请选择学期"
-            style="width: 120px;"
+            style="width: 120px"
           >
-            <a-select-option value="第一学期">
-              第一学期
-            </a-select-option>
-            <a-select-option value="第二学期">
-              第二学期
-            </a-select-option>
-            <a-select-option value="">
-              暂无
-            </a-select-option>
+            <a-select-option value="第一学期"> 第一学期 </a-select-option>
+            <a-select-option value="第二学期"> 第二学期 </a-select-option>
+            <a-select-option value=""> 暂无 </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item>
-          <a-button type="primary" html-type="submit">
-            查询
-          </a-button>
+          <a-button type="primary" html-type="submit"> 查询 </a-button>
         </a-form-item>
       </a-form>
       <br />
@@ -70,7 +79,7 @@
           {{ text + 1 }}
         </template>
         <template
-          v-for="col in ['courseId', 'name', 'year', 'semester']"
+          v-for="col in ['courseId', 'name']"
           :slot="col"
           slot-scope="text, record"
         >
@@ -84,6 +93,32 @@
             <template v-else>{{ text }}</template>
           </div>
         </template>
+        <template slot="courseAdministrator" slot-scope="text, record">
+          <div key="courseAdministrator">
+            <a-select
+              showSearch
+              labelInValue
+              placeholder="请选择课程负责人"
+              :defaultActiveFirstOption="false"
+              :showArrow="false"
+              :filterOption="false"
+              @search="searchTeacherInfos"
+              :value="{ key: record.courseAdministratorName }"
+              v-if="record.editable"
+              style="width: 100px"
+              @change="
+                value => {
+                  handleChange(value, record.key, 'courseAdministrator');
+                }
+              "
+            >
+              <a-select-option v-for="data in teacherInfos" :key="data.id">{{
+                data.name
+              }}</a-select-option>
+            </a-select>
+            <template v-else>{{ record.courseAdministratorName }}</template>
+          </div>
+        </template>
         <template slot="operation" slot-scope="text, record">
           <div class="editable-row-operations">
             <classes_management
@@ -93,17 +128,24 @@
         </template>
         <template slot="operation2" slot-scope="text, record">
           <div class="editable-row-operations">
+            <scores :teachingClassInformationData="data[record.key]"></scores>
+          </div>
+        </template>
+        <template slot="operation3" slot-scope="text, record">
+          <div class="editable-row-operations">
             <span v-if="record.editable">
               <a @click="() => save(record.key)">保存</a>
-              <a @click="() => cancel(record.key)" style="padding:10px">取消</a>
+              <a @click="() => cancel(record.key)" style="padding: 10px"
+                >取消</a
+              >
             </span>
             <span v-else>
               <a @click="() => edit(record.key)">修改</a>
               <a-popconfirm
-                title="确定删除该条数据？?"
+                title="确定删除该条数据？？"
                 @confirm="() => onDelete(record.key)"
               >
-                <a style="padding:10px">删除</a>
+                <a style="padding: 10px">删除</a>
               </a-popconfirm>
             </span>
           </div>
@@ -114,7 +156,10 @@
 </template>
 
 <script>
-import classes_management from "./classes_management/status.vue";
+import floder from "./floder.vue";
+import classes_management from "./../classes_management/status.vue";
+import scores from "./scores.vue";
+
 let columns = [
   {
     title: "序号",
@@ -134,9 +179,9 @@ let columns = [
   },
   {
     title: "学年",
-    dataIndex: "yearAli",
+    dataIndex: "year1",
     key: "2",
-    scopedSlots: { customRender: "year" }
+    scopedSlots: { customRender: "year1" }
   },
   {
     title: "学期",
@@ -145,22 +190,46 @@ let columns = [
     scopedSlots: { customRender: "semester" }
   },
   {
+    title: "教学班个数",
+    dataIndex: "classCount",
+    key: "4",
+    scopedSlots: { customRender: "classCount" }
+  },
+  {
+    title: "学生总人数",
+    dataIndex: "studentCount",
+    key: "5",
+    scopedSlots: { customRender: "studentCount" }
+  },
+  {
+    title: "课程负责人",
+    dataIndex: "courseAdministrator",
+    key: "53",
+    scopedSlots: { customRender: "courseAdministrator" }
+  },
+  {
     title: "教学班管理",
     dataIndex: "operation",
-    key: "4",
+    key: "6",
     scopedSlots: { customRender: "operation" }
+  },
+  {
+    title: "子课程管理",
+    dataIndex: "operation2",
+    key: "7",
+    scopedSlots: { customRender: "operation2" }
+  },
+  {
+    title: "操作",
+    dataIndex: "operation3",
+    key: "8",
+    scopedSlots: { customRender: "operation3" }
   }
-  // {
-  //   title: "操作",
-  //   dataIndex: "operation2",
-  //   key: "5",
-  //   scopedSlots: { customRender: "operation2" }
-  // }
 ];
 let data = [];
 export default {
   inject: ["reload"],
-  components: { classes_management },
+  components: { floder, classes_management, scores },
   data() {
     this.cacheData = data.map(item => ({ ...item }));
     return {
@@ -168,15 +237,66 @@ export default {
       columns,
       form: this.$form.createForm(this),
       pagination: {
-        defaultPageSize: 10,
-        total: 10,
+        defaultPageSize: 9,
+        total: 9,
         showTotal: total => `共 ${total} 条记录`
-      }
+      },
+      teacherInfos: []
     };
   },
   methods: {
     yearChange(value) {
       this.year2 = parseInt(this.form.getFieldValue("year")) + 1;
+    },
+    updateStauts(record, status) {
+      let _this = this;
+      this.axios
+        .post(
+          "/multiCourse/releaseCourse",
+          this.qs.stringify({
+            id: record.id,
+            status: status
+          }),
+          {
+            headers: {
+              Authorization: this.$store.state.token,
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          }
+        )
+        .then(
+          function(res) {
+            //console.log(res.data);
+            //每条数据需要一个唯一的key值
+            if (res.data.status != 0) {
+              _this.$notification.success({
+                message: "状态变更成功！"
+              });
+              this.data[record.key].status = status;
+            } else {
+              _this.$notification.error({
+                message: "状态变更失败，请重新尝试！"
+              });
+            }
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
     },
     handleTableChange(pagination, filters, sorter) {
       this.getdata(pagination.current, 9);
@@ -194,7 +314,12 @@ export default {
       let newData = [...this.data];
       let target = newData.filter(item => key === item.key)[0];
       if (target) {
-        target[column] = value;
+        if (column == "courseAdministrator") {
+          target.courseAdministratorName = value.label;
+          target[column] = value.key;
+        } else {
+          target[column] = value;
+        }
         this.data = newData;
       }
       //axios
@@ -207,12 +332,47 @@ export default {
         this.data = newData;
       }
     },
+    searchTeacherInfos(value) {
+      if (value == "") {
+        return;
+      }
+      let _this = this;
+      this.axios
+        .get("/teacherInformation/selectByName/" + value, {
+          params: {},
+          headers: {
+            Authorization: this.$store.state.token,
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
+        .then(
+          function(res) {
+            _this.teacherInfos = res.data.data;
+          }.bind(this)
+        )
+        .catch(
+          function(err) {
+            if (err.response) {
+              //console.log(err.response);
+              //控制台打印错误返回的内容
+              if (err.response.status == 403) {
+                //console.log(err.response);
+                this.$notification.error({
+                  message: "账号密码已过期，请重新登录！"
+                });
+                this.$router.push("/login");
+                //控制台打印错误返回的内容
+              }
+            }
+            //bind(this)可以不用
+          }.bind(this)
+        );
+    },
     onDelete(key) {
       let newData = [...this.data];
       let target = newData.filter(item => key === item.key)[0];
-      //console.log(target);
       this.axios
-        .get("/course/delete/" + target.id, {
+        .get("/multiCourse/delete/" + target.id, {
           params: {},
           headers: {
             Authorization: this.$store.state.token,
@@ -259,7 +419,7 @@ export default {
       //console.log(target);
       this.axios
         .post(
-          "/course/update",
+          "/multiCourse/update",
           this.qs.stringify({
             ...target
           }),
@@ -320,7 +480,7 @@ export default {
       let formData = this.form.getFieldsValue();
       this.axios
         .post(
-          "/course/selectByPage",
+          "/multiCourse/selectByPage",
           this.qs.stringify({
             pageNum: pageNum,
             pageSize: pageSize,
@@ -340,10 +500,9 @@ export default {
             for (let index = 0; index < res.data.data.length; index++) {
               res.data.data[index].key = index;
               res.data.data[index].serial = (pageNum - 1) * pageSize + index;
-              res.data.data[index].yearAli =
-                res.data.data[index].year +
-                " - " +
-                (res.data.data[index].year + 1);
+              var temp = res.data.data[index].year + 1;
+              res.data.data[index].year1 =
+                res.data.data[index].year + "-" + temp + " 学年";
             }
             this.data = res.data.data;
             this.pagination.total = parseInt(res.data.count);

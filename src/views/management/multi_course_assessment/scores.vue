@@ -30,7 +30,7 @@
         >
           <!-- <template slot="serial" slot-scope="text">
             {{ text + 1 }}
-          </template> -->
+          </template>-->
           <template
             v-for="col in [
               'name',
@@ -76,10 +76,8 @@
           <template slot="operation" slot-scope="text, record">
             <div class="editable-row-operations">
               <span v-if="record.editable">
-                <a @click="() => save(record.key)">
-                  保存
-                </a>
-                <a @click="() => cancel(record.key)" style="padding:10px"
+                <a @click="() => save(record.key)">保存</a>
+                <a @click="() => cancel(record.key)" style="padding: 10px"
                   >取消</a
                 >
               </span>
@@ -88,7 +86,7 @@
                 <a-popconfirm
                   title="确定删除该条数据？?"
                   @confirm="() => onDelete(record.key)"
-                  style="padding:10px"
+                  style="padding: 10px"
                 >
                   <a>删除</a>
                 </a-popconfirm>
@@ -111,35 +109,29 @@ let columns = [
   //   scopedSlots: { customRender: "serial" }
   // },
   {
-    title: "课程名",
-    dataIndex: "name",
+    title: "子课程序号",
+    dataIndex: "serialNumber",
+    key: "3",
+    scopedSlots: { customRender: "serialNumber" }
+  },
+  {
+    title: "子课程名称",
+    dataIndex: "childCourseName",
+    key: "4",
+    scopedSlots: { customRender: "childCourseName" }
+  },
+  {
+    title: "年级",
+    dataIndex: "year",
     key: "1"
   },
   {
-    title: "教学班号",
-    dataIndex: "teachingClassId",
+    title: "学期",
+    dataIndex: "semester",
     key: "2"
   },
   {
-    title: "阶段性测验序号",
-    dataIndex: "stageId",
-    key: "3",
-    scopedSlots: { customRender: "stageId" }
-  },
-  {
-    title: "阶段性测验名称",
-    dataIndex: "stageNote",
-    key: "4",
-    scopedSlots: { customRender: "stageNote" }
-  },
-  {
-    title: "类型",
-    dataIndex: "type",
-    key: "41",
-    scopedSlots: { customRender: "type" }
-  },
-  {
-    title: "占比（单位%）",
+    title: "占比（单位%） ",
     dataIndex: "percentage",
     key: "5",
     scopedSlots: { customRender: "percentage" }

@@ -71,6 +71,10 @@
         :columns="columns"
         :dataSource="data"
         @change="handleTableChange"
+        class="ant-table-striped"
+        :row-class-name="
+          (_record, index) => (index % 2 === 1 ? 'table-striped' : null)
+        "
         :scroll="{ x: true }"
       >
         <template slot="serial" slot-scope="text">
@@ -338,5 +342,10 @@ export default {
   filter: alpha(opacity=50); /*IE滤镜，透明度50%*/
   -moz-opacity: 0.5; /*Firefox私有，透明度50%*/
   opacity: 0.5; /*其他，透明度50%*/
+}
+</style>
+<style>
+.table-striped {
+  background-color: #e3e3e3;
 }
 </style>

@@ -40,6 +40,10 @@
           :columns="columns"
           :dataSource="data"
           @change="handleTableChange"
+          class="ant-table-striped"
+          :row-class-name="
+            (_record, index) => (index % 2 === 1 ? 'table-striped' : null)
+          "
         >
           <template slot="serial" slot-scope="text">
             {{ text + 1 }}
@@ -296,5 +300,11 @@ export default {
 <style>
 .ant-table td {
   white-space: nowrap;
+}
+</style>
+
+<style>
+.table-striped {
+  background-color: #e3e3e3;
 }
 </style>

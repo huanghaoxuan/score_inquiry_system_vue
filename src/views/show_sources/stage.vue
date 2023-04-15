@@ -28,6 +28,10 @@
           :columns="columns"
           :dataSource="data"
           @change="handleTableChange"
+          class="ant-table-striped"
+          :row-class-name="
+            (_record, index) => (index % 2 === 1 ? 'table-striped' : null)
+          "
         ></a-table>
       </a-card>
     </a-modal>
@@ -167,3 +171,9 @@ export default {
   // }
 };
 </script>
+
+<style>
+.table-striped {
+  background-color: #e3e3e3;
+}
+</style>
